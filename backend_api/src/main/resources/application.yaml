@@ -1,0 +1,35 @@
+SECRET_KEY: "VIEBE6HX0OPC6HX0VGAUDINUPRBEOPC6HX0VGGHAAOAKG"
+
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: method
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vietyts2003@gmail.com
+    password: icncudwesvprdqde
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+cloudinary:
+  cloud-name: "drljob402"
+  api-key: "298313424186247"
+  api-secret: "ED40hQfPdwu_ZtY3ETgc1yQafFg"
+
+app:
+  upload:
+    allowed-types: image/jpeg,image/png,image/jpg
+    max-size: 5242880
+
+AI:
+  key: ""
+  url: "https://api.openai.com/v1/chat/completions"
+
