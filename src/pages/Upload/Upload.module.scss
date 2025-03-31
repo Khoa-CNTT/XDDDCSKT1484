@@ -1,0 +1,248 @@
+.wrapper {
+    width: 56%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #e4e4e4;
+    margin: 50px auto 0;
+    padding: 20px 40px;
+    border-radius: 14px;
+}
+.header-heading {
+    font-size: 2.2rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.kind {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.type {
+    display: flex;
+    justify-content: center;
+    padding: 20px 100px 0;
+
+    button {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin: 0 50px;
+    }
+}
+
+.kind-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.kind-select {
+    width: 160px;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 1.6rem;
+    margin-left: 20px;
+}
+
+.body {
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: 1px solid var(--text-color);
+}
+
+.form {
+    margin: 20px;
+}
+
+// Poll
+.typePoll {
+    display: flex;
+    align-items: center;
+    padding: 12px 2px;
+
+    label {
+        margin-left: 24px;
+        font-size: 1.8rem;
+        color: var(--text-color);
+    }
+
+    input {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+}
+
+.type-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.question {
+    margin-bottom: 32px;
+}
+
+.question-text {
+    display: block;
+    width: 100%;
+    min-height: 100px;
+    resize: none;
+    outline: none;
+    background-color: var(--white);
+    padding: 14px 18px;
+    color: var(--text-color);
+    font-size: 1.8rem;
+    border-radius: 12px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    .option-item {
+        display: flex;
+        align-items: center;
+    }
+
+    input {
+        flex: 1;
+        padding: 16px;
+        border: none;
+        background: rgba(0, 0, 0, 0.003);
+        box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+        font-size: 1.8rem;
+        border: 1.5px solid var(--primary);
+        margin: 6px 0;
+        border-radius: 20px;
+    }
+    .remove-btn {
+        display: flex;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 6px;
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+    }
+}
+
+.option-btn {
+    margin: 12px 0;
+    border-radius: 20px;
+    padding: 16px;
+}
+
+// Content
+.title {
+    margin: 10px 0;
+}
+.title-input {
+    width: 100%;
+    height: 40px;
+    font-size: 1.9rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid #777;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    background-color: #f1f1f1;
+    height: 40px;
+    border-radius: 6px;
+    padding: 0 8px;
+
+    .selected {
+        background-color: rgba(0, 0, 0, 0.08);
+        color: var(--text-color);
+    }
+}
+.content-text {
+    display: block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 200px;
+    border: none;
+    resize: none;
+    outline: none;
+    background-color: var(--white);
+    padding: 10px 15px;
+    color: var(--text-color);
+    font-size: 1.7rem;
+}
+.file {
+    padding: 12px 8px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-img {
+    max-height: max(50px, 400px);
+    max-width: max(50px, 600px);
+    border-radius: 8px;
+}
+
+.upload {
+    display: flex;
+    padding: 10px 0;
+    justify-content: flex-end;
+}
+.upload-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+// Styles font
+.bold {
+    font-weight: bolder;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .wrapper {
+        width: 100%;
+        background-color: transparent;
+        padding: 0 20px;
+    }
+
+    .header-heading {
+        font-size: 2rem;
+    }
+
+    .kind-title {
+        font-size: 2rem;
+    }
+
+    .body {
+        border: none;
+    }
+
+    .content-text {
+        margin-top: 20px;
+        border-radius: 20px;
+        border: 1px solid var(--text-color);
+    }
+}

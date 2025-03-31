@@ -1,0 +1,98 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.dashboard {
+    margin-top: 24px;
+    width: 80%;
+    background-color: transparent;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-heading {
+    font-size: 2.8rem;
+    font-weight: 600;
+    padding: 12px 0;
+}
+
+.dashboard-figures {
+    display: flex;
+    justify-content: space-between;
+}
+
+.figures-total {
+    width: 23%;
+    background-color: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.07);
+}
+
+.header-figures {
+    width: 100%;
+    font-size: 2rem;
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.body-figures {
+    padding: 6px 0;
+    font-size: 2.4rem;
+    color: var(--black);
+}
+
+.footer-figures {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    color: #777;
+    font-size: 1.4rem;
+    svg {
+        margin-right: 6px;
+    }
+}
+
+.dashboard-activity {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.07);
+    margin-top: 24px;
+}
+.chart-heading {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.chart-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 300px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+
+.chart-bar {
+    width: 30px;
+    border-radius: 6px 6px 0 0;
+    background-color: var(--primary);
+    cursor: pointer;
+}
+
+.chart-month {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 1.2rem;
+    font-weight: 500;
+}

@@ -1,0 +1,182 @@
+.wrapper {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: 70px auto 0;
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 6px 0 rgba(51, 62, 73, 0.3);
+    border-radius: 6px;
+}
+
+.heading {
+    font-size: 3.6rem;
+    font-weight: 700;
+    margin: 24px 0 24px 12px;
+}
+
+.category {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.item {
+    flex: 1;
+    margin: 0 20px;
+    padding: 12px 0 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    border-bottom: 4px solid transparent;
+
+    &:first-child {
+        border-color: var(--primary);
+    }
+
+    &:hover {
+        border-color: rgba(29, 191, 175, 0.5);
+        background-color: rgba(0, 0, 0, 0.07);
+    }
+}
+
+.account-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 12px 18px;
+}
+
+.email {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+}
+
+.gender-title,
+.language-title,
+.delete-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.email-heading,
+.gender-heading,
+.language-heading,
+.delete-heading {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.email-content,
+.gender-content,
+.language-content,
+.delete-content {
+    font-size: 1.8rem;
+    color: #a1a1a1;
+    font-weight: 500;
+    padding: 6px 0;
+}
+
+.gender,
+.language,
+.delete {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gender-btn,
+.language-btn {
+    min-width: 50px;
+    width: 100px;
+    border-radius: 20px;
+    padding: 10px 2px;
+    margin-right: 32px;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+.delete-btn {
+    padding: 12px 24px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-right: 32px;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.save {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+
+    .save-btn {
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .wrapper {
+        width: 90%;
+        margin-top: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    .heading {
+        font-size: 3rem;
+        margin: 32px 12px 0;
+    }
+
+    .category {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        justify-content: space-evenly;
+    }
+
+    .item {
+        font-size: 1.8rem;
+    }
+
+    .email-heading,
+    .gender-heading,
+    .language-heading,
+    .delete-heading {
+        font-size: 1.5rem;
+    }
+
+    .email-content,
+    .gender-content,
+    .language-content,
+    .delete-content {
+        font-size: 1.4rem;
+    }
+
+    .gender-btn,
+    .language-btn {
+        width: 150px;
+        font-size: 1.4rem;
+        margin-left: 12px;
+        margin-right: 0;
+    }
+
+    .delete-btn {
+        margin-right: 0;
+        padding: 6px;
+        font-size: 1.4rem;
+    }
+
+    .save {
+        .save-btn {
+            padding: 12px 20px;
+        }
+    }
+}
