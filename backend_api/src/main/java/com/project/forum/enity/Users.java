@@ -64,7 +64,7 @@ public class Users {
     List<PollVote> PollVotes;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Payment> payments;
+    List<Transaction> transactions;
 
     @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Conversations> conversations;

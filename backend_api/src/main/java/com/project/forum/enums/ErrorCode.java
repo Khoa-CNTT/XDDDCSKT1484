@@ -38,7 +38,7 @@ public enum ErrorCode {
     E_ROLE_NOT_FOUND(40406,"RoleNotFound",HttpStatus.NOT_FOUND),
     E_COMMENT_NOT_FOUND(40407,"CommentNotFound",HttpStatus.NOT_FOUND),
     E_REQUEST_NOT_FOUND(40408,"RequestNotFound",HttpStatus.NOT_FOUND),
-
+    E_ADS_PACKAGE_NOT_FOUND(40409,"AdsPackageNotFound",HttpStatus.NOT_FOUND),
     //500 Server
     E_SERVER_ERROR(50001,"ServerError",HttpStatus.INTERNAL_SERVER_ERROR);
 
