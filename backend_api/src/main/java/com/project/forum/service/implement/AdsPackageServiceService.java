@@ -7,7 +7,7 @@ import com.project.forum.enums.ErrorCode;
 import com.project.forum.exception.WebException;
 import com.project.forum.mapper.AdsPackageMapper;
 import com.project.forum.repository.AdsPackageRepository;
-import com.project.forum.service.IAdsPackage;
+import com.project.forum.service.IAdsPackageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,12 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AdsPackageService implements IAdsPackage {
+public class AdsPackageServiceService implements IAdsPackageService {
 
     final AdsPackageRepository adsPackageRepository;
 

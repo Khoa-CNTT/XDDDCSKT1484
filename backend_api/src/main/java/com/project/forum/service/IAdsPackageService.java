@@ -4,7 +4,7 @@ import com.project.forum.dto.requests.ads.AdsPackageRequest;
 import com.project.forum.dto.responses.ads.AdsPackageResponse;
 import org.springframework.data.domain.Page;
 
-public interface IAdsPackage {
+public interface IAdsPackageService {
 
     AdsPackageResponse create(AdsPackageRequest adsPackageRequest);
 

@@ -1,4 +1,4 @@
 package com.project.forum.service;
 
-public interface ITransaction {
+public interface IAdsService {
 }

@@ -3,7 +3,7 @@ package com.project.forum.controller;
 import com.project.forum.dto.requests.ads.AdsPackageRequest;
 import com.project.forum.dto.responses.ads.AdsPackageResponse;
 import com.project.forum.exception.ApiResponse;
-import com.project.forum.service.IAdsPackage;
+import com.project.forum.service.IAdsPackageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "14. Ads Package")
 public class AdsPackageController {
 
-    IAdsPackage adsPackage;
+    IAdsPackageService adsPackage;
 
     @GetMapping
     ResponseEntity<ApiResponse<Page<AdsPackageResponse>>> findAll(@RequestParam(defaultValue = "0") Integer page,

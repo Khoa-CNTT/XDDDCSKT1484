@@ -1,30 +1,24 @@
-package com.project.forum.enity;
+package com.project.forum.dto.responses.transaction;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.project.forum.enity.Users;
 import com.project.forum.enums.StatusPayment;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@ToString
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "transaction")
-@EntityListeners(AuditingEntityListener.class)
-public class Transaction {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class TransactionResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     BigDecimal amount;
@@ -33,8 +27,6 @@ public class Transaction {
 
     String message;
 
-    @CreatedDate
-    @Column(updatable = false)
     LocalDateTime created_at;
 
     String status;
@@ -47,8 +39,7 @@ public class Transaction {
 
     String payable_type;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    Users users;
+    String userId;
 
+    String name;
 }
