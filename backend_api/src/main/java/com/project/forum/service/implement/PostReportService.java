@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PostReport implements IPostReport {
+public class PostReportService implements IPostReport {
 
     PostsRepository postsRepository;
 

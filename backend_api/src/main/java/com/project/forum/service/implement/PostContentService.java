@@ -90,6 +90,7 @@ public class PostContentService implements IPostContentService {
                     .reason(message)
                     .type_reports(TypePost.CONTENT.getPost())
                     .posts(posts)
+                    .createdAt(LocalDateTime.now())
                     .build();
             postReportsRepository.save(postReports);
             Notices notices = Notices.builder()
@@ -100,7 +101,6 @@ public class PostContentService implements IPostContentService {
                     .status(false)
                     .build();
             noticesRepository.save(notices);
-
             noticeService.sendNotification(user, TypeNotice.POST.toString(), message, posts.getId(), null);
         } else {
             posts.setPostShow(true);
