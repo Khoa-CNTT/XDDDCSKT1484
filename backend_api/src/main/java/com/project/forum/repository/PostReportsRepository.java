@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface PostReportsRepository extends JpaRepository<PostReports, String> {
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostRepostResponse(" +
@@ -17,5 +19,5 @@ public interface PostReportsRepository extends JpaRepository<PostReports, String
             "WHERE (:postId IS NULL OR :postId = '' OR p.id = :postId)")
     Page<PostRepostResponse> getPostRepost(@Param("postId") String postId, Pageable pageable);
 
-
+    Optional<PostReports> findPostReportsByPosts_Id(String postId);
 }

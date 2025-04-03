@@ -115,6 +115,8 @@ public class PostContentService implements IPostContentService {
     @Override
     public PostResponse update(String id, UpdatePostContentDto updatePostContentDto) throws IOException {
         PostContent postContent = postContentRepository.findPostContentsByPosts_Id(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+        postContent.setContent(updatePostContentDto.getContent());
+        postContent.setTitle(updatePostContentDto.getTitle());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         String promotion = promotionService.generatePromotionPostContentMessage(postContent.getPosts().getLanguage().getName(),
@@ -123,13 +125,21 @@ public class PostContentService implements IPostContentService {
         JSONObject jsonObject = new JSONObject(aiResponse);
         boolean result = jsonObject.getBoolean("result");
         if (!result) {
+
             String message = jsonObject.getString("message");
             postContent.getPosts().setPostShow(false);
-            PostReports postReports = PostReports.builder()
-                    .reason(message)
-                    .posts(postContent.getPosts())
-                    .build();
-            postReportsRepository.save(postReports);
+            if (!postReportsRepository.findPostReportsByPosts_Id(postContent.getPosts().getId()).isEmpty()){
+                PostReports postReports = postReportsRepository.findPostReportsByPosts_Id(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+                postReports.setReason(message);
+                postReportsRepository.save(postReports);
+            } else {
+                PostReports postReports = PostReports.builder()
+                        .reason(message)
+                        .posts(postContent.getPosts())
+                        .build();
+                postReportsRepository.save(postReports);
+            }
+
             Notices notices = Notices.builder()
                     .users(users)
                     .post_id(postContent.getPosts().getId())
@@ -143,6 +153,7 @@ public class PostContentService implements IPostContentService {
             postContent.getPosts().setPostShow(true);
         }
         postsRepository.save(postContent.getPosts());
+        postContentRepository.save(postContent);
         PostResponse postResponse = postMapper.toPostsResponse(postContent.getPosts());
         postResponse.setUser_post(true);
         return postResponse;

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/reports")
-@Tag(name = "14. Report")
+@Tag(name = "18. Report")
 public class PostRepostController {
 
     IPostReport postReport;

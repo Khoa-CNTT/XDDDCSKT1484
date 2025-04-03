@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/ads-package")
-@Tag(name = "14. Ads Package")
+@Tag(name = "16. Ads Package")
 public class AdsPackageController {
 
     IAdsPackageService adsPackage;

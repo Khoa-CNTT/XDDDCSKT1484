@@ -42,7 +42,7 @@ public class PostContentController {
 
     @SecurityRequirement(name = "BearerAuth")
     @PatchMapping("/{postId}")
-    ResponseEntity<ApiResponse<PostResponse>> update(@PathVariable String postId, @RequestBody UpdatePostContentDto updatePostContentDto) throws IOException {
+    ResponseEntity<ApiResponse<PostResponse>> update(@PathVariable("postId") String postId, @RequestBody UpdatePostContentDto updatePostContentDto) throws IOException {
      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<PostResponse>builder()
                      .data(postContentService.update(postId,updatePostContentDto))
              .build())   ;
