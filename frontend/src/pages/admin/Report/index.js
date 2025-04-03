@@ -75,17 +75,19 @@ function Report() {
                             {listReport.length > 0 ?
                                 (
                                     listReport.map((report, index) => (
-                                        <tr key={report.id}>
-                                            <th>{index + 1}</th>
-                                            <td>{report.typePost}</td>
-                                            <td>{report.reason}</td>
-                                            <td>{format(new Date(report.createdAt), 'dd/MM/yyyy HH:mm')}</td>
-                                            <td>{report.status}</td>
-                                            <td>
-                                                <EditIcon />
-                                                <TrashIcon />
-                                            </td>
-                                        </tr>
+                                        !report.status && (
+                                            <tr key={report.id}>
+                                                <th>{index + 1}</th>
+                                                <td>{report.typePost}</td>
+                                                <td>{report.reason}</td>
+                                                <td>{format(new Date(report.createdAt), 'dd/MM/yyyy HH:mm')}</td>
+                                                <td>{report.status}</td>
+                                                <td>
+                                                    <EditIcon />
+                                                    <TrashIcon />
+                                                </td>
+                                            </tr>
+                                        )
                                     ))
                                 )
                                 :

@@ -1,21 +1,58 @@
 import classNames from "classnames/bind";
 import styles from './Setting.module.scss'
 import Button from "~/components/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { updateInfoUserServices } from "~/apiServices";
 
 const cx = classNames.bind(styles)
 
-function Setting() {
+const languageList = {
+    English: 'en',
+    China: 'cn',
+    Japan: "jp",
+}
 
+function Setting() {
     const [currentUser, setCurrentUser] = useState({});
-    const { t } = useTranslation();
+    const inputRef = useRef();
+    const { t, i18n } = useTranslation();
     useEffect(() => {
         const userCurrent = JSON.parse(localStorage.getItem('currentUser'));
         if (userCurrent) {
             setCurrentUser(userCurrent);
         }
     }, []);
+
+    const handleFullname = () => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.style.borderColor = '#999';
+        }
+    };
+
+    const handleSave = async () => {
+        const data = {
+            name: currentUser.name,
+            gender: currentUser.gender,
+            language: currentUser.language,
+        }
+
+        const token = localStorage.getItem('authToken');
+
+        const res = await updateInfoUserServices(data, token);
+
+        if (res?.data) {
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            if (i18n.language !== languageList[data.language]) {
+                i18n.changeLanguage(languageList[data.language])
+            }
+        }
+        if (inputRef.current) {
+            inputRef.current.blur();
+            inputRef.current.style.borderColor = 'transparent';
+        }
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -31,6 +68,21 @@ function Setting() {
 
             <div className={cx('account')}>
                 <span className={cx('account-heading')}>{t('accountInfo')}</span>
+            </div>
+
+            <div className={cx('fullname')}>
+                <span className={cx('fullname-heading')}>
+                    Fullname
+                </span>
+                <div className={cx('fullname-body')}>
+                    <input
+                        ref={inputRef}
+                        value={currentUser.name || ''}
+                        onChange={(e) => setCurrentUser(prev => ({ ...prev, name: e.target.value.trim() }))}
+                        className={cx('fullname-input')}
+                    />
+                    <Button className={cx('btn-change')} normal onClick={handleFullname}>Change</Button>
+                </div>
             </div>
 
             <div className={cx('email')}>
@@ -97,7 +149,7 @@ function Setting() {
             </div>
 
             <div className={cx('save')}>
-                <Button className={cx('save-btn')} round normal>{t('saveBtn')}</Button>
+                <Button className={cx('save-btn')} round normal onClick={handleSave}>{t('saveBtn')}</Button>
             </div>
         </div >
     );
