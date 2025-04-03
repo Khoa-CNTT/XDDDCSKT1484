@@ -1,11 +1,11 @@
 import classNames from 'classnames/bind';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState, useCallback, useContext } from 'react';
 
 import styles from './Upload.module.scss';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import { upImagePostServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
+import { editPostServices, getPostContentServices, upImagePostServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
 import { useTranslation } from 'react-i18next';
 import { BoldIcon, ClearSearchIcon, ContentIcon, ImageIcon, ItalicIcon, PlusIcon, PollIcon, TrashIcon, UnderlineIcon } from '~/components/Icons';
 import { UserContext } from '~/context/UserContext';
@@ -20,6 +20,10 @@ function Upload() {
     const [textFormat, setTextFormat] = useState({ bold: false, italic: false, underline: false });
     const [languagePost, setLanguagePost] = useState('');
     const { user } = useContext(UserContext);
+    const location = useLocation();
+
+    const params = new URLSearchParams(location.search);
+    const idPost = params.get('id');
 
     const [contentForm, setContentForm] = useState({
         title: '',
@@ -37,18 +41,53 @@ function Upload() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
+    const fetchPostEdit = async (id, token) => {
+        const res = await getPostContentServices(id, token);
+        if (res?.data) {
+            setContentForm({
+                title: res.data.title,
+                content: res.data.content,
+            })
+        }
+    }
+
+    useEffect(() => {
+        if (idPost) {
+            fetchPostEdit(idPost, localStorage.getItem('authToken'));
+        }
+    }, [idPost]);
+
     useEffect(() => {
         document.title = contentForm?.title || 'ForumLanguages';
     }, [contentForm]);
 
     useEffect(() => {
-        if (typePost === 'Content') {
-            setIsButtonDisabled(!(contentForm.title && contentForm.content && languagePost));
+        if (!idPost) {
+            if (typePost === 'Content') {
+                setIsButtonDisabled(!(contentForm.title && contentForm.content && languagePost));
+            } else {
+                const hasValidOption = Array.isArray(pollForm.createOptionDtoList)
+                    && pollForm.createOptionDtoList.length > 0
+                    && pollForm.createOptionDtoList.some(option => option.option_text.trim() !== '');
+                setIsButtonDisabled(!(pollForm.question && languagePost && pollForm.typePoll && hasValidOption));
+            }
         } else {
-            const hasValidOption = pollForm.createOptionDtoList.some(option => option.option_text.trim() !== '');
-            setIsButtonDisabled(!(pollForm.question && languagePost && pollForm.typePoll && hasValidOption));
+            setIsButtonDisabled(!(contentForm.title && contentForm.content));
         }
-    }, [contentForm, pollForm, languagePost, typePost]);
+    }, [contentForm, pollForm, languagePost, typePost, idPost]);
+
+
+    const resetForm = () => {
+        setContentForm({ title: '', content: '', img_url: '' });
+        setPollForm({
+            question: '',
+            typePoll: '',
+            createOptionDtoList: [{ option_text: '' }, { option_text: '' }],
+        });
+        setLanguagePost('');
+        setIsSelected(0);
+        setTypePost('Content');
+    };
 
     const handleInputChange = (field, formType = 'content') => (e) => {
         const value = e.target.value;
@@ -111,77 +150,93 @@ function Upload() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('authToken')
-        if (typePost === 'Content') {
-            let imgLink = '';
-            if (fileInputRef.current.files[0]) {
-                imgLink = await upImagePostServices(fileInputRef.current.files[0]);
-            }
-            const data = { ...contentForm, img_url: imgLink?.data?.url, language: languagePost };
-            const res = await uploadPostContentServices(data, token);
-            if (res?.data) {
-                if (res.data?.show) {
+        if (!idPost) {
+            if (typePost === 'Content') {
+                let imgLink = '';
+                if (fileInputRef.current.files[0]) {
+                    imgLink = await upImagePostServices(fileInputRef.current.files[0]);
+                }
+                const data = { ...contentForm, img_url: imgLink?.data?.url, language: languagePost };
+                const res = await uploadPostContentServices(data, token);
+                if (res?.data) {
+                    if (res.data?.show) {
+                        alert(t('uploadSuccess'))
+                        resetForm();
+                        navigate(`/post/${res.data.id}`);
+                    } else {
+                        navigate(`/user/${user.id}`);
+                    }
+                } else {
+                    console.log(res);
+                }
+
+            } else {
+                const data = { ...pollForm, language: languagePost };
+                console.log(data)
+                const res = await uploadPostPollServices(data, token);
+                if (res?.data) {
                     alert(t('uploadSuccess'))
+                    resetForm();
                     navigate(`/post/${res.data.id}`);
                 } else {
-                    navigate(`/user/${user.id}`);
+                    console.log(res);
                 }
-            } else {
-                console.log(res);
             }
-
         } else {
-            const data = { ...pollForm, language: languagePost };
-            console.log(data)
-            const res = await uploadPostPollServices(data, token);
+            const data = { content: contentForm.content, title: contentForm.title };
+            const res = await editPostServices(idPost, data, token);
+            console.log(res)
             if (res?.data) {
-                alert(t('uploadSuccess'))
+                alert('Edit Post Success');
                 navigate(`/post/${res.data.id}`);
-            } else {
-                console.log(res);
             }
         }
-
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <h3 className={cx('header-heading')}>{t('createPost')}</h3>
+                <h3 className={cx('header-heading')}>{idPost ? 'Edit Post' : t('createPost')}</h3>
             </div>
-            <div className={cx('type')}>
-                <Button
-                    primary={isSelected === 0}
-                    leftIcon={<ContentIcon />}
-                    normal
-                    onClick={() => {
-                        setIsSelected(0);
-                        setTypePost('Content')
-                    }
-                    }>Content</Button>
-                <Button
-                    primary={isSelected === 1}
-                    leftIcon={<PollIcon />}
-                    normal
-                    onClick={() => {
-                        setIsSelected(1);
-                        setTypePost('Poll')
-                    }
-                    }>Poll</Button>
-            </div>
-            <form className={cx('form')} onSubmit={handleSubmit}>
-                <div className={cx('kind')}>
-                    <span className={cx('kind-title')}>{t('lang')}:</span>
-                    <select
-                        value={languagePost}
-                        onChange={(e) => setLanguagePost(e.target.value)}
-                        className={cx('kind-select')}
-                    >
-                        <option value='' disabled>{t('language')}</option>
-                        <option value='English'>{t('langEnglish')}</option>
-                        <option value='China'>{t('langChinese')}</option>
-                        <option value='Japan'>{t('langJapanese')}</option>
-                    </select>
+            {
+                !idPost &&
+                <div className={cx('type')}>
+                    <Button
+                        primary={isSelected === 0}
+                        leftIcon={<ContentIcon />}
+                        normal
+                        onClick={() => {
+                            setIsSelected(0);
+                            setTypePost('Content')
+                        }
+                        }>Content</Button>
+                    <Button
+                        primary={isSelected === 1}
+                        leftIcon={<PollIcon />}
+                        normal
+                        onClick={() => {
+                            setIsSelected(1);
+                            setTypePost('Poll')
+                        }
+                        }>Poll</Button>
                 </div>
+            }
+            <form className={cx('form')} onSubmit={handleSubmit}>
+                {!idPost &&
+                    <div className={cx('kind')}>
+                        <span className={cx('kind-title')}>{t('lang')}:</span>
+                        <select
+                            value={languagePost}
+                            onChange={(e) => setLanguagePost(e.target.value)}
+                            className={cx('kind-select')}
+                        >
+                            <option value='' disabled>{t('language')}</option>
+                            <option value='English'>{t('langEnglish')}</option>
+                            <option value='China'>{t('langChinese')}</option>
+                            <option value='Japan'>{t('langJapanese')}</option>
+                        </select>
+                    </div>
+                }
                 <div className={cx('body')}>
                     {typePost === 'Content' ?
                         (
@@ -219,7 +274,7 @@ function Upload() {
                                 )}
                                 <div className={cx('upload')}>
                                     <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
-                                        {t('postBtn')}
+                                        {idPost ? 'Save' : t('postBtn')}
                                     </Button>
                                 </div>
                             </>

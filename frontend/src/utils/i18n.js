@@ -15,6 +15,7 @@ i18n
       cn: { translation: cn },
       jp: { translation: jp },
     },
+    lng: 'en',
     fallbackLng: 'en',
     debug: false,
     interpolation: {

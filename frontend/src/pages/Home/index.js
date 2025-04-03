@@ -79,9 +79,7 @@ function Home() {
     return (
         <div className={cx('wrapper')}>
             {posts.map((post) => (
-                post.show && (
-                    <Post key={post.id} data={post} />
-                )
+                <Post key={post.id} data={post} show={post.show} />
             ))}
         </div>
     );
