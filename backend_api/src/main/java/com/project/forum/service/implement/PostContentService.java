@@ -135,6 +135,7 @@ public class PostContentService implements IPostContentService {
             } else {
                 PostReports postReports = PostReports.builder()
                         .reason(message)
+                        .type_reports(TypePost.CONTENT.getPost())
                         .posts(postContent.getPosts())
                         .build();
                 postReportsRepository.save(postReports);
