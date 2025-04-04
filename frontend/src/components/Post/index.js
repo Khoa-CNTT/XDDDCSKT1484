@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Fragment, useCallback, useEffect, useState } from "react";
 
 import styles from './Post.module.scss'
@@ -22,10 +22,11 @@ function Post({ data, profile = false, show = true }) {
     const [likesCount, setLikesCount] = useState(data.like || 0);
     const [totalVote, setTotalVote] = useState(0);
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
-    const handleToggleModal = () => setShowModal((prev) => !prev);
 
     const token = localStorage.getItem('authToken')
+
 
     const getMenuItems = () => {
         const commonItems = [
@@ -34,15 +35,28 @@ function Post({ data, profile = false, show = true }) {
         ];
 
         if (data.user_post) {
-            return [
-                { icon: <EditIcon />, title: t('edit') },
-                ...commonItems,
-                { icon: <TrashIcon />, title: t('deleted'), onClick: handleToggleModal },
-            ];
+            if (data.type_post === 'CONTENT') {
+                return [
+                    { icon: <EditIcon />, title: t('edit'), onClick: handleDirectEdit },
+                    ...commonItems,
+                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleToggleModal },
+                ];
+            } else {
+                return [
+                    ...commonItems,
+                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleToggleModal },
+                ];
+            }
         }
         return [...commonItems, { icon: <ReportIcon />, title: t('report') },
         ];
     };
+
+    const handleToggleModal = () => setShowModal((prev) => !prev);
+
+    const handleDirectEdit = () => {
+        navigate(`/upload?id=${data.id}`)
+    }
 
     const handleDeletePost = async () => {
         const res = await deletedPostServices(data.id, token)

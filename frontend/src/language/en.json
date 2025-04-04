@@ -1,7 +1,4 @@
     {
-        "en": "EngLish",
-        "jp": "Japanese",
-        "cn": "Chinese",
         "content": "Content",
         "searchPlaceholder": "Search posts with content...",
         "create": "Create",
@@ -237,3 +234,4 @@
         "notFoundPost": "Not Found Post",
         "endPage": "Scrolled to the bottom of the page"
     }
+    
