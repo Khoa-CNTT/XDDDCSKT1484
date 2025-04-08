@@ -19,7 +19,9 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, " +
             "(CASE WHEN u.id = :userId THEN true ELSE false END) , FALSE , " +
-            "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow) " +
+            "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
+            "(CASE WHEN EXISTS (SELECT ad FROM advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
+            ") " +
             "FROM posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
@@ -42,7 +44,9 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name,  " +
-            " (CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow) " +
+            " (CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow, " +
+            "(CASE WHEN EXISTS (SELECT ad FROM advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
+            ") " +
             "FROM posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
@@ -58,7 +62,9 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse( " +
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name,  " +
-            "(CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow) " +
+            "(CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
+            "(CASE WHEN EXISTS (SELECT ad FROM advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
+            ") " +
             "FROM posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +

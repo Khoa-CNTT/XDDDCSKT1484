@@ -2,20 +2,26 @@ package com.project.forum.service.implement;
 
 import com.project.forum.configuration.VNPayConfig;
 import com.project.forum.dto.responses.vnpay.VnPayResponse;
+import com.project.forum.enity.*;
+import com.project.forum.enums.ErrorCode;
+import com.project.forum.enums.StatusPayment;
+import com.project.forum.enums.TypePost;
+import com.project.forum.exception.WebException;
 import com.project.forum.mapper.TransactionMapper;
-import com.project.forum.repository.PostsRepository;
-import com.project.forum.repository.TransactionRepository;
+import com.project.forum.repository.*;
 import com.project.forum.service.IVNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 @Service
 @AllArgsConstructor
@@ -26,6 +32,10 @@ public class VNPayService  implements IVNPayService {
     TransactionRepository transactionRepository;
     TransactionMapper transactionMapper;
     PostsRepository postsRepository;
+    AdsPackageRepository adsPackageRepository;
+    PostContentRepository postContentRepository;
+    AdvertisementRepository advertisementRepository;
+    UsersRepository usersRepository;
 
     @Override
     public VnPayResponse createOrder(HttpServletRequest request, String location, String type, String idHandler, String ads_package) {
@@ -38,8 +48,19 @@ public class VNPayService  implements IVNPayService {
         String orderType = "order-type";
 
         int amount = 0;
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        AdsPackage adsPackage = adsPackageRepository.findById(ads_package).orElseThrow(() -> new WebException(ErrorCode.E_ADS_PACKAGE_NOT_FOUND));
+        Posts posts = postsRepository.findById(idHandler).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+        Advertisement advertisement = Advertisement.builder()
+                .views(0)
+                .adsPackage(adsPackage)
+                .status(false)
+                .created_at(LocalDateTime.now())
+                .posts(posts)
+                .build();
 
-        String orderInfor = "";
+
 
 
         String vnp_CurrCode;
@@ -51,7 +72,19 @@ public class VNPayService  implements IVNPayService {
             vnp_CurrCode = "USD";
             vnp_Locale = "en";
         }
+        Transaction transaction = Transaction.builder()
+                .amount(adsPackage.getPrice())
+                .currency(vnp_CurrCode)
+                .message(adsPackage.getDescription())
+                .created_at(LocalDateTime.now())
+                .status(StatusPayment.WAITING.getStatus())
+                .transaction_id(UUID.randomUUID().toString())
+                .payable_id(advertisement.getId())
+                .payable_type("ADVERTISEMENT")
+                .users(users)
+                .build();
 
+        String orderInfor = transaction.getId();
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
@@ -108,6 +141,8 @@ public class VNPayService  implements IVNPayService {
         String vnp_SecureHash = VNPayConfig.hmacSHA512(salt, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+        transactionRepository.save(transaction);
+        advertisementRepository.save(advertisement);
         return VnPayResponse.builder()
                 .success(true)
                 .url(paymentUrl)
@@ -134,7 +169,7 @@ public class VNPayService  implements IVNPayService {
         String vnp_TxnRef = request.getParameter("vnp_TxnRef");
         String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         String vnp_OrderInfo = request.getParameter("vnp_OrderInfo");
-        String idHandler = vnp_OrderInfo.substring(2);
+
         if (fields.containsKey("vnp_SecureHashType")) {
             fields.remove("vnp_SecureHashType");
         }
@@ -142,22 +177,54 @@ public class VNPayService  implements IVNPayService {
             fields.remove("vnp_SecureHash");
         }
         String signValue = VNPayConfig.hashAllFields(fields, vnPayConfig.getVnp_HashSecret());
-        if (signValue.equals(vnp_SecureHash)) {
-            if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
+        String transactionStatus = request.getParameter("vnp_TransactionStatus");
 
-            } else {
-                return VnPayResponse.builder()
-                        .success(false)
-                        .build();
+        if (signValue.equals(vnp_SecureHash)) {
+            Transaction transaction = transactionRepository.findById(vnp_OrderInfo)
+                    .orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
+
+            switch (transactionStatus) {
+                case "00":
+                    transaction.setStatus(StatusPayment.COMPLETED.getStatus());
+                    Advertisement advertisement = advertisementRepository
+                            .findById(transaction.getPayable_id()).orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
+                    advertisement.setStatus(true);
+                    advertisementRepository.save(advertisement);
+                    break;
+                case "09":
+                    transaction.setStatus(StatusPayment.CANCELLED.getStatus());
+                    break;
+                case "01":
+                case "02":
+                case "04":
+                case "24":
+                    transaction.setStatus(StatusPayment.FAILED.getStatus());
+                    break;
+                case "05":
+                case "06":
+                case "10":
+                    transaction.setStatus(StatusPayment.PENDING.getStatus());
+                    break;
+                case "07":
+                    transaction.setStatus(StatusPayment.ON_HOLD.getStatus());
+                    break;
+                default:
+                    transaction.setStatus(StatusPayment.UNKNOWN.getStatus());
+                    break;
             }
+
+            transactionRepository.save(transaction);
+            return VnPayResponse.builder()
+                    .success(true)
+                    .result("Success")
+                    .build();
         } else {
             return VnPayResponse.builder()
                     .success(false)
+                    .result("Some Thing Wrong")
                     .build();
         }
-        return VnPayResponse.builder()
-                .success(false)
-                .build();
+
     }
 
 }

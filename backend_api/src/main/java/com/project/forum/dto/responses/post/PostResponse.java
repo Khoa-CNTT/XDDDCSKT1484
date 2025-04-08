@@ -41,5 +41,7 @@ public class PostResponse {
 
     boolean isShow;
 
+    boolean isAds;
+
 
 }

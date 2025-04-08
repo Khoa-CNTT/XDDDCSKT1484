@@ -12,7 +12,9 @@ public enum StatusPayment {
     CANCELLED("cancelled"),
     COMPLETED("completed"),
     FAILED("failed"),
-    WAITING("waiting");
+    WAITING("waiting"),
+    ON_HOLD("on_hold"),
+    UNKNOWN("unknown"),
     ;
     private String status;
 
