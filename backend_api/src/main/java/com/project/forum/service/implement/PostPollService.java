@@ -8,17 +8,23 @@ import com.project.forum.dto.responses.post.PostPollResponse;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.enity.*;
 import com.project.forum.enums.ErrorCode;
+import com.project.forum.enums.TypeNotice;
 import com.project.forum.enums.TypePost;
 import com.project.forum.exception.WebException;
 import com.project.forum.mapper.PostMapper;
 import com.project.forum.repository.*;
+import com.project.forum.service.IAIService;
+import com.project.forum.service.INoticeService;
 import com.project.forum.service.IPostPollService;
+import com.project.forum.service.IPromotionService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.cloudinary.json.JSONObject;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +46,15 @@ public class PostPollService implements IPostPollService {
     LanguageRepository languageRepository;
 
     PostMapper postMapper;
+
+    IPromotionService promotionService;
+
+    IAIService iaiService;
+
+    PostReportsRepository postReportsRepository;
+
+
+    INoticeService noticeService;
 
     @Override
     public PostPollResponse findPostPollByPostId(String postId) {
@@ -65,7 +80,7 @@ public class PostPollService implements IPostPollService {
     }
 
     @Override
-    public PostResponse create(CreatePostPollDto createPostPollDto) {
+    public PostResponse create(CreatePostPollDto createPostPollDto) throws IOException {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
@@ -96,6 +111,30 @@ public class PostPollService implements IPostPollService {
         }
 
         postPoll.setPollOptions(pollOptions);
+        String pollOptionString = "";
+        for (int i = 0; i < postPoll.getPollOptions().size(); i++){
+            pollOptionString = pollOptionString + postPoll.getPollOptions().get(i).getOption_text() + ",";
+        }
+        String promotion = promotionService.generatePromotionPostContentMessage(posts.getLanguage().getName(),
+                postPoll.getQuestion()+ " " + pollOptionString);
+        String aiResponse = iaiService.getAnswer(promotion);
+        JSONObject jsonObject = new JSONObject(aiResponse);
+        boolean result = jsonObject.getBoolean("result");
+        if (!result) {
+            String message = jsonObject.getString("message");
+            posts.setPostShow(false);
+            PostReports postReports = PostReports.builder()
+                    .reason(message)
+                    .type_reports(TypePost.CONTENT.getPost())
+                    .posts(posts)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            postReportsRepository.save(postReports);
+            noticeService.sendNotification(users, TypeNotice.POST.toString(), message, posts.getId(), null);
+        } else {
+            posts.setPostShow(true);
+        }
+        postsRepository.save(posts);
         postPollRepository.save(postPoll);
 
         PostResponse response = postMapper.toPostsResponse(posts);

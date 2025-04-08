@@ -49,8 +49,6 @@ public class PostContentService implements IPostContentService {
 
     INoticeService noticeService;
 
-    NoticesRepository noticesRepository;
-
     PostContentHistoryRepository postContentHistoryRepository;
 
     @Override
@@ -93,14 +91,6 @@ public class PostContentService implements IPostContentService {
                     .createdAt(LocalDateTime.now())
                     .build();
             postReportsRepository.save(postReports);
-            Notices notices = Notices.builder()
-                    .users(user)
-                    .post_id(posts.getId())
-                    .message(message)
-                    .type(TypeNotice.POST.toString())
-                    .status(false)
-                    .build();
-            noticesRepository.save(notices);
             noticeService.sendNotification(user, TypeNotice.POST.toString(), message, posts.getId(), null);
         } else {
             posts.setPostShow(true);
@@ -114,6 +104,7 @@ public class PostContentService implements IPostContentService {
 
     @Override
     public PostResponse update(String id, UpdatePostContentDto updatePostContentDto) throws IOException {
+        Posts posts = postsRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
         PostContent postContent = postContentRepository.findPostContentsByPosts_Id(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
         postContent.setContent(updatePostContentDto.getContent());
         postContent.setTitle(updatePostContentDto.getTitle());
@@ -141,18 +132,17 @@ public class PostContentService implements IPostContentService {
                 postReportsRepository.save(postReports);
             }
 
-            Notices notices = Notices.builder()
-                    .users(users)
-                    .post_id(postContent.getPosts().getId())
-                    .message(message)
-                    .type(TypeNotice.POST.toString())
-                    .status(false)
-                    .build();
-            noticesRepository.save(notices);
             noticeService.sendNotification(users, TypeNotice.POST.toString(), message, postContent.getPosts().getId(), null);
         } else {
             postContent.getPosts().setPostShow(true);
         }
+        PostContentHistory postContentHistory =  PostContentHistory.builder()
+                .content(updatePostContentDto.getContent())
+                .title(postContent.getTitle())
+                .created_at(LocalDateTime.now())
+                .posts(posts)
+                .build();
+        postContentHistoryRepository.save(postContentHistory);
         postsRepository.save(postContent.getPosts());
         postContentRepository.save(postContent);
         PostResponse postResponse = postMapper.toPostsResponse(postContent.getPosts());

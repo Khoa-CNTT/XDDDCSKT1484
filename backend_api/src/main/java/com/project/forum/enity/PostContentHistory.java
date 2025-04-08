@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "postContentHistory)")
+@Entity(name = "postContentHistory")
 @EntityListeners(AuditingEntityListener.class)
 public class PostContentHistory {
 

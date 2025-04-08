@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/post-poll")
@@ -29,7 +31,7 @@ public class PostPollController {
 
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping()
-    ResponseEntity<ApiResponse<PostResponse>> create(@RequestBody CreatePostPollDto createPostPollDto) {
+    ResponseEntity<ApiResponse<PostResponse>> create(@RequestBody CreatePostPollDto createPostPollDto) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PostResponse>builder()
                 .data(postPollService.create(createPostPollDto))
                 .build());
