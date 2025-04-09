@@ -4,6 +4,7 @@ import com.project.forum.dto.responses.vnpay.VnPayResponse;
 import com.project.forum.enums.TypePost;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IVNPayService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -17,10 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping("/vn-pay")
 @Tag(name = "20. VNPAY")
-public class VNPay {
+public class VNPayController {
 
     IVNPayService iVNPayService;
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/submitOrder")
     public ResponseEntity<ApiResponse<VnPayResponse>> create(HttpServletRequest request,
                                                              @RequestParam String location,
@@ -32,6 +34,7 @@ public class VNPay {
                 .build());
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/orderReturn")
     public ResponseEntity<ApiResponse<VnPayResponse>> orderReturn(HttpServletRequest request) {
         return ResponseEntity.ok(ApiResponse.<VnPayResponse>builder()

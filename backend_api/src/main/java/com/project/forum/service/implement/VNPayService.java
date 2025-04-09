@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,7 @@ public class VNPayService  implements IVNPayService {
         String vnp_TmnCode = vnPayConfig.getVnp_TmnCode();
         String orderType = "order-type";
 
-        int amount = 0;
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         AdsPackage adsPackage = adsPackageRepository.findById(ads_package).orElseThrow(() -> new WebException(ErrorCode.E_ADS_PACKAGE_NOT_FOUND));
@@ -59,10 +60,7 @@ public class VNPayService  implements IVNPayService {
                 .created_at(LocalDateTime.now())
                 .posts(posts)
                 .build();
-
-
-
-
+        BigDecimal amount = adsPackage.getPrice();
         String vnp_CurrCode;
         String vnp_Locale;
         if (location.equals("vn")) {
@@ -84,13 +82,14 @@ public class VNPayService  implements IVNPayService {
                 .users(users)
                 .build();
 
+        transactionRepository.save(transaction);
         String orderInfor = transaction.getId();
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
-        vnp_Params.put("vnp_Amount", String.valueOf(amount * 100));
+        vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", vnp_CurrCode);
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", orderInfor);
@@ -98,7 +97,8 @@ public class VNPayService  implements IVNPayService {
         vnp_Params.put("vnp_Locale", vnp_Locale);
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
         baseUrl += vnPayConfig.getVnp_Returnurl();
-        vnp_Params.put("vnp_ReturnUrl", baseUrl);
+        String localUrl = "http://localhost:1407/payment-result";
+        vnp_Params.put("vnp_ReturnUrl", localUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -141,7 +141,7 @@ public class VNPayService  implements IVNPayService {
         String vnp_SecureHash = VNPayConfig.hmacSHA512(salt, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-        transactionRepository.save(transaction);
+
         advertisementRepository.save(advertisement);
         return VnPayResponse.builder()
                 .success(true)
