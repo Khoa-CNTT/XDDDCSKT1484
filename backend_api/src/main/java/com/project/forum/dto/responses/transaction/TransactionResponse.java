@@ -39,6 +39,8 @@ public class TransactionResponse {
 
     String payable_type;
 
+    String url_payment;
+
     String userId;
 
     String name;

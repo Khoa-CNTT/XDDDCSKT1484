@@ -76,8 +76,8 @@ public class PostContentService implements IPostContentService {
                 .posts(posts)
                 .build();
 
-        String promotion = promotionService.generatePromotionPostContentMessage(posts.getLanguage().getName(),
-                postContent.getTitle() + " " + postContent.getContent());
+        String promotion = promotionService.generatePromotionPostMessage(posts.getLanguage().getName(),
+                postContent.getTitle() + " " + postContent.getContent(),"post_content_template.txt");
         String aiResponse = iaiService.getAnswer(promotion);
         JSONObject jsonObject = new JSONObject(aiResponse);
         boolean result = jsonObject.getBoolean("result");
@@ -110,8 +110,8 @@ public class PostContentService implements IPostContentService {
         postContent.setTitle(updatePostContentDto.getTitle());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        String promotion = promotionService.generatePromotionPostContentMessage(postContent.getPosts().getLanguage().getName(),
-                postContent.getTitle() + " " + postContent.getContent());
+        String promotion = promotionService.generatePromotionPostMessage(postContent.getPosts().getLanguage().getName(),
+                postContent.getTitle() + " " + postContent.getContent(),"post_content_template.txt");
         String aiResponse = iaiService.getAnswer(promotion);
         JSONObject jsonObject = new JSONObject(aiResponse);
         boolean result = jsonObject.getBoolean("result");

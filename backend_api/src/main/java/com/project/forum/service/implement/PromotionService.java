@@ -17,13 +17,22 @@ import java.nio.file.Paths;
 public class PromotionService implements IPromotionService {
 
     @Override
-    public String generatePromotionPostContentMessage(String language, String content) throws IOException {
-        ClassPathResource resource = new ClassPathResource("post_content_template.txt");
+    public String generatePromotionPostMessage(String language, String content, String fileName) throws IOException {
+        ClassPathResource resource = new ClassPathResource(fileName);
         String template = new String(Files.readAllBytes(Paths.get(resource.getURI())));
 
         return template.replace("{LANGUAGE}", language)
                 .replace("{CONTENT}", content);
     }
+
+    @Override
+    public String translatePromotionPostMessage(String input,String language, String fileName) throws IOException {
+        ClassPathResource resource = new ClassPathResource(fileName);
+        String template = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+        return template.replace("{INPUT}", input)
+                .replace("{LANGUAGE}", language);
+    }
+
 
 
 }

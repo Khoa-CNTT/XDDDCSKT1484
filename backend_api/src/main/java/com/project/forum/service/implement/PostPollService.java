@@ -115,8 +115,8 @@ public class PostPollService implements IPostPollService {
         for (int i = 0; i < postPoll.getPollOptions().size(); i++){
             pollOptionString = pollOptionString + postPoll.getPollOptions().get(i).getOption_text() + ",";
         }
-        String promotion = promotionService.generatePromotionPostContentMessage(posts.getLanguage().getName(),
-                postPoll.getQuestion()+ " " + pollOptionString);
+        String promotion = promotionService.generatePromotionPostMessage(posts.getLanguage().getName(),
+                postPoll.getQuestion()+ " " + pollOptionString,"post_poll_template.txt");
         String aiResponse = iaiService.getAnswer(promotion);
         JSONObject jsonObject = new JSONObject(aiResponse);
         boolean result = jsonObject.getBoolean("result");

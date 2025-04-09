@@ -60,7 +60,7 @@ public class VNPayService  implements IVNPayService {
                 .created_at(LocalDateTime.now())
                 .posts(posts)
                 .build();
-        BigDecimal amount = adsPackage.getPrice();
+        int amount = adsPackage.getPrice().multiply(BigDecimal.valueOf(100)).intValue();
         String vnp_CurrCode;
         String vnp_Locale;
         if (location.equals("vn")) {
@@ -71,6 +71,7 @@ public class VNPayService  implements IVNPayService {
             vnp_Locale = "en";
         }
         Transaction transaction = Transaction.builder()
+                .id(UUID.randomUUID().toString())
                 .amount(adsPackage.getPrice())
                 .currency(vnp_CurrCode)
                 .message(adsPackage.getDescription())
@@ -82,7 +83,7 @@ public class VNPayService  implements IVNPayService {
                 .users(users)
                 .build();
 
-        transactionRepository.save(transaction);
+
         String orderInfor = transaction.getId();
 
         Map<String, String> vnp_Params = new HashMap<>();
@@ -141,7 +142,8 @@ public class VNPayService  implements IVNPayService {
         String vnp_SecureHash = VNPayConfig.hmacSHA512(salt, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
-
+        transaction.setUrl_payment(paymentUrl);
+        transactionRepository.save(transaction);
         advertisementRepository.save(advertisement);
         return VnPayResponse.builder()
                 .success(true)

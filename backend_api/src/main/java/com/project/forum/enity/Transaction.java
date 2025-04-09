@@ -47,6 +47,9 @@ public class Transaction {
 
     String payable_type;
 
+    @Column(length = 2000)
+    String url_payment;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     Users users;
