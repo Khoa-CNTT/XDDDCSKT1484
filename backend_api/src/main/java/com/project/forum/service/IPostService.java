@@ -16,4 +16,5 @@ public interface IPostService {
 
     Page<PostResponse> findPostByIdUser(String IdUser,Integer page, Integer size);
 
+
 }

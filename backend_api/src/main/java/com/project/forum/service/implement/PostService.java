@@ -1,6 +1,7 @@
 package com.project.forum.service.implement;
 
 import com.project.forum.dto.responses.post.PostResponse;
+import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Comments;
 import com.project.forum.enity.Posts;
 import com.project.forum.enity.Users;
@@ -13,12 +14,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,24 +41,47 @@ public class PostService implements IPostService {
 
     LikesRepository likesRepository;
 
+    AdvertisementRepository advertisementRepository;
+
     @Override
     public Page<PostResponse> findAllPost(Integer page, Integer size, String content, String language) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Pageable pageable = PageRequest.of(page, size);
-        if (username.equals("anonymousUser")) {
-            Page<PostResponse> postPageResponseList = postsRepository.findAllPosts(content, null, language, pageable);
-            return postPageResponseList;
+        Pageable pageable = PageRequest.of(page, size - 1);
+        Page<PostResponse> postPage;
+
+        String userId = null;
+        if (!username.equals("anonymousUser")) {
+            userId = usersRepository.findByUsername(username)
+                    .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND))
+                    .getId();
         }
-        Users users = usersRepository.findByUsername(username)
-                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        Page<PostResponse> postPageResponseList = postsRepository.findAllPosts(content, users.getId(), language, pageable);
-        for (PostResponse post : postPageResponseList) {
-            if (likesRepository.existsByPosts_IdAndUsers_Id(post.getId(), users.getId())) {
-                post.setUser_like(true);
+
+        postPage = postsRepository.findAllPosts(content, userId, language, pageable);
+        List<PostResponse> resultList = new ArrayList<>(postPage.getContent());
+
+        if (userId != null) {
+            for (PostResponse post : resultList) {
+                if (likesRepository.existsByPosts_IdAndUsers_Id(post.getId(), userId)) {
+                    post.setUser_like(true);
+                }
             }
         }
-        return postPageResponseList;
+
+        Page<Advertisement> randomAdsPage = advertisementRepository.findRandomAdvertisement(PageRequest.of(0, 1));
+        if (!randomAdsPage.isEmpty()) {
+            Advertisement randomAd = randomAdsPage.getContent().get(0);
+            Optional<PostResponse> adPostOpt = postsRepository.findPostById(randomAd.getPosts().getId(), userId);
+
+            adPostOpt.ifPresent(adPost -> {
+                adPost.setAds(true);
+                resultList.add(adPost);
+            });
+        }
+
+        long total = postPage.getTotalElements() + (resultList.size() > postPage.getContent().size() ? 1 : 0);
+        return new PageImpl<>(resultList, PageRequest.of(page, size), total);
     }
+
 
     @Override
     public PostResponse findPostById(String id) {

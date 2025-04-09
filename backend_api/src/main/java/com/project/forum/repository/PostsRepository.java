@@ -29,13 +29,16 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.postContent pc  " +
             "LEFT JOIN p.postPoll pp " +
             "LEFT JOIN p.language lg " +
+            "LEFT JOIN p.advertisements ads " +
             "WHERE (:content IS NULL OR :content = '' " +
             "OR pc.content LIKE %:content% " +
             "OR pc.title LIKE %:content% " +
             "OR pp.question LIKE %:content%) " +
             "AND (:language IS NULL OR :language = '' OR lg.name = :language) " +
             "AND p.postShow = true " +
-            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, u.id")
+            "AND NOT EXISTS (SELECT ad FROM advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE)" +
+            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, u.id " +
+            "ORDER BY FUNCTION('RAND')")
     Page<PostResponse> findAllPosts(@Param("content") String content,
                                     @Param("userId") String userId,
                                     @Param("language") String language,

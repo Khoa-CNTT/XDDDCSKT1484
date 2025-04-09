@@ -22,7 +22,7 @@ public class AdsResponse {
 
     int views;
 
-    String status;
+    boolean status;
 
     LocalDateTime created_at;
 

@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface AdvertisementRepository extends JpaRepository<Advertisement, String> {
@@ -24,6 +27,14 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
             "FROM advertisement a " +
             "WHERE a.posts.users.id = :id")
     Page<AdsResponse> findAllAdsByUser(@Param("id") String id, Pageable pageable);
+
+    @Query("SELECT a " +
+            "FROM advertisement a " +
+            "LEFT JOIN a.adsPackage ads " +
+            "WHERE a.status = true " +
+            "AND a.views != ads.max_impressions " +
+            "ORDER BY FUNCTION('RAND')")
+    Page<Advertisement> findRandomAdvertisement(Pageable pageable);
 
 }
 
