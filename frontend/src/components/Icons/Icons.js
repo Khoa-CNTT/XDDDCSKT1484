@@ -777,6 +777,7 @@ export const GrowIcon = ({ width = '2.6rem', height = '2.6rem', onClick, classNa
         ></path>
     </svg>
 );
+
 export const ShrinkIcon = ({ width = '2.6rem', height = '2.6rem', onClick, className }) => (
     <svg
         onClick={onClick}
@@ -792,8 +793,24 @@ export const ShrinkIcon = ({ width = '2.6rem', height = '2.6rem', onClick, class
         ></path>
     </svg>
 
+);
 
-
+export const WalletIcon = ({ width = 32, height = 32 }) => (
+    <svg
+        width={width}
+        height={height}
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M6.33765 10.3708L20.8223 1.96209C21.2181 1.73071 21.7364 1.86543 21.9573 2.25204L23.6812 5.27169" fill="#EDECEC" />
+        <path d="M6.33765 10.3708L20.8223 1.96209C21.2181 1.73071 21.7364 1.86543 21.9573 2.25204L23.6812 5.27169" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
+        <path d="M7.51562 10.4147L27.9144 4.1792C28.5801 3.97418 29.2948 4.31686 29.5218 4.94949L31.4512 10.3122" fill="#EDECEC" />
+        <path d="M7.51562 10.4147L27.9144 4.1792C28.5801 3.97418 29.2948 4.31686 29.5218 4.94949L31.4512 10.3122" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
+        <path d="M30.1199 10.4001H4.62299C2.82721 10.4001 1.37146 11.7901 1.37146 13.5047V30.7439C1.37146 32.4586 2.82721 33.8485 4.62299 33.8485H30.1199C31.9157 33.8485 33.3715 32.4586 33.3715 30.7439V13.5047C33.3715 11.7901 31.9157 10.4001 30.1199 10.4001Z" fill="#F37887" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
+        <path d="M26.2856 18.3695H33.3316V25.4749H26.2856C24.4605 25.4749 22.9789 24.0602 22.9789 22.3176V21.5268C22.9789 19.7841 24.4605 18.3695 26.2856 18.3695Z" fill="white" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
+        <path d="M27.258 23.5155C28.1881 23.5155 28.9421 22.7956 28.9421 21.9076C28.9421 21.0195 28.1881 20.2996 27.258 20.2996C26.3279 20.2996 25.574 21.0195 25.574 21.9076C25.574 22.7956 26.3279 23.5155 27.258 23.5155Z" fill="#F37887" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
+    </svg>
 
 );
 

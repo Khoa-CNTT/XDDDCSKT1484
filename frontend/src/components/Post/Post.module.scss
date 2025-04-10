@@ -12,13 +12,6 @@
     &:hover {
         background-color: #f4f4f4;
     }
-
-    &.inactive {
-        opacity: 0.6;
-        filter: blur(2px);
-        pointer-events: none;
-        user-select: none;
-    }
 }
 
 .header {
@@ -62,6 +55,15 @@
     color: #333;
     position: relative;
     left: 10px;
+}
+
+.body {
+    &.inactive {
+        opacity: 0.6;
+        filter: blur(2px);
+        pointer-events: none;
+        user-select: none;
+    }
 }
 
 .title,
@@ -211,6 +213,13 @@
         line-height: 1.6rem;
         min-width: 14px;
     }
+
+    &.inactive {
+        opacity: 0.6;
+        filter: blur(2px);
+        pointer-events: none;
+        user-select: none;
+    }
 }
 
 .like,
@@ -256,6 +265,7 @@
 .modal-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 12px 6px;
 }
 

@@ -1,0 +1,34 @@
+.wrapper {
+    margin: 24px auto 0;
+    width: 90%;
+}
+
+.header {
+    display: flex;
+    background-color: var(--white);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.07);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.total-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+}
+
+.post,
+.price,
+.views {
+    border-right: 2px solid rgba(0, 0, 0, 0.09);
+}
+
+.body {
+    margin-top: 32px;
+}
+
+.ads-item {
+    display: flex;
+}

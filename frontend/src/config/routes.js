@@ -15,6 +15,7 @@ const routes = {
     help: '/help',
     postDetail: '/post/:id_post',
     friends: '/friends',
+    postAds: '/postAds',
 
     // Route Admin
     dashboard: '/admin/dashboard',

@@ -16,7 +16,9 @@
 
 .kind {
     display: flex;
-    align-items: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
     margin-bottom: 24px;
 }
 
@@ -34,6 +36,11 @@
     }
 }
 
+.kind-lang {
+    display: flex;
+    justify-content: space-between;
+}
+
 .kind-title {
     font-size: 2.2rem;
     font-weight: 600;
@@ -46,6 +53,10 @@
     border-radius: 8px;
     font-size: 1.6rem;
     margin-left: 20px;
+}
+
+.btn-ads {
+    padding: 8px 14px;
 }
 
 .body {
@@ -218,6 +229,83 @@
 
 .underline {
     text-decoration: underline;
+}
+
+// Modal
+.modal {
+    display: none;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 1.6rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 6px;
+}
+
+.ads-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 24px 10px 8px;
+    border-radius: 6px;
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.ads-input {
+    transform: scale(1.3);
+    margin: 0 20px;
+}
+
+.ads-info {
+    flex: 1;
+
+    .name-ads {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: var(--primary);
+    }
+
+    .des-ads {
+        font-size: 1.6rem;
+        color: #666;
+    }
+
+    .price-ads {
+        margin-top: 4px;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+}
+
+.btn-select {
+    float: right;
+    margin: 12px 24px 12px 0;
+    padding: 8px 18px;
 }
 
 // Mobile
