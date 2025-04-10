@@ -28,6 +28,7 @@ import Statistic from '~/pages/admin/Statistic';
 import Report from '~/pages/admin/Report';
 import AdminLayout from '~/layouts/AdminLayout';
 import { Fragment } from 'react';
+import PostAds from '~/pages/PostAds';
 
 const publicRoutes = [
     { path: routesConfig.home, component: Home, layout: DefaultLayout },
@@ -40,6 +41,7 @@ const publicRoutes = [
     { path: routesConfig.help, component: Help, layout: HeaderOnly },
     { path: routesConfig.aboutFL, component: AboutFL, layout: HeaderOnly },
     { path: routesConfig.postDetail, component: PostDetail, layout: DefaultLayout },
+    { path: routesConfig.postAds, component: PostAds, layout: DefaultLayout },
 ];
 
 const privateRoutes = [

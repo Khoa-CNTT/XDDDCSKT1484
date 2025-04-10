@@ -160,7 +160,7 @@ function Post({ data, profile = false, show = true }) {
     return (
         <Fragment>
 
-            <div className={cx('wrapper', { profile, inactive: !show })}>
+            <div className={cx('wrapper', { profile })}>
                 <div className={cx('header')}>
                     <div className={cx('user')}>
                         <Link to={`/user/${data.id_user}`} >
@@ -188,7 +188,7 @@ function Post({ data, profile = false, show = true }) {
                 </div>
                 {data.type_post === 'CONTENT' ?
                     (
-                        <>
+                        <div className={cx('body', { inactive: !show })}>
                             <div className={cx('title')}>
                                 <Link className={cx('text-title')} to={`/post/${data.id}`}>{dataPost.title}</Link>
                             </div>
@@ -203,7 +203,7 @@ function Post({ data, profile = false, show = true }) {
                                         <Image src={dataPost.img_url} className={cx('img-src')} />
                                     </Link>
                                 </div>
-                            )}</>
+                            )}</div>
                     ) : (
                         <>
                             <div className={cx('question')}>
@@ -244,7 +244,7 @@ function Post({ data, profile = false, show = true }) {
                             </form>
                         </>
                     )}
-                <div className={cx('interact')}>
+                <div className={cx('interact', { inactive: !show })}>
                     <div className={cx('like')}>
                         <Button
                             like={showLike}

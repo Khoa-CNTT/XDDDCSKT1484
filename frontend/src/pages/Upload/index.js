@@ -1,24 +1,27 @@
 import classNames from 'classnames/bind';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState, useCallback, useContext } from 'react';
+import { useEffect, useRef, useState, useCallback, useContext, Fragment } from 'react';
 
 import styles from './Upload.module.scss';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import { editPostServices, getPostContentServices, upImagePostServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
+import { editPostServices, getPackageAdsServices, getPostContentServices, submitVNPayServices, upImagePostServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
 import { useTranslation } from 'react-i18next';
-import { BoldIcon, ClearSearchIcon, ContentIcon, ImageIcon, ItalicIcon, PlusIcon, PollIcon, TrashIcon, UnderlineIcon } from '~/components/Icons';
+import { BoldIcon, ClearSearchIcon, CloseIcon, ContentIcon, ImageIcon, ItalicIcon, PlusIcon, PollIcon, TrashIcon, UnderlineIcon, WalletIcon } from '~/components/Icons';
 import { UserContext } from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 
 function Upload() {
+    const [selectedPackageId, setSelectedPackageId] = useState(null);
+    const [packageAds, setPackageAds] = useState([]);
     const [isSelected, setIsSelected] = useState(0);
     const [typePost, setTypePost] = useState('Content');
     const [showImg, setShowImg] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [textFormat, setTextFormat] = useState({ bold: false, italic: false, underline: false });
     const [languagePost, setLanguagePost] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const { user } = useContext(UserContext);
     const location = useLocation();
 
@@ -76,6 +79,13 @@ function Upload() {
         }
     }, [contentForm, pollForm, languagePost, typePost, idPost]);
 
+
+    const fetchAdsPackage = async (page, size, token) => {
+        const res = await getPackageAdsServices(page, size, token);
+        if (res?.data && res.data.content.length > 0) {
+            setPackageAds(res.data.content);
+        }
+    }
 
     const resetForm = () => {
         setContentForm({ title: '', content: '', img_url: '' });
@@ -147,6 +157,23 @@ function Upload() {
         }));
     };
 
+    const handleToggleModal = () => {
+        setShowModal(prev => !prev);
+    }
+
+    const handleSelectAds = e => {
+        e.preventDefault();
+        setSelectedPackageId(e.target.elements.ads.value);
+        setShowModal(prev => !prev);
+    }
+
+    const handleAdsPackage = e => {
+        e.preventDefault();
+        const token = localStorage.getItem('authToken');
+        fetchAdsPackage(0, 10, token);
+        setShowModal(prev => !prev);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('authToken')
@@ -160,9 +187,12 @@ function Upload() {
                 const res = await uploadPostContentServices(data, token);
                 if (res?.data) {
                     if (res.data?.show) {
-                        alert(t('uploadSuccess'))
-                        resetForm();
-                        navigate(`/post/${res.data.id}`);
+                        if (selectedPackageId) {
+                            const resVNPay = await submitVNPayServices('vn', typePost.toUpperCase(), res.data.id, selectedPackageId, token);
+                            if (resVNPay?.data?.success) {
+                                window.open(resVNPay.data.url);
+                            }
+                        }
                     } else {
                         navigate(`/user/${user.id}`);
                     }
@@ -172,7 +202,6 @@ function Upload() {
 
             } else {
                 const data = { ...pollForm, language: languagePost };
-                console.log(data)
                 const res = await uploadPostPollServices(data, token);
                 if (res?.data) {
                     alert(t('uploadSuccess'))
@@ -185,7 +214,6 @@ function Upload() {
         } else {
             const data = { content: contentForm.content, title: contentForm.title };
             const res = await editPostServices(idPost, data, token);
-            console.log(res)
             if (res?.data) {
                 alert('Edit Post Success');
                 navigate(`/post/${res.data.id}`);
@@ -194,141 +222,177 @@ function Upload() {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('header')}>
-                <h3 className={cx('header-heading')}>{idPost ? 'Edit Post' : t('createPost')}</h3>
-            </div>
-            {
-                !idPost &&
-                <div className={cx('type')}>
-                    <Button
-                        primary={isSelected === 0}
-                        leftIcon={<ContentIcon />}
-                        normal
-                        onClick={() => {
-                            setIsSelected(0);
-                            setTypePost('Content')
-                        }
-                        }>Content</Button>
-                    <Button
-                        primary={isSelected === 1}
-                        leftIcon={<PollIcon />}
-                        normal
-                        onClick={() => {
-                            setIsSelected(1);
-                            setTypePost('Poll')
-                        }
-                        }>Poll</Button>
+        <Fragment>
+            <div className={cx('wrapper')}>
+                <div className={cx('header')}>
+                    <h3 className={cx('header-heading')}>{idPost ? 'Edit Post' : t('createPost')}</h3>
                 </div>
-            }
-            <form className={cx('form')} onSubmit={handleSubmit}>
-                {!idPost &&
-                    <div className={cx('kind')}>
-                        <span className={cx('kind-title')}>{t('lang')}:</span>
-                        <select
-                            value={languagePost}
-                            onChange={(e) => setLanguagePost(e.target.value)}
-                            className={cx('kind-select')}
-                        >
-                            <option value='' disabled>{t('language')}</option>
-                            <option value='English'>{t('langEnglish')}</option>
-                            <option value='China'>{t('langChinese')}</option>
-                            <option value='Japan'>{t('langJapanese')}</option>
-                        </select>
+                {
+                    !idPost &&
+                    <div className={cx('type')}>
+                        <Button
+                            primary={isSelected === 0}
+                            leftIcon={<ContentIcon />}
+                            normal
+                            onClick={() => {
+                                setIsSelected(0);
+                                setTypePost('Content')
+                            }
+                            }>Content</Button>
+                        <Button
+                            primary={isSelected === 1}
+                            leftIcon={<PollIcon />}
+                            normal
+                            onClick={() => {
+                                setIsSelected(1);
+                                setTypePost('Poll')
+                            }
+                            }>Poll</Button>
                     </div>
                 }
-                <div className={cx('body')}>
-                    {typePost === 'Content' ?
-                        (
-                            <>
-                                <div className={cx('title')}>
-                                    <input
-                                        type='text'
-                                        value={contentForm.title}
-                                        onChange={handleInputChange('title')}
-                                        className={cx('title-input')}
-                                        placeholder={t('postTitlePlaceholder')}
-                                    />
-                                </div>
-                                <div className={cx('content')}>
-                                    <div className={cx('content-header')}>
-                                        <Button iconNav leftIcon={<BoldIcon />} onClick={() => handleToggleFormat('bold')} />
-                                        <Button iconNav leftIcon={<ItalicIcon />} onClick={() => handleToggleFormat('italic')} />
-                                        <Button iconNav leftIcon={<UnderlineIcon />} onClick={() => handleToggleFormat('underline')} />
-                                        <Button type='button' iconNav leftIcon={<ImageIcon />} onClick={handleImageUpload}>
-                                            <input type='file' accept='image/*' hidden ref={fileInputRef} onChange={handleFileChange} />
-                                        </Button>
-                                        <Button iconNav leftIcon={<TrashIcon />} onClick={() => setContentForm((prev) => ({ ...prev, content: '' }))} />
-                                    </div>
-                                    <textarea
-                                        className={cx('content-text', { bold: textFormat.bold, italic: textFormat.italic, underline: textFormat.underline })}
-                                        value={contentForm.content}
-                                        onChange={handleInputChange('content')}
-                                        placeholder={t('content')}
-                                    />
-                                </div>
-                                {showImg && contentForm.img_url && (
-                                    <div className={cx('file')}>
-                                        <Image className={cx('file-img')} src={contentForm.img_url} alt='Uploaded' />
-                                    </div>
-                                )}
-                                <div className={cx('upload')}>
-                                    <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
-                                        {idPost ? 'Save' : t('postBtn')}
-                                    </Button>
-                                </div>
-                            </>
-                        )
-                        :
-                        (
-                            <>
-                                <div className={cx('typePoll')}>
-                                    <span className={cx('type-title')}>Type Poll</span>
-                                    <label htmlFor='Single'>
-                                        <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Single' name='answer' />
-                                        Single Answer
-                                    </label>
-                                    <label htmlFor='Multiple'>
-                                        <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Multiple' name='answer' />
-                                        Multiple Answer
-                                    </label>
-                                </div>
-                                <div className={cx('question')}>
-                                    <textarea
-                                        value={pollForm.question}
-                                        onChange={handleInputChange('question', 'poll')}
-                                        className={cx('question-text')}
-                                        placeholder={'Question'}
-                                    />
-                                </div>
-                                <div className={cx('options')}>
-                                    {pollForm.createOptionDtoList.map((option, index) => (
-                                        <div key={index} className={cx('option-item')}>
-                                            <input
-                                                value={pollForm.createOptionDtoList[index].option_text}
-                                                onChange={handleOptionChange(index)}
-                                                key={index}
-                                                type='text'
-                                                placeholder={`Option ${index + 1}`}
-                                            />
-                                            {pollForm.createOptionDtoList.length > 2 && (
-                                                <Button className={cx('remove-btn')} onClick={() => removeOption(index)} leftIcon={<ClearSearchIcon width='3.2rem' height='3.2rem' />} />
-                                            )}
-                                        </div>
-                                    ))}
-                                    <Button className={cx('option-btn')} leftIcon={<PlusIcon />} normal onClick={addOption}>Add Option</Button>
-                                </div>
-                                <div className={cx('upload')}>
-                                    <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
-                                        {t('postBtn')}
-                                    </Button>
-                                </div>
-                            </>
-                        )
+                <form className={cx('form')} onSubmit={handleSubmit}>
+                    {!idPost &&
+                        <div className={cx('kind')}>
+                            <div className={cx('kind-lang')}>
+                                <span className={cx('kind-title')}>{t('lang')}:</span>
+                                <select
+                                    value={languagePost}
+                                    onChange={(e) => setLanguagePost(e.target.value)}
+                                    className={cx('kind-select')}
+                                >
+                                    <option value='' disabled>{t('language')}</option>
+                                    <option value='English'>{t('langEnglish')}</option>
+                                    <option value='China'>{t('langChinese')}</option>
+                                    <option value='Japan'>{t('langJapanese')}</option>
+                                </select>
+                            </div>
+                            <Button onClick={handleAdsPackage} className={cx('btn-ads')} primary>Advertisement</Button>
+                        </div>
                     }
+                    <div className={cx('body')}>
+                        {typePost === 'Content' ?
+                            (
+                                <>
+                                    <div className={cx('title')}>
+                                        <input
+                                            type='text'
+                                            value={contentForm.title}
+                                            onChange={handleInputChange('title')}
+                                            className={cx('title-input')}
+                                            placeholder={t('postTitlePlaceholder')}
+                                        />
+                                    </div>
+                                    <div className={cx('content')}>
+                                        <div className={cx('content-header')}>
+                                            <Button iconNav leftIcon={<BoldIcon />} onClick={() => handleToggleFormat('bold')} />
+                                            <Button iconNav leftIcon={<ItalicIcon />} onClick={() => handleToggleFormat('italic')} />
+                                            <Button iconNav leftIcon={<UnderlineIcon />} onClick={() => handleToggleFormat('underline')} />
+                                            <Button type='button' iconNav leftIcon={<ImageIcon />} onClick={handleImageUpload}>
+                                                <input type='file' accept='image/*' hidden ref={fileInputRef} onChange={handleFileChange} />
+                                            </Button>
+                                            <Button iconNav leftIcon={<TrashIcon />} onClick={() => setContentForm((prev) => ({ ...prev, content: '' }))} />
+                                        </div>
+                                        <textarea
+                                            className={cx('content-text', { bold: textFormat.bold, italic: textFormat.italic, underline: textFormat.underline })}
+                                            value={contentForm.content}
+                                            onChange={handleInputChange('content')}
+                                            placeholder={t('content')}
+                                        />
+                                    </div>
+                                    {showImg && contentForm.img_url && (
+                                        <div className={cx('file')}>
+                                            <Image className={cx('file-img')} src={contentForm.img_url} alt='Uploaded' />
+                                        </div>
+                                    )}
+                                    <div className={cx('upload')}>
+                                        <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
+                                            {idPost ? 'Save' : t('postBtn')}
+                                        </Button>
+                                    </div>
+                                </>
+                            )
+                            :
+                            (
+                                <>
+                                    <div className={cx('typePoll')}>
+                                        <span className={cx('type-title')}>Type Poll</span>
+                                        <label htmlFor='Single'>
+                                            <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Single' name='answer' />
+                                            Single Answer
+                                        </label>
+                                        <label htmlFor='Multiple'>
+                                            <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Multiple' name='answer' />
+                                            Multiple Answer
+                                        </label>
+                                    </div>
+                                    <div className={cx('question')}>
+                                        <textarea
+                                            value={pollForm.question}
+                                            onChange={handleInputChange('question', 'poll')}
+                                            className={cx('question-text')}
+                                            placeholder={'Question'}
+                                        />
+                                    </div>
+                                    <div className={cx('options')}>
+                                        {pollForm.createOptionDtoList.map((option, index) => (
+                                            <div key={index} className={cx('option-item')}>
+                                                <input
+                                                    value={pollForm.createOptionDtoList[index].option_text}
+                                                    onChange={handleOptionChange(index)}
+                                                    key={index}
+                                                    type='text'
+                                                    placeholder={`Option ${index + 1}`}
+                                                />
+                                                {pollForm.createOptionDtoList.length > 2 && (
+                                                    <Button className={cx('remove-btn')} onClick={() => removeOption(index)} leftIcon={<ClearSearchIcon width='3.2rem' height='3.2rem' />} />
+                                                )}
+                                            </div>
+                                        ))}
+                                        <Button className={cx('option-btn')} leftIcon={<PlusIcon />} normal onClick={addOption}>Add Option</Button>
+                                    </div>
+                                    <div className={cx('upload')}>
+                                        <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
+                                            {t('postBtn')}
+                                        </Button>
+                                    </div>
+                                </>
+                            )
+                        }
+                    </div>
+                </form>
+            </div>
+            {showModal && packageAds.length > 0 && (
+                <div className={cx('modal')}>
+                    <div className={cx('container')}>
+                        <div className={cx('modal-header')}>
+                            <h3 className={cx('modal-heading')}>Please select advertising package</h3>
+                            <Button onClick={handleToggleModal} iconCircle className={cx('modal-close')} leftIcon={<CloseIcon />} />
+                        </div>
+                        <div>
+                            <form onSubmit={handleSelectAds}>
+                                {packageAds.map(item => (
+                                    <label key={item.id} className={cx('ads-option')}>
+                                        <input
+                                            type="radio"
+                                            name="ads"
+                                            className={cx('ads-input')}
+                                            value={item.id}
+                                        />
+                                        <div className={cx('ads-info')}>
+                                            <span className={cx('name-ads')}>{item.name}</span>
+                                            <span className={cx('des-ads')}>{item.description}</span>
+                                            <span className={cx('price-ads')}>{item.price}</span>
+                                        </div>
+                                        <WalletIcon />
+                                    </label>
+                                ))}
+                                <Button className={cx('btn-select')} primary>Select</Button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </div>
+            )}
+        </Fragment>
     );
 }
 
