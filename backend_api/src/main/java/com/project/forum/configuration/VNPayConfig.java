@@ -18,7 +18,7 @@ public class VNPayConfig {
 //    @Value("${VnPay.ReturnUrl}")
 //    String vnp_Returnurl;
 
-    String vnp_Returnurl = "/vnpay/orderReturn";
+    String vnp_Returnurl = "/vn-pay/orderReturn";
     @Value("${VnPay.TmnCode}")
     String vnp_TmnCode;
 

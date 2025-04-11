@@ -43,7 +43,7 @@ public class VNPayService  implements IVNPayService {
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = UUID.randomUUID().toString();
+        String vnp_TxnRef = generateOrderId();
         String vnp_IpAddr = VNPayConfig.getIpAddress(request);
         String vnp_TmnCode = vnPayConfig.getVnp_TmnCode();
         String orderType = "order-type";
@@ -54,27 +54,33 @@ public class VNPayService  implements IVNPayService {
         AdsPackage adsPackage = adsPackageRepository.findById(ads_package).orElseThrow(() -> new WebException(ErrorCode.E_ADS_PACKAGE_NOT_FOUND));
         Posts posts = postsRepository.findById(idHandler).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
         Advertisement advertisement = Advertisement.builder()
+                .id(UUID.randomUUID().toString())
                 .views(0)
                 .adsPackage(adsPackage)
                 .status(false)
                 .created_at(LocalDateTime.now())
                 .posts(posts)
                 .build();
-        int amount = adsPackage.getPrice().multiply(BigDecimal.valueOf(100)).intValue();
+        BigDecimal exchangeRate = BigDecimal.valueOf(24000);
         String vnp_CurrCode;
         String vnp_Locale;
+        BigDecimal vndAmount = null;
         if (location.equals("vn")) {
             vnp_CurrCode = "VND";
             vnp_Locale = "vn";
+            vndAmount = adsPackage.getPrice();
         } else {
             vnp_CurrCode = "USD";
             vnp_Locale = "en";
+            vndAmount = adsPackage.getPrice().multiply(exchangeRate);
         }
+        int amount = vndAmount.multiply(BigDecimal.valueOf(100)).intValue();
         Transaction transaction = Transaction.builder()
                 .id(UUID.randomUUID().toString())
                 .amount(adsPackage.getPrice())
                 .currency(vnp_CurrCode)
                 .message(adsPackage.getDescription())
+                .code(generateOrderId())
                 .created_at(LocalDateTime.now())
                 .status(StatusPayment.WAITING.getStatus())
                 .transaction_id(UUID.randomUUID().toString())
@@ -83,7 +89,6 @@ public class VNPayService  implements IVNPayService {
                 .users(users)
                 .build();
 
-
         String orderInfor = transaction.getId();
 
         Map<String, String> vnp_Params = new HashMap<>();
@@ -91,14 +96,15 @@ public class VNPayService  implements IVNPayService {
         vnp_Params.put("vnp_Command", vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
-        vnp_Params.put("vnp_CurrCode", vnp_CurrCode);
+        vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", orderInfor);
         vnp_Params.put("vnp_OrderType", orderType);
         vnp_Params.put("vnp_Locale", vnp_Locale);
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        baseUrl += vnPayConfig.getVnp_Returnurl();
-        String localUrl = "http://localhost:1407/payment-result";
+//        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+//        baseUrl += vnPayConfig.getVnp_Returnurl();
+        String baseUrl = "http://localhost:1407/payment-result";
+        String localUrl = baseUrl;
         vnp_Params.put("vnp_ReturnUrl", localUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
@@ -151,6 +157,18 @@ public class VNPayService  implements IVNPayService {
                 .build();
     }
 
+    public String generateOrderId() {
+        String prefix = "ADS";
+        Random random = new Random();
+        StringBuilder numberPart = new StringBuilder();
+
+        for (int i = 0; i < 18; i++) {
+            int digit = random.nextInt(10); // từ 0 đến 9
+            numberPart.append(digit);
+        }
+
+        return prefix + numberPart.toString();
+    }
     @Override
     public VnPayResponse orderReturn(HttpServletRequest request) {
         Map fields = new HashMap();
@@ -218,7 +236,7 @@ public class VNPayService  implements IVNPayService {
             transactionRepository.save(transaction);
             return VnPayResponse.builder()
                     .success(true)
-                    .result("Success")
+                    .result(transaction.getStatus())
                     .build();
         } else {
             return VnPayResponse.builder()

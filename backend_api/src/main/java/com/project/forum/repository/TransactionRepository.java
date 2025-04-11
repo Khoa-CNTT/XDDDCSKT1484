@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, String> {
@@ -30,5 +31,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "WHERE t.users.id = :id")
     Page<TransactionResponse> getAllTransactionsUsers(@Param("id") String id, Pageable pageable);
 
+    Optional<Transaction> findTransactionByCode(String code);
 
 }

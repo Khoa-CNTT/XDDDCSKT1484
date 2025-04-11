@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class Advertisement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+
     String id;
 
     int views;

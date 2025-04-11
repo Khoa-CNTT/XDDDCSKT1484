@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     BigDecimal amount;
@@ -46,6 +45,8 @@ public class Transaction {
     String payable_id;
 
     String payable_type;
+
+    String code;
 
     @Column(length = 2000)
     String url_payment;
