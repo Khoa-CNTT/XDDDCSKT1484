@@ -3,6 +3,7 @@ package com.project.forum.controller;
 import com.project.forum.dto.responses.ads.AdsResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IAdsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class AdsController {
 
     IAdsService iAdsService;
 
-
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping
     ResponseEntity<ApiResponse<Page<AdsResponse>>> getAll(@RequestParam(defaultValue = "0") Integer page,
                                                           @RequestParam(defaultValue = "10") Integer size) {
@@ -28,7 +29,7 @@ public class AdsController {
                 .data(iAdsService.findAll(page, size))
                 .build());
     }
-
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/user")
     ResponseEntity<ApiResponse<Page<AdsResponse>>> getAllByUser(@RequestParam(defaultValue = "0") Integer page,
                                                           @RequestParam(defaultValue = "10") Integer size) {

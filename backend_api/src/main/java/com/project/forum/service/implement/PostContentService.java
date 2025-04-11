@@ -105,6 +105,13 @@ public class PostContentService implements IPostContentService {
     @Override
     public PostResponse update(String id, UpdatePostContentDto updatePostContentDto) throws IOException {
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+        PostContentHistory postContentHistoryFirst = PostContentHistory.builder()
+                .posts(posts)
+                .content(posts.getPostContent().getContent())
+                        .title(posts.getPostContent().getTitle())
+                .created_at(posts.getCreated_at())
+                .build();
+        postContentHistoryRepository.save(postContentHistoryFirst);
         PostContent postContent = postContentRepository.findPostContentsByPosts_Id(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
         postContent.setContent(updatePostContentDto.getContent());
         postContent.setTitle(updatePostContentDto.getTitle());

@@ -3,6 +3,7 @@ package com.project.forum.controller;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.ITransactionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class TransactionController {
 
     ITransactionService transactionService;
 
-
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping
     ResponseEntity<ApiResponse<Page<TransactionResponse>>> getALl(@RequestParam(defaultValue = "0") Integer page,
                                                                   @RequestParam(defaultValue = "0") Integer size) {
@@ -28,7 +29,7 @@ public class TransactionController {
                 .data(transactionService.getAllTransactions(page, size))
                 .build());
     }
-
+    @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/user")
     ResponseEntity<ApiResponse<Page<TransactionResponse>>> getAllByUser(@RequestParam(defaultValue = "0") Integer page,
                                                                         @RequestParam(defaultValue = "0") Integer size) {
