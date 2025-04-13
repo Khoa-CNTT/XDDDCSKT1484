@@ -29,6 +29,7 @@ import Report from '~/pages/admin/Report';
 import AdminLayout from '~/layouts/AdminLayout';
 import { Fragment } from 'react';
 import PostAds from '~/pages/PostAds';
+import ResultPayment from '~/pages/ResultPayment';
 
 const publicRoutes = [
     { path: routesConfig.home, component: Home, layout: DefaultLayout },
@@ -51,6 +52,7 @@ const privateRoutes = [
     { path: routesConfig.profile, component: Profile, layout: HeaderOnly },
     { path: routesConfig.activeAccount, component: ActiveAccount, layout: Fragment },
     { path: routesConfig.sendEmail, component: SendEmail, layout: Fragment },
+    { path: routesConfig.paymentResult, component: ResultPayment, layout: HeaderOnly },
 ];
 
 const adminRoutes = [
