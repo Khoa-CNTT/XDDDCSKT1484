@@ -447,20 +447,41 @@ export const DownIcon = ({ width = '2.2rem', height = '2.2rem', onClick, classNa
     </svg>
 );
 
-export const CloseIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className }) => (
+export const CloseIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className, fill = 'currentColor' }) => (
     <svg
         onClick={onClick}
         className={className}
         width={width}
         height={height}
         viewBox="0 0 20 20"
-        fill="currentColor"
+        fill={fill}
         xmlns="http://www.w3.org/2000/svg"
     >
         <path
             d="m11.06 10 6.22-6.22a.771.771 0 0 0-.015-1.046.771.771 0 0 0-1.045-.014L10 8.94 3.78 2.72a.771.771 0 0 0-1.042.018.771.771 0 0 0-.018 1.042L8.94 10l-6.22 6.22a.758.758 0 0 0-.02 1.08.758.758 0 0 0 1.08-.02L10 11.06l6.22 6.22a.771.771 0 0 0 1.041-.018.771.771 0 0 0 .019-1.042L11.06 10Z"
         ></path>
     </svg>
+);
+
+export const FailedIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="#ff390a"
+        strokeWidth="1.5"
+        stroke="#fff"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+    </svg>
+
+
+
 );
 
 export const AddChatIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className }) => (
@@ -795,7 +816,7 @@ export const ShrinkIcon = ({ width = '2.6rem', height = '2.6rem', onClick, class
 
 );
 
-export const WalletIcon = ({ width = 32, height = 32 }) => (
+export const WalletIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
     <svg
         width={width}
         height={height}
@@ -812,6 +833,18 @@ export const WalletIcon = ({ width = 32, height = 32 }) => (
         <path d="M27.258 23.5155C28.1881 23.5155 28.9421 22.7956 28.9421 21.9076C28.9421 21.0195 28.1881 20.2996 27.258 20.2996C26.3279 20.2996 25.574 21.0195 25.574 21.9076C25.574 22.7956 26.3279 23.5155 27.258 23.5155Z" fill="#F37887" stroke="#010101" strokeWidth="2.5" strokeMiterlimit="10" />
     </svg>
 
+);
+
+export const TickIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
+    <svg
+        width={width}
+        height={height}
+        viewBox="0 0 32 32"
+        fill="#23A26D"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path d="M16 2.66669C8.65334 2.66669 2.66667 8.65335 2.66667 16C2.66667 23.3467 8.65334 29.3334 16 29.3334C23.3467 29.3334 29.3333 23.3467 29.3333 16C29.3333 8.65335 23.3467 2.66669 16 2.66669ZM22.3733 12.9334L14.8133 20.4934C14.6267 20.68 14.3733 20.7867 14.1067 20.7867C13.84 20.7867 13.5867 20.68 13.4 20.4934L9.62667 16.72C9.24 16.3334 9.24 15.6934 9.62667 15.3067C10.0133 14.92 10.6533 14.92 11.04 15.3067L14.1067 18.3734L20.96 11.52C21.3467 11.1334 21.9867 11.1334 22.3733 11.52C22.76 11.9067 22.76 12.5334 22.3733 12.9334Z" fill="#23A26D" />
+    </svg>
 );
 
 // Icon Admin

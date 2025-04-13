@@ -17,7 +17,7 @@ import { UserContext } from '~/context/UserContext';
 import { ChatContext } from '~/context/ChatContext';
 import { NavBarsContext } from '~/context/NavBarsContext';
 import { useTranslation } from 'react-i18next';
-import { BarsIcon, ClearSearchIcon, HelpIcon, LanguagesIcon, LogoutIcon, MessageIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
+import { AdvertiseIcon, BarsIcon, ClearSearchIcon, HelpIcon, LanguagesIcon, LogoutIcon, MessageIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
 import { useWebSocket } from '~/hooks';
 
 const cx = classNames.bind(styles);
@@ -124,6 +124,9 @@ function Header() {
             title: user?.name || '',
             to: `/user/${user?.id || ''}`,
             separate: true,
+        },
+        {
+            icon: <AdvertiseIcon />, title: 'Post Ads', to: routesConfig.postAds
         },
         {
             icon: <SettingIcon />, title: t('setting'), to: routesConfig.setting

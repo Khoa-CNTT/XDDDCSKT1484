@@ -188,9 +188,9 @@ function Upload() {
                 if (res?.data) {
                     if (res.data?.show) {
                         if (selectedPackageId) {
-                            const resVNPay = await submitVNPayServices('vn', typePost.toUpperCase(), res.data.id, selectedPackageId, token);
+                            const resVNPay = await submitVNPayServices('en', typePost.toUpperCase(), res.data.id, selectedPackageId, token);
                             if (resVNPay?.data?.success) {
-                                window.open(resVNPay.data.url);
+                                window.location.href = resVNPay.data.url;
                             }
                         }
                     } else {
