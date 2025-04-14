@@ -42,4 +42,10 @@ public class AdsService implements IAdsService {
         Page<AdsResponse> adsResponses = advertisementRepository.findAllAdsByUser(user.getId(),pageable);
         return adsResponses;
     }
+
+    @Override
+    public AdsResponse findById(String id) {
+        AdsResponse adsResponse = advertisementRepository.findAds(id).orElseThrow(() -> new WebException(ErrorCode.ADS_NOT_FOUND));
+        return adsResponse;
+    }
 }

@@ -16,7 +16,7 @@ public interface CommentReplyRepository extends JpaRepository<CommentReply, Stri
     @Query("SELECT new com.project.forum.dto.responses.comment.CommentResponse(" +
             "cr.id, cr.content, cr.created_at, cr.users.img, cr.users.name, FALSE, " +
             "CASE WHEN cr.users.id = :userId THEN true ELSE false END ) " +
-            "FROM comment_reply cr WHERE cr.comments.id = :commentId ORDER BY cr.created_at ASC")
+            "FROM CommentReply cr WHERE cr.comments.id = :commentId ORDER BY cr.created_at ASC")
     Page<CommentResponse> findCommentReplyByCommentIdAndUserId(
             @Param("commentId") String commentId,
             @Param("userId") String userId,

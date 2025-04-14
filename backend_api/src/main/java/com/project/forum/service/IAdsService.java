@@ -9,6 +9,7 @@ public interface IAdsService {
 
     Page<AdsResponse> findAllByUser(Integer page,Integer size);
 
+    AdsResponse findById(String id);
 
 
 }

@@ -18,7 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "comments")
+@Entity
+@Table(name = "comments", indexes = {
+        @Index(name = "idx_comments_created_at", columnList = "created_at"),
+        @Index(name = "idx_comments_user_id", columnList = "user_id"),
+        @Index(name = "idx_comments_post_id", columnList = "post_id")
+})
 @EntityListeners(AuditingEntityListener.class)
 public class Comments {
 

@@ -141,5 +141,13 @@ public class PostService implements IPostService {
         return postPageResponseList;
     }
 
+    @Override
+    public Page<PostResponse> findAllPostAdmin(Integer page, Integer size, String content, String language) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostResponse> posts = postsRepository.findAllPostsAdmin(content,null,language,pageable);
+
+        return posts;
+    }
+
 
 }

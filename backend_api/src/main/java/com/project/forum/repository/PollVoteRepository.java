@@ -13,14 +13,14 @@ import java.util.List;
 @Repository
 public interface PollVoteRepository extends JpaRepository<PollVote, String> {
     @Modifying
-    @Query("DELETE FROM poll_vote pv " +
+    @Query("DELETE FROM PollVote pv " +
             "WHERE pv.users.id = :userId " +
             "AND pv.poll_options.id = :pollOptionId")
     void deleteVote(@Param("userId") String userId, @Param("pollOptionId") String pollOptionId);
 
 
     @Query("SELECT CASE WHEN COUNT(pv) > 0 THEN TRUE ELSE FALSE END " +
-            "FROM poll_vote pv " +
+            "FROM PollVote pv " +
             "WHERE pv.users.id = :userId " +
             "AND pv.poll_options.id = :pollOptionId")
     boolean existsVote(@Param("userId") String userId, @Param("pollOptionId") String pollOptionId);
@@ -28,7 +28,7 @@ public interface PollVoteRepository extends JpaRepository<PollVote, String> {
 
 
     @Query("SELECT CASE WHEN COUNT(pv) > 0 THEN true ELSE false END " +
-            "FROM poll_vote pv " +
+            "FROM PollVote pv " +
             "JOIN pv.poll_options po " +
             "JOIN po.postPoll pp " +
             "WHERE pv.users.id = :userId " +
@@ -38,7 +38,7 @@ public interface PollVoteRepository extends JpaRepository<PollVote, String> {
                                                        @Param("pollOptionId") String pollOptionId,
                                                        @Param("postPollId") String postPollId);
     @Modifying
-    @Query("DELETE FROM poll_vote pv " +
+    @Query("DELETE FROM PollVote pv " +
             "WHERE pv.users.id = :userId " +
             "AND pv.poll_options.id = :pollOptionId " +
             "AND pv.poll_options.postPoll.id = :postPollId")
@@ -46,7 +46,7 @@ public interface PollVoteRepository extends JpaRepository<PollVote, String> {
                                                         @Param("pollOptionId") String pollOptionId,
                                                         @Param("postPollId") String postPollId);
 
-    @Query("SELECT pv FROM poll_vote pv " +
+    @Query("SELECT pv FROM PollVote pv " +
             "WHERE pv.users.id = :userId " +
             "AND pv.poll_options.id IN :pollOptionIds")
     List<PollVote> findByUserAndPollOptions(@Param("userId") String userId,

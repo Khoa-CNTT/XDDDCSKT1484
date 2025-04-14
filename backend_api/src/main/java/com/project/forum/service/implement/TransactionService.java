@@ -70,4 +70,15 @@ public class TransactionService implements ITransactionService {
     public boolean delete(String id) {
         return false;
     }
+
+    @Override
+    public TransactionResponse getTransaction(String id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        TransactionResponse transactionResponse = transactionRepository.getTransactionById(id,users.getId()).orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
+
+
+
+        return transactionResponse;
+    }
 }

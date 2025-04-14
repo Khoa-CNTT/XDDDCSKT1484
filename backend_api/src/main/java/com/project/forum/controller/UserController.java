@@ -72,5 +72,15 @@ public class UserController {
                 .build());
     }
 
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/users/find")
+    ResponseEntity<ApiResponse<Page<UserResponse>>> findUserByName(@RequestParam(defaultValue = "") String name,
+                                                                   @RequestParam(defaultValue = "0") Integer page,
+                                                                   @RequestParam(defaultValue = "5") Integer size) {
+        return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
+                .data(userService.getUserByName(name, page, size))
+                .build());
+    }
+
 
 }

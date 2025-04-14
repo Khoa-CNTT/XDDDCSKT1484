@@ -14,7 +14,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "post_content")
+@Entity
+@Table(name = "post_content", indexes = {
+        @Index(name = "idx_post_content_post_id", columnList = "post_id")
+})
+
 @EntityListeners(AuditingEntityListener.class)
 public class PostContent {
 

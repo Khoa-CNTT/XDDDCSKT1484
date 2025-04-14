@@ -20,5 +20,5 @@ public interface IUserService {
 
         UserResponse getMyInfo();
 
-        UserResponse getUserByUsername(String username);
+        Page<UserResponse> getUserByName(String name, Integer page, Integer size);
 }

@@ -52,11 +52,11 @@ public interface FriendShipRepository extends JpaRepository<FriendShip, String> 
             WHEN f.sender.id = :userId THEN f.receiver.username
             ELSE f.sender.username
         END,
-        (SELECT COUNT(f2) FROM friend_ship f2 
+        (SELECT COUNT(f2) FROM FriendShip f2 
          WHERE (f2.sender.id = :userId OR f2.receiver.id = :userId) 
            AND f2.status = 'friends')
     )
-    FROM friend_ship f
+    FROM FriendShip f
     WHERE (f.sender.id = :userId OR f.receiver.id = :userId) 
       AND f.status = 'friends'
 """)

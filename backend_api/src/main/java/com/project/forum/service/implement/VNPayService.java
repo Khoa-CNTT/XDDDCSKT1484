@@ -43,7 +43,7 @@ public class VNPayService  implements IVNPayService {
 
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
-        String vnp_TxnRef = generateOrderId();
+
         String vnp_IpAddr = VNPayConfig.getIpAddress(request);
         String vnp_TmnCode = vnPayConfig.getVnp_TmnCode();
         String orderType = "order-type";
@@ -88,8 +88,8 @@ public class VNPayService  implements IVNPayService {
                 .payable_type("ADVERTISEMENT")
                 .users(users)
                 .build();
-
-        String orderInfor = transaction.getId();
+        String vnp_TxnRef = transaction.getId();
+        String orderInfor = generateOrderId();
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnp_Version);
@@ -200,7 +200,7 @@ public class VNPayService  implements IVNPayService {
         String transactionStatus = request.getParameter("vnp_TransactionStatus");
 
         if (signValue.equals(vnp_SecureHash)) {
-            Transaction transaction = transactionRepository.findById(vnp_OrderInfo)
+            Transaction transaction = transactionRepository.findById(vnp_TxnRef)
                     .orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
 
             switch (transactionStatus) {

@@ -16,4 +16,6 @@ public interface ITransactionService {
 
     boolean delete(String id);
 
+    TransactionResponse getTransaction(String id);
+
 }
