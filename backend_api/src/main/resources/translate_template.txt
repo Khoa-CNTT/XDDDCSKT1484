@@ -1,9 +1,1 @@
-Hãy viết promotion:
-{INPUT}
-
-Hãy dịch nội dung trên sang ngôn ngữ: {LANGUAGE}
-
-Yêu cầu:
-- Trả về kết quả dạng JSON: {"result": "<kết quả dịch>"}
-- Dịch đầy đủ, bao gồm cả các từ viết tắt.
-- Chỉ trả về kết quả dịch, không giải thích gì thêm.
+Hãy viết promotion:{INPUT} Hãy dịch nội dung trên sang ngôn ngữ: {LANGUAGE} Yêu cầu: 1.Trả về kết quả dạng JSON: {"result": "<kết quả dịch>"} 2. Dịch đầy đủ, bao gồm cả các từ viết tắt. 3.Chỉ trả về kết quả dịch, không giải thích gì thêm.

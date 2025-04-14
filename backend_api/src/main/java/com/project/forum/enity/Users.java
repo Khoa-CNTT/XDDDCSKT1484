@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +49,10 @@ public class Users {
     String password;
 
     String status;
+
+    @CreatedDate
+    @Column(updatable = false)
+    LocalDateTime created;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST )
     Set<Roles> roles;
