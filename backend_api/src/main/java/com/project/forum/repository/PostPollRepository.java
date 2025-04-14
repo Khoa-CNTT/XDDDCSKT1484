@@ -15,8 +15,8 @@ public interface PostPollRepository extends JpaRepository<PostPoll, String> {
             "pp.id, pp.question, p.type_post, pp.typePoll, " +
             "false , " +
             "pp.posts.id, " +
-            "(SELECT COUNT(pv) FROM poll_vote pv WHERE pv.poll_options.postPoll.id = pp.id) ) " +
-            "FROM post_poll pp " +
+            "(SELECT COUNT(pv) FROM PollVote pv WHERE pv.poll_options.postPoll.id = pp.id) ) " +
+            "FROM PostPoll pp " +
             "JOIN pp.posts p " +
             "WHERE pp.posts.id = :postId")
     PostPollResponse getPostPollByPostId(@Param("postId") String postId);

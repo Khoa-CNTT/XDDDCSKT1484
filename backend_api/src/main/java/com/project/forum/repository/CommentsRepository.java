@@ -15,8 +15,8 @@ public interface CommentsRepository extends JpaRepository<Comments, String> {
     @Query("SELECT new com.project.forum.dto.responses.comment.CommentResponse(" +
             "c.id, c.content, c.created_at, c.users.img, c.users.name, " +
             "CASE WHEN c.users.id = :userId THEN true ELSE false END, " +
-            "CASE WHEN EXISTS (SELECT 1 FROM comment_reply cr WHERE cr.comments.id = c.id) THEN TRUE ELSE FALSE END ) " +
-            "FROM comments c WHERE c.posts.id = :postId ORDER BY c.created_at ASC")
+            "CASE WHEN EXISTS (SELECT 1 FROM CommentReply cr WHERE cr.comments.id = c.id) THEN TRUE ELSE FALSE END ) " +
+            "FROM Comments c WHERE c.posts.id = :postId ORDER BY c.created_at ASC")
     Page<CommentResponse> findCommentByPostIdAndUserId(
             @Param("postId") String postId,
             @Param("userId") String userId,

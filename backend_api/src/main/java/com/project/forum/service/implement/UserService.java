@@ -105,8 +105,18 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse getUserByUsername(String username) {
-        return null;
+    public Page<UserResponse> getUserByName(String name, Integer page, Integer size) {
+//        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND) );
+//        UserResponse userResponse = usersRepository.findUserByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        Pageable pageable =  PageRequest.of(page,size);
+        Page<UserResponse> userResponseList = usersRepository.findUserByName(name, pageable);
+//        UserResponse userResponse = userMapper.toUserResponse(users);
+//        Set<String> roleNames = users.getRoles()
+//                .stream()
+//                .map(Roles::getName)
+//                .collect(Collectors.toSet());
+//        userResponse.setRoles(roleNames.toString());
+        return userResponseList;
     }
 
 

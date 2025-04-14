@@ -20,7 +20,12 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "posts")
+@Entity
+@Table(name = "posts", indexes = {
+        @Index(name = "idx_posts_user_id", columnList = "user_id"),
+        @Index(name = "idx_posts_language_id", columnList = "language_id")
+})
+
 @EntityListeners(AuditingEntityListener.class)
 public class Posts {
 

@@ -17,7 +17,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "messages")
+@Entity
+@Table(name = "messages", indexes = {
+        @Index(name = "idx_messages_conversation_id", columnList = "conversation_id"),
+        @Index(name = "idx_messages_sender_id", columnList = "sender_id"),
+        @Index(name = "idx_messages_created_at", columnList = "created_at"),
+        @Index(name = "idx_messages_is_read", columnList = "is_read")
+})
+
 @EntityListeners(AuditingEntityListener.class)
 public class Messages {
     @Id

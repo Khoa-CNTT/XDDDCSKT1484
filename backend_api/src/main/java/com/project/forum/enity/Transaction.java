@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "transaction")
+@Entity
+@Table(name = "transaction")
 @EntityListeners(AuditingEntityListener.class)
 public class Transaction {
 

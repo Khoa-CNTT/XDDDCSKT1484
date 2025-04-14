@@ -14,7 +14,7 @@ public interface PostContentHistoryRepository extends JpaRepository<PostContentH
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostContentHistoryResponse( " +
             "pc.title, pc.content, pc.created_at ) " +
-            "FROM postContentHistory pc " +
+            "FROM PostContentHistory pc " +
             "WHERE pc.posts.id = :postId")
     Page<PostContentHistoryResponse> findByPosts_Id(@Param("postId") String postId, Pageable pageable);
 

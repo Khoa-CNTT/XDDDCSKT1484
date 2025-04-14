@@ -18,7 +18,13 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "users")
+@Entity
+@Table(name = "users", indexes = {
+        @Index(name = "idx_users_username", columnList = "username"),
+        @Index(name = "idx_users_status", columnList = "status"),
+        @Index(name = "idx_users_name", columnList = "name"),
+        @Index(name = "idx_users_id", columnList = "id")
+})
 @EntityListeners(AuditingEntityListener.class)
 public class Users {
 

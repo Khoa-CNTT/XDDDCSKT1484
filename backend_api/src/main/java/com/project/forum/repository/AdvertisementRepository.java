@@ -19,23 +19,29 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
 
     @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse( " +
             "a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
-            "FROM advertisement a")
+            "FROM Advertisement a")
     Page<AdsResponse> findAllAds(Pageable pageable);
 
     @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse( " +
             "a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
-            "FROM advertisement a " +
+            "FROM Advertisement a " +
             "WHERE a.posts.users.id = :id")
     Page<AdsResponse> findAllAdsByUser(@Param("id") String id, Pageable pageable);
 
     @Query("SELECT a " +
-            "FROM advertisement a " +
+            "FROM Advertisement a " +
             "LEFT JOIN a.adsPackage ads " +
             "WHERE a.status = true " +
             "AND a.views != ads.max_impressions " +
             "ORDER BY FUNCTION('RAND')")
     Page<Advertisement> findRandomAdvertisement(Pageable pageable);
 
+
+
+    @Query("SELECT a " +
+            "FROM Advertisement a " +
+            "WHERE a.id = :id" )
+    Optional<AdsResponse> findAds(@Param("id") String id);
 }
 
 

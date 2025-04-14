@@ -15,7 +15,7 @@ public interface PollOptionsRepository extends JpaRepository<PollOptions, String
             "po.id, po.option_text, COUNT(DISTINCT pv.id), " +
             "CASE WHEN COUNT(DISTINCT (CASE WHEN pv.users.id = :userId THEN pv.id ELSE NULL END)) > 0 THEN true ELSE false END, " +
             "po.created_at) " +
-            "FROM poll_options po " +
+            "FROM PollOptions po " +
             "LEFT JOIN po.pollVotes pv " +
             "LEFT JOIN po.postPoll pp " +
             "LEFT JOIN pp.posts p " +

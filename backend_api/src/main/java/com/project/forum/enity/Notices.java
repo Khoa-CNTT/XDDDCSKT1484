@@ -17,7 +17,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity(name = "notices")
+@Entity
+@Table(name = "notices", indexes = {
+        @Index(name = "idx_notices_created_at", columnList = "created_at"),
+        @Index(name = "idx_notices_status", columnList = "status"),
+        @Index(name = "idx_notices_post_id", columnList = "post_id"),
+        @Index(name = "idx_notices_user_id", columnList = "user_id")
+})
 @EntityListeners(AuditingEntityListener.class)
 public class Notices {
 

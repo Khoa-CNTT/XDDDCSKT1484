@@ -67,5 +67,15 @@ public class PostController {
                 .build());
     }
 
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/find")
+    ResponseEntity<ApiResponse<Page<PostResponse>>> findAllAdmin(@RequestParam(defaultValue = "0") Integer page,
+                                                            @RequestParam(defaultValue = "10") Integer size,
+                                                            @RequestParam(defaultValue = "") String language,
+                                                            @RequestParam(defaultValue = "") String content) {
+        return ResponseEntity.ok(ApiResponse.<Page<PostResponse>>builder()
+                .data(postService.findAllPostAdmin(page, size, content, language))
+                .build());
+    }
 
 }
