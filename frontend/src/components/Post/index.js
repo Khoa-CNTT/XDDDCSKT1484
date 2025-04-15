@@ -9,7 +9,7 @@ import { deletedPostServices, getPostContentServices, getPostPollServices, likeS
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { CloseIcon, CommentIcon, LikeActiveIcon, LikeIcon, ShareIcon, ReportIcon, SaveIcon, HiddenIcon, EditIcon, TrashIcon, MoreIcon } from "~/components/Icons";
+import { CloseIcon, CommentIcon, LikeActiveIcon, LikeIcon, ShareIcon, ReportIcon, SaveIcon, HiddenIcon, EditIcon, TrashIcon, MoreIcon, StarIcon, SpeakerIcon } from "~/components/Icons";
 
 const cx = classNames.bind(styles)
 
@@ -149,6 +149,35 @@ function Post({ data, profile = false, show = true }) {
         });
     };
 
+    const speak = (text, lang) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        speechSynthesis.speak(utterance);
+    }
+
+    const handleSpeaker = (title, content) => {
+        var lang = '';
+        switch (data.language) {
+            case 'English':
+                lang = 'en-US';
+                break;
+            case 'Japan':
+                lang = 'ja-JP';
+                break;
+            case 'China':
+                lang = 'zh-CN';
+                break;
+            default:
+                lang = 'en-US';
+                break;
+        }
+
+        speak(title, lang);
+        speak(content, lang);
+    }
+
     if (deleteState) {
         return (
             <div className={cx("wrapper", { profile })}>
@@ -169,10 +198,23 @@ function Post({ data, profile = false, show = true }) {
                         <Link className={cx('name')} to={`/user/${data.user_id}`}>{data.user_name}</Link>
                         <Link className={cx('date')} to={`/post/${data.id}`}>{format(new Date(data.created_at), 'dd/MM/yyyy HH:mm')}</Link>
                         <Link className={cx('language')} to={`/post/${data.id}`}>{data.language}</Link>
-
+                        {data.ads &&
+                            (
+                                <div className={cx('icon-ads')}>
+                                    <StarIcon />
+                                    <span className={cx('title-ads')}>Advertised</span>
+                                </div>
+                            )
+                        }
                     </div>
                     <div className={cx('more-btn')}>
-
+                        {data.type_post === 'CONTENT' &&
+                            (
+                                <div className={cx('icon-speaker')} onClick={() => handleSpeaker(dataPost.title, dataPost.content)}>
+                                    <SpeakerIcon />
+                                </div>
+                            )
+                        }
                         {token ? (
                             <Menu
                                 hideOnClick={true}

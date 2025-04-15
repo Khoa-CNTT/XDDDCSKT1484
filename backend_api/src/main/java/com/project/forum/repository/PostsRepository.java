@@ -1,6 +1,7 @@
 package com.project.forum.repository;
 
 import com.project.forum.dto.responses.post.PostResponse;
+import com.project.forum.dto.responses.post.PostTotalResponse;
 import com.project.forum.enity.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -109,4 +111,22 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
                                     @Param("userId") String userId,
                                     @Param("language") String language,
                                     Pageable pageable);
+
+    @Query("SELECT new com.project.forum.dto.responses.post.PostTotalResponse(" +
+            "COUNT(DISTINCT p.id), " +
+            "COUNT(DISTINCT c.id), " +
+            "COUNT(DISTINCT l.id), " +
+            "COUNT(DISTINCT u.id), " +
+            "MIN(p.created_at), " +
+            "MAX(p.created_at)) " +
+            "FROM Posts p " +
+            "LEFT JOIN p.users u " +
+            "LEFT JOIN p.comments c " +
+            "LEFT JOIN p.likes l " +
+            "WHERE p.created_at BETWEEN :from AND :to " +
+            "AND u.created BETWEEN :from AND :to")
+    PostTotalResponse getPostTotalStatsByUserAndTime(@Param("from") LocalDateTime from,
+                                                     @Param("to") LocalDateTime to);
+
+
 }

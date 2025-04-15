@@ -73,6 +73,8 @@ public class PostService implements IPostService {
             Optional<PostResponse> adPostOpt = postsRepository.findPostById(randomAd.getPosts().getId(), userId);
 
             adPostOpt.ifPresent(adPost -> {
+                Advertisement advertisement = advertisementRepository.findAdsByPostId(adPost.getId()).orElseThrow(() -> new WebException(ErrorCode.E_ADS_NOT_FOUND));
+                advertisement.setViews(advertisement.getViews()+1);
                 adPost.setAds(true);
                 resultList.add(adPost);
             });

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +39,20 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
 
 
 
-    @Query("SELECT a " +
+    @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse(a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
             "FROM Advertisement a " +
             "WHERE a.id = :id" )
     Optional<AdsResponse> findAds(@Param("id") String id);
+
+
+    @Query("SELECT a " +
+            "FROM Advertisement a " +
+            "LEFT JOIN a.posts p " +
+            "LEFT JOIN a.adsPackage ads " +
+            "WHERE p.id = :postId " +
+            "AND a.status = true " +
+            "AND a.views != ads.max_impressions")
+    Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
 }
 
 

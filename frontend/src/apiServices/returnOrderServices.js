@@ -10,7 +10,7 @@ const returnOrder = async (param, token) => {
             }
         }
 
-        const res = await request.get('vn-pay/returnOrder', config)
+        const res = await request.get('vn-pay/orderReturn', config)
         return res
     } catch (error) {
         return error
