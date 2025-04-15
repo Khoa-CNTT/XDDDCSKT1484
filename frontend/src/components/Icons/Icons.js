@@ -447,20 +447,39 @@ export const DownIcon = ({ width = '2.2rem', height = '2.2rem', onClick, classNa
     </svg>
 );
 
-export const CloseIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className, fill = 'currentColor' }) => (
+export const CloseIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className }) => (
     <svg
         onClick={onClick}
         className={className}
         width={width}
         height={height}
         viewBox="0 0 20 20"
-        fill={fill}
+        fill='currentColor'
         xmlns="http://www.w3.org/2000/svg"
     >
         <path
             d="m11.06 10 6.22-6.22a.771.771 0 0 0-.015-1.046.771.771 0 0 0-1.045-.014L10 8.94 3.78 2.72a.771.771 0 0 0-1.042.018.771.771 0 0 0-.018 1.042L8.94 10l-6.22 6.22a.758.758 0 0 0-.02 1.08.758.758 0 0 0 1.08-.02L10 11.06l6.22 6.22a.771.771 0 0 0 1.041-.018.771.771 0 0 0 .019-1.042L11.06 10Z"
         ></path>
     </svg>
+);
+
+export const CancelIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        fill="#fff"
+        viewBox="0 0 24 24"
+        strokeWidth="2"
+        stroke="#E51818"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+
 );
 
 export const FailedIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
@@ -470,9 +489,9 @@ export const FailedIcon = ({ width = '3.2rem', height = '3.2rem', onClick, class
         width={width}
         height={height}
         viewBox="0 0 24 24"
-        fill="#ff390a"
-        strokeWidth="1.5"
-        stroke="#fff"
+        fill="#fff"
+        strokeWidth="2"
+        stroke="#ff623d"
     >
         <path
             strokeLinecap="round"
@@ -480,8 +499,59 @@ export const FailedIcon = ({ width = '3.2rem', height = '3.2rem', onClick, class
             d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
     </svg>
 
+);
 
+export const PendingIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="rgba(81, 128, 214, 0.2)"
+        strokeWidth="1.5"
+        stroke="#1559d6"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
 
+);
+
+export const HoldOnIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="#fff"
+    >
+        <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="#2f86eb" strokeWidth="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M15.9965 12H16.0054" stroke="#2f86eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M11.9955 12H12.0045" stroke="#2f86eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7.99451 12H8.00349" stroke="#2f86eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+
+);
+
+export const UnknownIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+    >
+        <path
+            d="M12 14.75C11.59 14.75 11.25 14.41 11.25 14V9C11.25 8.59 11.59 8.25 12 8.25C12.41 8.25 12.75 8.59 12.75 9V14C12.75 14.41 12.41 14.75 12 14.75Z" fill="#ffc021" />
+        <path
+            d="M12 18.0001C11.94 18.0001 11.87 17.9901 11.8 17.9801C11.74 17.9701 11.68 17.9501 11.62 17.9201C11.56 17.9001 11.5 17.8701 11.44 17.8301C11.39 17.7901 11.34 17.7501 11.29 17.7101C11.11 17.5201 11 17.2601 11 17.0001C11 16.7401 11.11 16.4801 11.29 16.2901C11.34 16.2501 11.39 16.2101 11.44 16.1701C11.5 16.1301 11.56 16.1001 11.62 16.0801C11.68 16.0501 11.74 16.0301 11.8 16.0201C11.93 15.9901 12.07 15.9901 12.19 16.0201C12.26 16.0301 12.32 16.0501 12.38 16.0801C12.44 16.1001 12.5 16.1301 12.56 16.1701C12.61 16.2101 12.66 16.2501 12.71 16.2901C12.89 16.4801 13 16.7401 13 17.0001C13 17.2601 12.89 17.5201 12.71 17.7101C12.66 17.7501 12.61 17.7901 12.56 17.8301C12.5 17.8701 12.44 17.9001 12.38 17.9201C12.32 17.9501 12.26 17.9701 12.19 17.9801C12.13 17.9901 12.06 18.0001 12 18.0001Z" fill="#ffc021" />
+        <path
+            d="M18.06 22.1601H5.93998C3.98998 22.1601 2.49998 21.4501 1.73998 20.1701C0.989976 18.8901 1.08998 17.2401 2.03998 15.5301L8.09998 4.63009C9.09998 2.83009 10.48 1.84009 12 1.84009C13.52 1.84009 14.9 2.83009 15.9 4.63009L21.96 15.5401C22.91 17.2501 23.02 18.8901 22.26 20.1801C21.5 21.4501 20.01 22.1601 18.06 22.1601ZM12 3.34009C11.06 3.34009 10.14 4.06009 9.40998 5.36009L3.35998 16.2701C2.67998 17.4901 2.56998 18.6101 3.03998 19.4201C3.50998 20.2301 4.54998 20.6701 5.94998 20.6701H18.07C19.47 20.6701 20.5 20.2301 20.98 19.4201C21.46 18.6101 21.34 17.5001 20.66 16.2701L14.59 5.36009C13.86 4.06009 12.94 3.34009 12 3.34009Z" fill="#ffc021" />
+    </svg>
 );
 
 export const AddChatIcon = ({ width = '2.2rem', height = '2.2rem', onClick, className }) => (
@@ -816,8 +886,10 @@ export const ShrinkIcon = ({ width = '2.6rem', height = '2.6rem', onClick, class
 
 );
 
-export const WalletIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
+export const WalletIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
     <svg
+        onClick={onClick}
+        className={className}
         width={width}
         height={height}
         viewBox="0 0 36 36"
@@ -835,8 +907,10 @@ export const WalletIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
 
 );
 
-export const TickIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
+export const TickIcon = ({ width = '3.2rem', height = '3.2rem', onClick, className }) => (
     <svg
+        onClick={onClick}
+        className={className}
         width={width}
         height={height}
         viewBox="0 0 32 32"
@@ -845,6 +919,42 @@ export const TickIcon = ({ width = '3.2rem', height = '3.2rem' }) => (
     >
         <path d="M16 2.66669C8.65334 2.66669 2.66667 8.65335 2.66667 16C2.66667 23.3467 8.65334 29.3334 16 29.3334C23.3467 29.3334 29.3333 23.3467 29.3333 16C29.3333 8.65335 23.3467 2.66669 16 2.66669ZM22.3733 12.9334L14.8133 20.4934C14.6267 20.68 14.3733 20.7867 14.1067 20.7867C13.84 20.7867 13.5867 20.68 13.4 20.4934L9.62667 16.72C9.24 16.3334 9.24 15.6934 9.62667 15.3067C10.0133 14.92 10.6533 14.92 11.04 15.3067L14.1067 18.3734L20.96 11.52C21.3467 11.1334 21.9867 11.1334 22.3733 11.52C22.76 11.9067 22.76 12.5334 22.3733 12.9334Z" fill="#23A26D" />
     </svg>
+);
+
+export const StarIcon = ({ width = '2.4rem', height = '2.4rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <rect width="24" height="24" rx="12" fill="#FFCC00" />
+        <path d="M12.4135 17.8812L17.1419 20.8769C17.7463 21.2598 18.4967 20.6903 18.3173 19.9847L16.9512 14.6108C16.9127 14.4611 16.9173 14.3036 16.9643 14.1564C17.0114 14.0092 17.0991 13.8783 17.2172 13.7787L21.4573 10.2496C22.0144 9.78588 21.7269 8.86126 21.0111 8.81481L15.4738 8.45544C15.3247 8.44479 15.1816 8.39198 15.0613 8.30317C14.941 8.21437 14.8484 8.09321 14.7943 7.95382L12.7292 2.75323C12.673 2.60528 12.5732 2.4779 12.443 2.38802C12.3127 2.29814 12.1582 2.25 12 2.25C11.8418 2.25 11.6873 2.29814 11.557 2.38802C11.4268 2.4779 11.327 2.60528 11.2708 2.75323L9.20568 7.95382C9.15157 8.09321 9.05897 8.21437 8.93868 8.30317C8.81838 8.39198 8.67533 8.44479 8.52618 8.45544L2.98894 8.81481C2.27315 8.86126 1.9856 9.78588 2.54272 10.2496L6.78278 13.7787C6.90095 13.8783 6.9886 14.0092 7.03566 14.1564C7.08272 14.3036 7.08727 14.4611 7.0488 14.6108L5.78188 19.5945C5.56667 20.4412 6.46715 21.1246 7.19243 20.6651L11.5865 17.8812C11.71 17.8025 11.8535 17.7607 12 17.7607C12.1465 17.7607 12.29 17.8025 12.4135 17.8812V17.8812Z" fill="white" />
+    </svg>
+
+);
+
+export const SpeakerIcon = ({ width = '2.4rem', height = '2.4rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        strokeWidth="1.5"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
+    </svg>
+
 );
 
 // Icon Admin

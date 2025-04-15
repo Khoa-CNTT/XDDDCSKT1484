@@ -26,8 +26,6 @@
 }
 
 .icon {
-    background-color: rgba(224, 59, 59, 0.12);
-    // background-color: rgba(35, 162, 109, 0.12);
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -37,7 +35,6 @@
 }
 
 .status-payment {
-    color: #4caf50;
     font-weight: 600;
     font-size: 2rem;
     margin-bottom: 8px;
@@ -73,11 +70,11 @@
 .method,
 .amount,
 .fee,
+.substance,
 .status {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.6rem;
     margin: 8px 0;
 }
 
@@ -86,7 +83,9 @@
 .method-title,
 .amount-title,
 .fee-title,
+.substance-title,
 .status-title {
+    font-size: 1.6rem;
     color: #707070;
 }
 
@@ -94,14 +93,14 @@
 .time-content,
 .method-content,
 .amount-content,
+.substance-content,
 .fee-content {
     color: #000;
     font-weight: 600;
+    font-size: 1.5rem;
 }
 
 .status-content {
-    background-color: #e6f7ec;
-    color: #28a745;
     font-weight: 600;
     padding: 2px 8px;
     border-radius: 6px;

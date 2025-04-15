@@ -192,10 +192,14 @@ function Upload() {
                             if (resVNPay?.data?.success) {
                                 window.location.href = resVNPay.data.url;
                             }
+                        } else {
+                            alert(t('uploadSuccess'))
+                            navigate(`/post/${res.data.id}`)
                         }
                     } else {
                         navigate(`/user/${user.id}`);
                     }
+                    resetForm();
                 } else {
                     console.log(res);
                 }
@@ -204,9 +208,20 @@ function Upload() {
                 const data = { ...pollForm, language: languagePost };
                 const res = await uploadPostPollServices(data, token);
                 if (res?.data) {
-                    alert(t('uploadSuccess'))
+                    if (res.data?.show) {
+                        if (selectedPackageId) {
+                            const resVNPay = await submitVNPayServices('en', typePost.toUpperCase(), res.data.id, selectedPackageId, token);
+                            if (resVNPay?.data?.success) {
+                                window.location.href = resVNPay.data.url;
+                            }
+                        } else {
+                            alert(t('uploadSuccess'))
+                            navigate(`/post/${res.data.id}`)
+                        }
+                    } else {
+                        navigate(`/user/${user.id}`);
+                    }
                     resetForm();
-                    navigate(`/post/${res.data.id}`);
                 } else {
                     console.log(res);
                 }
