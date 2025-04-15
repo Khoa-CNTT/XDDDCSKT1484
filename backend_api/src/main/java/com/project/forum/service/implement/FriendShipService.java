@@ -2,6 +2,7 @@ package com.project.forum.service.implement;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.friend.CreateRequestFriendDto;
+import com.project.forum.dto.responses.friend.FriendRequestListResponse;
 import com.project.forum.dto.responses.friend.FriendRequestResponse;
 import com.project.forum.dto.responses.friend.FriendShipResponse;
 import com.project.forum.dto.responses.user.UserFriendResponse;
@@ -120,6 +121,14 @@ public class FriendShipService implements IFriendShipService {
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         return friendShipRepository.getUserFriends(users.getId(),pageable);
 
+    }
+
+    @Override
+    public Page<FriendRequestListResponse> getFriendShipList(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        return friendShipRepository.getListFriendRequest(users.getId(),pageable);
     }
 
 

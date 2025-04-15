@@ -103,7 +103,7 @@ public class VNPayService  implements IVNPayService {
         vnp_Params.put("vnp_Locale", vnp_Locale);
 //        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 //        baseUrl += vnPayConfig.getVnp_Returnurl();
-        String baseUrl = "http://localhost:1407/payment-result";
+        String baseUrl = "http://localhost:1407/paymentResult";
         String localUrl = baseUrl;
         vnp_Params.put("vnp_ReturnUrl", localUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);

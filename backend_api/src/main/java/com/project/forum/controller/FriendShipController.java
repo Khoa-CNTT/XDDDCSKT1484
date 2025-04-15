@@ -2,6 +2,7 @@ package com.project.forum.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.forum.dto.requests.friend.CreateRequestFriendDto;
+import com.project.forum.dto.responses.friend.FriendRequestListResponse;
 import com.project.forum.dto.responses.friend.FriendRequestResponse;
 import com.project.forum.dto.responses.friend.FriendShipResponse;
 import com.project.forum.dto.responses.user.UserFriendResponse;
@@ -56,6 +57,15 @@ public class FriendShipController {
                                                                                @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(ApiResponse.<Page<UserFriendResponse>>builder()
                         .data(friendRequestService.getUserListFriend(page,size))
+                .build());
+    }
+
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/friendship-request")
+    public ResponseEntity<ApiResponse<Page<FriendRequestListResponse>>> getFriendShipRequest(@RequestParam(defaultValue = "0") Integer page,
+                                                                                             @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseEntity.ok(ApiResponse.<Page<FriendRequestListResponse>>builder()
+                .data(friendRequestService.getFriendShipList(page,size))
                 .build());
     }
 }
