@@ -1,13 +1,12 @@
-import * as request from '~/utils/request'
+import * as request from '~/utils/request';
 
-const search = async (page, size, content, language, token) => {
+const searchUsers = async (name, page, size, token) => {
     try {
         const config = {
             params: {
+                name,
                 page,
                 size,
-                content,
-                language
             }
         }
 
@@ -16,12 +15,12 @@ const search = async (page, size, content, language, token) => {
                 'Authorization': `Bearer ${token}`
             }
         }
-        const res = await request.get('posts', config)
+        const res = await request.get('users/find', config);
 
-        return res;
+        return res
     } catch (error) {
         return error;
     }
 }
 
-export default search;
+export default searchUsers;

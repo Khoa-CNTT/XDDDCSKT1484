@@ -103,7 +103,7 @@ function Header() {
         },
         search: () => {
             if (searchValue.trim()) {
-                navigate(`/?content="${searchValue.trim()}"`);
+                navigate(`/search?q=${searchValue.trim()}`);
             }
         },
         handleKeyUp: (e) => {

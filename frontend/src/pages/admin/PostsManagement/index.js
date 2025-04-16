@@ -3,7 +3,7 @@ import styles from './PostsManagement.module.scss'
 import { EditIcon, LeftIcon, RightIcon, SearchIcon, TrashIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { searchServices } from "~/apiServices";
+import { searchPostsAdminServices } from "~/apiServices";
 
 const cx = classNames.bind(styles)
 
@@ -18,7 +18,7 @@ function PostsManagement() {
     }, [pageCurrent])
 
     const fetchAllPost = async (page, size, token) => {
-        const res = await searchServices(page, size, '', '', token);
+        const res = await searchPostsAdminServices(page, size, '', '', token);
         if (res?.data) {
             setListPost(res.data.content);
             setTotalsPage(res.data?.totalPages);

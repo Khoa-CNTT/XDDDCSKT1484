@@ -30,6 +30,7 @@ import AdminLayout from '~/layouts/AdminLayout';
 import { Fragment } from 'react';
 import PostAds from '~/pages/PostAds';
 import ResultPayment from '~/pages/ResultPayment';
+import Search from '~/pages/Search';
 
 const publicRoutes = [
     { path: routesConfig.home, component: Home, layout: DefaultLayout },
@@ -42,8 +43,7 @@ const publicRoutes = [
     { path: routesConfig.help, component: Help, layout: HeaderOnly },
     { path: routesConfig.aboutFL, component: AboutFL, layout: HeaderOnly },
     { path: routesConfig.postDetail, component: PostDetail, layout: DefaultLayout },
-    { path: routesConfig.postAds, component: PostAds, layout: DefaultLayout },
-    { path: routesConfig.paymentResult, component: ResultPayment, layout: HeaderOnly },
+    { path: routesConfig.search, component: Search, layout: DefaultLayout },
 ];
 
 const privateRoutes = [
@@ -53,6 +53,8 @@ const privateRoutes = [
     { path: routesConfig.profile, component: Profile, layout: HeaderOnly },
     { path: routesConfig.activeAccount, component: ActiveAccount, layout: Fragment },
     { path: routesConfig.sendEmail, component: SendEmail, layout: Fragment },
+    { path: routesConfig.postAds, component: PostAds, layout: DefaultLayout },
+    { path: routesConfig.paymentResult, component: ResultPayment, layout: HeaderOnly },
 ];
 
 const adminRoutes = [

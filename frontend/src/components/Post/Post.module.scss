@@ -116,6 +116,21 @@
     font-weight: 700;
 }
 
+.title-translate {
+    width: fit-content;
+    padding: 2px 6px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #acacac;
+    margin: 6px;
+    cursor: pointer;
+    border-radius: 14px;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+}
+
 .form-vote {
     border: 2px solid #999;
     border-radius: 20px;
