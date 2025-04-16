@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @GetMapping("/users/find")
+    @GetMapping("/find")
     ResponseEntity<ApiResponse<Page<UserResponse>>> findUserByName(@RequestParam(defaultValue = "") String name,
                                                                    @RequestParam(defaultValue = "0") Integer page,
                                                                    @RequestParam(defaultValue = "5") Integer size) {

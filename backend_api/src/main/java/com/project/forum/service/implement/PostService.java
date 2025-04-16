@@ -68,7 +68,7 @@ public class PostService implements IPostService {
         }
 
         Page<Advertisement> randomAdsPage = advertisementRepository.findRandomAdvertisement(PageRequest.of(0, 1));
-        if (!randomAdsPage.isEmpty()) {
+        if (!randomAdsPage.isEmpty() && !postPage.isEmpty()) {
             Advertisement randomAd = randomAdsPage.getContent().get(0);
             Optional<PostResponse> adPostOpt = postsRepository.findPostById(randomAd.getPosts().getId(), userId);
 
