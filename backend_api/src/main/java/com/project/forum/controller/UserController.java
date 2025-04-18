@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @PutMapping("")
+    @PatchMapping("")
     ResponseEntity<ApiResponse<UserResponse>> update(@RequestBody(required = true) UpdateUserDto updateUserDto) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
                 .data(userService.update(updateUserDto))
