@@ -2,20 +2,26 @@ import classNames from "classnames/bind";
 import styles from './Search.module.scss';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import { searchPostsServices, searchUsersServices } from "~/apiServices";
 import Post from "~/components/Post";
 import { useScroll } from "~/hooks";
+import User from "~/components/User";
+import Button from "~/components/Button";
 
 const cx = classNames.bind(styles);
 
 function Search() {
+    const [typeSearch, setTypeSearch] = useState('All');
     const [posts, setPosts] = useState([]);
     const [users, setUsers] = useState([]);
+    const [totalPost, setTotalPost] = useState(0);
+    const [totalUser, setTotalUser] = useState(0);
+    // eslint-disable-next-line
     const [currentPage, setCurrentPage] = useState(0);
     const location = useLocation();
 
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
 
     const token = localStorage.getItem('authToken');
 
@@ -31,26 +37,31 @@ function Search() {
     };
 
     useEffect(() => {
-        initializePosts();
+        initializePosts(0);
+        setTypeSearch('All');
         // eslint-disable-next-line
-    }, [location.search])
+    }, [location.search]);
 
-    const initializePosts = async () => {
+    const initializePosts = async (page) => {
         const { language, q } = getParamsFromURL();
 
         setPosts([]);
+        setUsers([]);
+        setCurrentPage(page);
         await fetchPosts({
-            page: currentPage,
+            page,
             size: 5,
             content: q,
             language
         });
+        await findUser(page, 5, q);
     };
 
     const findUser = async (page, size, name) => {
         const res = await searchUsersServices(name, page, size, token);
         if (res?.data && res.data.content.length > 0) {
             setUsers(prev => (page === 0 ? res.data.content : [...prev, ...res.data.content]));
+            setTotalUser(res.data.totalElements);
         }
     }
 
@@ -60,26 +71,72 @@ function Search() {
         if (res?.data) {
             if (res.data?.content.length > 0) {
                 setPosts(prev => (page === 0 ? res.data.content : [...prev, ...res.data.content]));
-            } else {
-                alert(t('notFoundPost'));
+                setTotalPost(res.data.totalElements);
             }
         } else if (res.response?.data?.code === 40405) {
             alert(res.response.data.message);
         }
     };
 
+    const handleSeePost = () => {
+        setTypeSearch('Post')
+    }
+
+    const handleSeeUser = () => {
+        setTypeSearch('User')
+    }
+
     useScroll(() => {
-        const { language, q } = getParamsFromURL();
-        const nextPage = currentPage + 1;
-        setCurrentPage(nextPage);
-        fetchPosts({ page: nextPage, content: q, language, size: 5 });
+        if (typeSearch !== 'All') {
+            const { language, q } = getParamsFromURL();
+            setCurrentPage(prevPage => {
+                const nextPage = prevPage + 1;
+                if (typeSearch === 'Post') {
+                    fetchPosts({ page: nextPage, content: q, language, size: 5 });
+                } else {
+                    findUser(nextPage, 5, q);
+                }
+                return nextPage;
+            });
+        }
     });
 
     return (
         <div className={cx('wrapper')}>
-            {posts.map((post) => (
-                <Post key={post.id} data={post} show={post.show} />
-            ))}
+            {typeSearch !== 'Post' &&
+                (
+                    <div className={cx('users')}>
+                        {users.length > 0 && <h3 className={cx('users-title')}>Everybody</h3>}
+                        {users.map(user => (
+                            <User key={user.id} data={user} />
+                        ))}
+                        {totalUser > 5 && typeSearch === 'All' &&
+                            (
+                                <div className={cx('see-all')}>
+                                    <Button className={cx('see-btn')} normal onClick={handleSeeUser}>See All</Button>
+                                </div>
+                            )
+                        }
+                    </div>
+                )
+            }
+            {typeSearch !== 'User' &&
+                (
+                    <div className={cx('posts')}>
+                        {posts.length > 0 && <h3 className={cx('posts-title')}>Posts</h3>}
+                        {posts.map(post => (
+                            <Post key={post.id} data={post} show={post.show} />
+                        ))}
+                        {totalPost > 5 && typeSearch === 'All' &&
+                            (
+                                <div className={cx('see-all')}>
+                                    <Button className={cx('see-btn')} normal onClick={handleSeePost}>See All</Button>
+                                </div>
+                            )
+                        }
+                    </div>
+                )
+            }
         </div>
     );
 }

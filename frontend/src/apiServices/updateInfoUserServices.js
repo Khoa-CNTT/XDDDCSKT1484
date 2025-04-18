@@ -2,7 +2,7 @@ import * as request from '~/utils/request';
 
 const updateInfoUser = async (data, token) => {
     try {
-        const res = await request.put('users', data, {
+        const res = await request.patch('users', data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

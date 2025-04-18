@@ -1,6 +1,6 @@
 import * as request from '~/utils/request'
 
-const upImagePost = async (img) => {
+const uploadImage = async (img) => {
     try {
         const formData = new FormData();
         formData.append('file', img)
@@ -12,4 +12,4 @@ const upImagePost = async (img) => {
     }
 }
 
-export default upImagePost;
+export default uploadImage;

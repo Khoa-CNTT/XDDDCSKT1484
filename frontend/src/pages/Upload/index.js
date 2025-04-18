@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback, useContext, Fragment } from '
 import styles from './Upload.module.scss';
 import Button from '~/components/Button';
 import Image from '~/components/Image';
-import { editPostServices, getPackageAdsServices, getPostContentServices, submitVNPayServices, upImagePostServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
+import { editPostServices, getPackageAdsServices, getPostContentServices, submitVNPayServices, uploadImageServices, uploadPostContentServices, uploadPostPollServices } from '~/apiServices';
 import { useTranslation } from 'react-i18next';
 import { BoldIcon, ClearSearchIcon, CloseIcon, ContentIcon, ImageIcon, ItalicIcon, PlusIcon, PollIcon, TrashIcon, UnderlineIcon, WalletIcon } from '~/components/Icons';
 import { UserContext } from '~/context/UserContext';
@@ -181,7 +181,7 @@ function Upload() {
             if (typePost === 'Content') {
                 let imgLink = '';
                 if (fileInputRef.current.files[0]) {
-                    imgLink = await upImagePostServices(fileInputRef.current.files[0]);
+                    imgLink = await uploadImageServices(fileInputRef.current.files[0]);
                 }
                 const data = { ...contentForm, img_url: imgLink?.data?.url, language: languagePost };
                 const res = await uploadPostContentServices(data, token);

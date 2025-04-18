@@ -164,7 +164,7 @@ function Post({ data, profile = false, show = true }) {
 
     const handleSpeaker = (title, content) => {
         var lang = '';
-        switch (data.language) {
+        switch (data?.language) {
             case 'English':
                 lang = 'en-US';
                 break;
@@ -190,37 +190,37 @@ function Post({ data, profile = false, show = true }) {
 
 
     const handleTranslate = async () => {
-        if (!isTranslated) {
-            // Nếu chưa dịch → cần dịch (nếu chưa có) rồi hiển thị bản dịch
-            if (!translatedPost) {
-                let lang = '';
-                switch (user.language) {
-                    case 'Japan':
-                        lang = 'Japanese';
-                        break;
-                    case 'China':
-                        lang = 'Chinese';
-                        break;
-                    default:
-                        lang = 'English';
-                        break;
+        if (token) {
+            if (!isTranslated) {
+                if (!translatedPost) {
+                    let lang = '';
+                    switch (user.language) {
+                        case 'Japan':
+                            lang = 'Japanese';
+                            break;
+                        case 'China':
+                            lang = 'Chinese';
+                            break;
+                        default:
+                            lang = 'English';
+                            break;
+                    }
+                    setOriginalPost(dataPost);
+                    const title = await fetchTranslate(dataPost.title, lang);
+                    const content = await fetchTranslate(dataPost.content, lang);
+
+                    const translated = { title, content };
+                    setTranslatedPost(translated);
+                    setDataPost(translated);
+                } else {
+                    setDataPost(translatedPost);
                 }
-                setOriginalPost(dataPost);
-                const title = await fetchTranslate(dataPost.title, lang);
-                const content = await fetchTranslate(dataPost.content, lang);
-
-                const translated = { title, content };
-                setTranslatedPost(translated);
-                setDataPost(translated);
             } else {
-                setDataPost(translatedPost); // Bản dịch đã có rồi
+                setDataPost(originalPost);
             }
-        } else {
-            // Đã dịch → quay lại bản gốc
-            setDataPost(originalPost);
-        }
 
-        setIsTranslated(prev => !prev);
+            setIsTranslated(prev => !prev);
+        }
     };
 
 
@@ -286,7 +286,7 @@ function Post({ data, profile = false, show = true }) {
                                 </Link>
                             </div>
                             {
-                                user.language !== data.language
+                                token && user?.language !== data.language
                                 &&
                                 (
                                     <p className={cx('title-translate')} onClick={handleTranslate}>{isTranslated ? 'Seen Original' : 'Translate Post'}</p>
