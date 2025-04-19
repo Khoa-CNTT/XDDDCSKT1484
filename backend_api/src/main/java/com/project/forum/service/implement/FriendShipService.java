@@ -75,14 +75,27 @@ public class FriendShipService implements IFriendShipService {
         Users users2 = usersRepository.findById(userId).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         Optional<FriendShip> friendShip = friendShipRepository
                 .findByReceiver_IdAndSender_Id(users1.getId(), users2.getId());
+
         if (friendShip.isEmpty()) {
             FriendShip friendShip2 = friendShipRepository
                     .findByReceiver_IdAndSender_Id(users2.getId(), users1.getId()).orElseThrow(() -> new WebException(ErrorCode.E_REQUEST_NOT_FOUND));
+            if (friendShip2.getStatus().equals(StatusFriend.FRIENDS.getStatus())) {
+                return FriendShipResponse.builder()
+                        .status(StatusFriend.FRIENDS.getStatus())
+                        .createdAt(friendShip2.getCreated_at())
+                        .build();
+            }
             return FriendShipResponse.builder()
                     .status(StatusFriend.PENDING_SENT.getStatus())
                     .createdAt(friendShip2.getCreated_at())
                     .build();
         } else {
+            if (friendShip.get().getStatus().equals(StatusFriend.FRIENDS.getStatus())) {
+                return FriendShipResponse.builder()
+                        .status(StatusFriend.FRIENDS.getStatus())
+                        .createdAt(friendShip.get().getCreated_at())
+                        .build();
+            }
             return FriendShipResponse.builder()
                     .status(StatusFriend.PENDING_RECEIVED.getStatus())
                     .createdAt(friendShip.get().getCreated_at())

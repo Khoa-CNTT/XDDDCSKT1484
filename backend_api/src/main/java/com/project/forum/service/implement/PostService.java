@@ -1,6 +1,7 @@
 package com.project.forum.service.implement;
 
 import com.project.forum.dto.responses.post.PostResponse;
+import com.project.forum.dto.responses.post.PostTotalResponse;
 import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Comments;
 import com.project.forum.enity.Posts;
@@ -21,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -150,6 +152,13 @@ public class PostService implements IPostService {
 
         return posts;
     }
+
+    @Override
+    public PostTotalResponse postTotal(LocalDateTime start, LocalDateTime end) {
+        return postsRepository.getPostStats(start,end);
+    }
+
+
 
 
 }

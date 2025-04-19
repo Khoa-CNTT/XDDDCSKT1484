@@ -123,10 +123,14 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
             "LEFT JOIN p.likes l " +
-            "WHERE p.created_at BETWEEN :from AND :to " +
-            "AND u.created BETWEEN :from AND :to")
-    PostTotalResponse getPostTotalStatsByUserAndTime(@Param("from") LocalDateTime from,
-                                                     @Param("to") LocalDateTime to);
+            "WHERE (:from IS NULL OR p.created_at >= :from ) " +
+            "AND p.postShow = true " +
+            "AND (:to IS NULL OR p.created_at <= :to) " +
+            "AND (:from IS NULL OR u.created >= :from ) " +
+            "AND (:to IS NULL OR u.created <= :to )")
+    PostTotalResponse getPostStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+
 
 
 }
