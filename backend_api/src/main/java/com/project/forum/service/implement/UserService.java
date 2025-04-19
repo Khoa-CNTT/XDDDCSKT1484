@@ -73,6 +73,7 @@ public class UserService implements IUserService {
     public UserResponse update(UpdateUserDto updateUserDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
         userMapper.toUpdate(users,updateUserDto);
 
         return userMapper.toUserResponse(usersRepository.save(users));

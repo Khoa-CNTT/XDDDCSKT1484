@@ -97,7 +97,7 @@ function ResultPayment() {
     }, [params])
 
     const formatMoney = (amount) => {
-        return (amount / 24000).toFixed().toLocaleString('en-US') + ' USD';
+        return `${((amount / 24000).toFixed()) / 100} USD`
     }
 
     const formatDate = (date) => {

@@ -2,10 +2,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 52%;
 }
 
 .cmt {
-    width: 52%;
+    width: 100%;
     background-color: var(--white);
     padding: 12px;
     border-radius: 12px;

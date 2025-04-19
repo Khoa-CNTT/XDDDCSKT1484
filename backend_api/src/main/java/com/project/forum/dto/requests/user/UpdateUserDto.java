@@ -16,4 +16,6 @@ public class UpdateUserDto {
     String language;
 
     String gender;
+
+    String img;
 }

@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import routesConfig from '~/config/routes';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AboutIcon, AdvertiseIcon, HelpIcon, HomeIcon, LanguagesIcon, NewsIcon, PolicyIcon, PopularIcon } from '~/components/Icons';
 
@@ -11,24 +11,14 @@ function Sidebar() {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    const url = document.URL
-    const urlParams = url.substring(url.lastIndexOf('/') + 1);
+    const location = useLocation();
 
-    const handleGetPostByLanguage = (language) => {
-        const langParam = `?language="${language}"`;
+    const handleGetPostByLanguage = (lang) => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set("language", lang);
+        const newSearch = searchParams.toString();
 
-        if (urlParams === '' ||
-            (urlParams.startsWith('?language') &&
-                urlParams.substring(urlParams.indexOf('%22') + 3, urlParams.lastIndexOf('%22')) !== language)) {
-            navigate(`/${langParam}`);
-        } else if (urlParams.startsWith('?content')) {
-            if (urlParams.includes('&') && (urlParams.substring(urlParams.lastIndexOf('=') + 4, urlParams.lastIndexOf('%22')) !== language)) {
-                const urlTemp = urlParams.substring(urlParams.indexOf('?'), urlParams.indexOf('&'))
-                navigate(`${urlTemp}&language="${language}"`);
-            } else {
-                navigate(`${urlParams}&language="${language}"`);
-            }
-        }
+        navigate(`/search?${newSearch}`);
     };
 
     return (

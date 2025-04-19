@@ -1,0 +1,48 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 52%;
+    overflow: hidden;
+    border-radius: 14px;
+    background-color: var(--white);
+}
+
+.users-title {
+    margin: 12px 24px 0;
+    align-self: flex-start;
+}
+
+.posts-title {
+    align-self: flex-start;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 52%;
+    margin: 24px 0 32px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 14px;
+}
+
+.see-all {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 16px;
+}
+
+.see-btn {
+    padding: 8px 64px;
+}

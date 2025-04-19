@@ -6,6 +6,7 @@ import com.project.forum.dto.responses.ai.TranslateResponse;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IAIService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class AiController {
                 .build());
     }
 
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping("/translate")
     ResponseEntity<ApiResponse<TranslateResponse>> getAnswer(@RequestBody TranslateRequest translateRequest) throws IOException {
         return ResponseEntity.ok(ApiResponse.<TranslateResponse>builder()

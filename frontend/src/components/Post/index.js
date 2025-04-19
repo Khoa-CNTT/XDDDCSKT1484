@@ -1,15 +1,16 @@
 import classNames from "classnames/bind";
 import { Link, useNavigate } from "react-router-dom";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 
 import styles from './Post.module.scss'
 import Image from "~/components/Image";
 import Button from "~/components/Button";
-import { deletedPostServices, getPostContentServices, getPostPollServices, likeServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
+import { deletedPostServices, getPostContentServices, getPostPollServices, likeServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { CloseIcon, CommentIcon, LikeActiveIcon, LikeIcon, ShareIcon, ReportIcon, SaveIcon, HiddenIcon, EditIcon, TrashIcon, MoreIcon, StarIcon, SpeakerIcon } from "~/components/Icons";
+import { UserContext } from "~/context/UserContext";
 
 const cx = classNames.bind(styles)
 
@@ -17,11 +18,15 @@ function Post({ data, profile = false, show = true }) {
     const [showLike, setShowLike] = useState(data.user_like || false);
     const [showModal, setShowModal] = useState(false);
     const [dataPost, setDataPost] = useState({});
+    const [isTranslated, setIsTranslated] = useState(false);
+    const [originalPost, setOriginalPost] = useState(dataPost);
+    const [translatedPost, setTranslatedPost] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [deleteState, setDeleteState] = useState(false)
     const [likesCount, setLikesCount] = useState(data.like || 0);
     const [totalVote, setTotalVote] = useState(0);
     const { t } = useTranslation();
+    const { user } = useContext(UserContext);
     const navigate = useNavigate();
 
 
@@ -159,7 +164,7 @@ function Post({ data, profile = false, show = true }) {
 
     const handleSpeaker = (title, content) => {
         var lang = '';
-        switch (data.language) {
+        switch (data?.language) {
             case 'English':
                 lang = 'en-US';
                 break;
@@ -177,6 +182,47 @@ function Post({ data, profile = false, show = true }) {
         speak(title, lang);
         speak(content, lang);
     }
+
+    const fetchTranslate = async (text, language) => {
+        const res = await translateServices({ text, language }, token);
+        return res?.data?.translatedText || '';
+    };
+
+
+    const handleTranslate = async () => {
+        if (token) {
+            if (!isTranslated) {
+                if (!translatedPost) {
+                    let lang = '';
+                    switch (user.language) {
+                        case 'Japan':
+                            lang = 'Japanese';
+                            break;
+                        case 'China':
+                            lang = 'Chinese';
+                            break;
+                        default:
+                            lang = 'English';
+                            break;
+                    }
+                    setOriginalPost(dataPost);
+                    const title = await fetchTranslate(dataPost.title, lang);
+                    const content = await fetchTranslate(dataPost.content, lang);
+
+                    const translated = { title, content };
+                    setTranslatedPost(translated);
+                    setDataPost(translated);
+                } else {
+                    setDataPost(translatedPost);
+                }
+            } else {
+                setDataPost(originalPost);
+            }
+
+            setIsTranslated(prev => !prev);
+        }
+    };
+
 
     if (deleteState) {
         return (
@@ -239,15 +285,24 @@ function Post({ data, profile = false, show = true }) {
                                     {renderContent()}
                                 </Link>
                             </div>
+                            {
+                                token && user?.language !== data.language
+                                &&
+                                (
+                                    <p className={cx('title-translate')} onClick={handleTranslate}>{isTranslated ? 'Seen Original' : 'Translate Post'}</p>
+                                )
+                            }
+
                             {dataPost.img_url && (
                                 <div className={cx('img')}>
                                     <Link to={`/post/${data.id}`} className={cx('img-link')}>
                                         <Image src={dataPost.img_url} className={cx('img-src')} />
                                     </Link>
                                 </div>
-                            )}</div>
+                            )}
+                        </div>
                     ) : (
-                        <>
+                        <div className={cx('body', { inactive: !show })}>
                             <div className={cx('question')}>
                                 <Link className={cx('text-question')} to={`/post/${data.id}`}>{dataPost.question}</Link>
                             </div>
@@ -284,7 +339,7 @@ function Post({ data, profile = false, show = true }) {
                                     <Button className={cx('vote-btn')} primary>Vote</Button>
                                 </div>
                             </form>
-                        </>
+                        </div>
                     )}
                 <div className={cx('interact', { inactive: !show })}>
                     <div className={cx('like')}>
