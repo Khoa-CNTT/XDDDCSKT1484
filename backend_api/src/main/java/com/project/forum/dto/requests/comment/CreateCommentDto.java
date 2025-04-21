@@ -1,5 +1,6 @@
 package com.project.forum.dto.requests.comment;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +12,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class CreateCommentDto {
 
+    @NotNull
     String postId;
+
+    @NotNull
     String content;
 
 }

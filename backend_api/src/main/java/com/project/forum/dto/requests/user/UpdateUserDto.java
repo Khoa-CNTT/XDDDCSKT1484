@@ -1,6 +1,7 @@
 package com.project.forum.dto.requests.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,11 +12,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserDto {
+    @NotEmpty
     String name;
 
+    @NotEmpty
     String language;
 
+    @NotEmpty
     String gender;
 
+    @NotEmpty
     String img;
 }

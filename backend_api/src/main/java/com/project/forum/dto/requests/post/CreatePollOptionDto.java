@@ -1,6 +1,8 @@
 package com.project.forum.dto.requests.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class CreatePollOptionDto {
 
+    @NotEmpty
     String option;
 
 }

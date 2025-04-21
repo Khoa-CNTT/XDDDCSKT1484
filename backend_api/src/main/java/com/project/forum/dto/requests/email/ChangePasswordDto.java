@@ -1,5 +1,7 @@
 package com.project.forum.dto.requests.email;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangePasswordDto {
-
+    @NotEmpty
     String email;
 }
