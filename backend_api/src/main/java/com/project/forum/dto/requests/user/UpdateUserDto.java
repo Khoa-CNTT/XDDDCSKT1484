@@ -12,15 +12,15 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserDto {
-    @NotEmpty
+
     String name;
 
-    @NotEmpty
+
     String language;
 
-    @NotEmpty
+
     String gender;
 
-    @NotEmpty
+
     String img;
 }

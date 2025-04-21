@@ -1,5 +1,6 @@
 package com.project.forum.dto.requests.post;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdatePostContentDto {
-
+    @NotEmpty()
     String content;
-
+    @NotEmpty()
     String title;
 }

@@ -18,7 +18,7 @@ public class CreateUserDto {
     String language;
     @NotEmpty
     String gender;
-    @NotEmpty
+
     String img;
     @Email
     String email;
