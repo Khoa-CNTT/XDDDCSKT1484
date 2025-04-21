@@ -1,6 +1,7 @@
 package com.project.forum.dto.requests.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.project.forum.validation.OptionalRange;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserDto {
-
+    @OptionalRange(min = 5, max = 30)
     String name;
 
 
@@ -21,6 +22,6 @@ public class UpdateUserDto {
 
     String gender;
 
-
+    @OptionalRange(min = 1, max = 1000)
     String img;
 }

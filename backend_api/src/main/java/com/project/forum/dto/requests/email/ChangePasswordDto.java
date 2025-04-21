@@ -13,5 +13,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class ChangePasswordDto {
     @NotEmpty
+    @Email
     String email;
 }

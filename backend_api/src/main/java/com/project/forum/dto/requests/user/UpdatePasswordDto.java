@@ -1,5 +1,6 @@
 package com.project.forum.dto.requests.user;
 
+import com.project.forum.validation.OptionalRange;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,9 +13,11 @@ import jakarta.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class UpdatePasswordDto {
     @NotEmpty
+    @OptionalRange(min = 5, max = 30)
     String password;
 
     @NotEmpty
+    @OptionalRange(min = 5, max = 30)
     String rePassword;
 }
 
