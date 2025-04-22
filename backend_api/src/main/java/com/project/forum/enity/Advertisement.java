@@ -45,7 +45,7 @@ public class Advertisement {
     @JoinColumn(name = "post_id")
     Posts posts;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "ads_package_id")
     AdsPackage adsPackage;
 

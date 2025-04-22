@@ -19,4 +19,5 @@ public class NoticeMessage {
 
     String userId;
 
+
 }

@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.forum.dto.responses.notices.NoticeMessage;
 import com.project.forum.dto.responses.notices.NoticeResponse;
 import com.project.forum.enity.Notices;
+import com.project.forum.enity.Posts;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.exception.WebException;
 import com.project.forum.repository.NoticesRepository;
+import com.project.forum.repository.PostsRepository;
 import com.project.forum.repository.UsersRepository;
 import com.project.forum.service.INoticeService;
 import lombok.AccessLevel;
@@ -32,11 +34,12 @@ public class NoticeService implements INoticeService {
      final SimpMessagingTemplate messagingTemplate;
      final NoticesRepository noticesRepository;
      final UsersRepository usersRepository;
+     final PostsRepository postsRepository;
     private final ObjectMapper objectMapper;
 
     @Transactional
     public void sendNotification(Users users, String type, String message, String postId, String userId) throws JsonProcessingException {
-
+        Posts posts = postsRepository.findById(postId).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
         if (noticesRepository.existsNoticesByTypeAndPost_idAndUser_id(type, postId, users.getId())) {
             noticesRepository.updateNoticeMessage(type,postId,users.getId(),message);
             String destination = "/queue/notifications";
@@ -55,6 +58,7 @@ public class NoticeService implements INoticeService {
                     .message(message)
                     .created_at(LocalDateTime.now())
                     .status(false)
+                    .isShow(posts.isPostShow())
                     .build();
             noticesRepository.save(notice);
             String destination = "/queue/notifications";
@@ -95,6 +99,7 @@ public class NoticeService implements INoticeService {
     }
 
     @Override
+    @Transactional
     public boolean readNotices() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));

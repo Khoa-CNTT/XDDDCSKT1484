@@ -3,10 +3,12 @@ package com.project.forum.service.implement;
 import com.project.forum.dto.requests.ads.AdsPackageRequest;
 import com.project.forum.dto.responses.ads.AdsPackageResponse;
 import com.project.forum.enity.AdsPackage;
+import com.project.forum.enity.Advertisement;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.exception.WebException;
 import com.project.forum.mapper.AdsPackageMapper;
 import com.project.forum.repository.AdsPackageRepository;
+import com.project.forum.repository.AdvertisementRepository;
 import com.project.forum.service.IAdsPackageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,8 @@ public class AdsPackageServiceService implements IAdsPackageService {
     final AdsPackageRepository adsPackageRepository;
 
     final AdsPackageMapper adsPackageMapper;
+
+    final AdvertisementRepository advertisementRepository;
 
     @Override
     public AdsPackageResponse create(AdsPackageRequest adsPackageRequest) {
@@ -63,11 +68,20 @@ public class AdsPackageServiceService implements IAdsPackageService {
 
     @Override
     public boolean delete(String id) {
-        try {
-            adsPackageRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
+        Optional<AdsPackage> optional = adsPackageRepository.findById(id);
+        if (optional.isEmpty()) return false;
+
+        AdsPackage adsPackage = optional.get();
+
+        if (adsPackage.getAdvertisements() != null) {
+            for (Advertisement ad : adsPackage.getAdvertisements()) {
+                ad.setAdsPackage(null);
+            }
+            advertisementRepository.saveAll(adsPackage.getAdvertisements());
         }
+
+        adsPackageRepository.delete(adsPackage);
+        return true;
     }
+
 }
