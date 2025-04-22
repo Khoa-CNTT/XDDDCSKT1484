@@ -1,6 +1,7 @@
 package com.project.forum.controller;
 
 import com.project.forum.dto.requests.user.CreateUserDto;
+import com.project.forum.dto.requests.user.StatusRequest;
 import com.project.forum.dto.requests.user.UpdateUserDto;
 import com.project.forum.dto.responses.user.UserResponse;
 import com.project.forum.enums.StatusUser;
@@ -40,10 +41,10 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @PutMapping("/{id}/status")
-    ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable("id") String id, @RequestBody(required = true) StatusUser statusUser) {
+    @PatchMapping("/{id}/status")
+    ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable("id") String id, @RequestBody StatusRequest statusRequest) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
-                .data(userService.setStatus(id, statusUser))
+                .data(userService.setStatus(id, statusRequest.getStatusUser()))
                 .build());
     }
 
