@@ -1,68 +1,65 @@
 import classNames from 'classnames/bind';
 import styles from './AdsManagement.module.scss';
 import { useEffect, useState } from 'react';
-import { SearchIcon, LeftIcon, RightIcon } from '~/components/Icons';
-import AddForm from './AddForm';
-import AdsTable from './AdsTable';
-import EditModal from './EditModal';
+import { LeftIcon, RightIcon, EditIcon, TrashIcon } from '~/components/Icons';
+import { deletedPackageAdsServices, getPackageAdsServices, postPackageAdsServices } from '~/apiServices';
+import ModalDel from '~/components/ModalDel';
+import ModalEdit from '~/components/ModalEdit';
 
 const cx = classNames.bind(styles);
 
 function AdsManagement() {
-    const [adsList, setAdsList] = useState([]);
-    const [editingAd, setEditingAd] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [modalEdit, setModalEdit] = useState(null);
+    const [modalDel, setModalDel] = useState(null);
     const [pageCurrent, setPageCurrent] = useState(0);
     const [totalsPage, setTotalsPage] = useState(1);
+    const [form, setForm] = useState({ name: '', description: '', price: '', max_impressions: '' });
+    const [packageAds, setPackageAds] = useState([]);
+    const token = localStorage.getItem('authToken');
+
+    const fetchAdsPackage = async () => {
+        const res = await getPackageAdsServices(pageCurrent, 5, token);
+        if (res?.data && res.data?.content.length > 0) {
+            setPackageAds(res.data.content);
+            setTotalsPage(res.data?.totalPages);
+        }
+    }
 
     useEffect(() => {
-        fetchMockAds();
-    }, []);
+        fetchAdsPackage();
+        // eslint-disable-next-line
+    }, [])
 
-    const fetchMockAds = () => {
-        const mockData = [
-            {
-                id: 1,
-                name: 'Basic Package',
-                price: 100,
-                max_impressions: 1000,
-                status: 'Active',
-            },
-            {
-                id: 2,
-                name: 'Pro Package',
-                price: 250,
-                max_impressions: 5000,
-                status: 'Inactive',
-            },
-        ];
-        setAdsList(mockData);
-        setTotalsPage(1);
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleAddAd = (newAd) => {
-        setAdsList((prev) => [
-            { ...newAd, id: Date.now(), status: 'Active' },
-            ...prev,
-        ]);
+    const handleSubmit = async () => {
+        if (!form.name || !form.description || !form.price || !form.max_impressions) return;
+        const res = await postPackageAdsServices(form, token);
+
+        if (res?.data)
+            setForm({ name: '', description: '', price: '', max_impressions: '' });
+
     };
 
-    const handleDelete = (id) => {
-        if (window.confirm('Are you sure?')) {
-            setAdsList((prev) => prev.filter((ad) => ad.id !== id));
+    const handleDelete = async () => {
+        if (modalDel) {
+            const res = await deletedPackageAdsServices(modalDel, token);
+            if (res?.data) {
+                fetchAdsPackage();
+                setModalDel(null);
+            }
         }
     };
 
-    const handleSaveEdit = (updatedAd) => {
-        setAdsList((prev) =>
-            prev.map((ad) => (ad.id === updatedAd.id ? updatedAd : ad)),
-        );
-        setEditingAd(null);
-    };
+    const onEdit = (ads) => {
+        setModalEdit(ads);
+    }
 
-    const filteredAds = adsList.filter((ad) =>
-        ad.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    const onDelete = (id) => {
+        setModalDel(id);
+    }
 
     const handleReducePage = () => {
         setPageCurrent(prev => Math.max(prev - 1, 0));
@@ -77,42 +74,95 @@ function AdsManagement() {
             <div className={cx('ads')}>
                 <div className={cx('ads-header')}>
                     <div className={cx('ads-heading')}>Management Ads</div>
-                    <div className={cx('ads-search')}>
-                        <SearchIcon className={cx('search-icon')} />
-                        <input
-                            className={cx('search-input')}
-                            type="text"
-                            placeholder="Search package name"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                </div>
+
+                <div className={cx('add-form')}>
+                    <input name="name" value={form.name} onChange={handleChange} placeholder="Package Name" />
+                    <input name="description" value={form.description} onChange={handleChange} placeholder="Package Description" />
+                    <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="Price" />
+                    <input name="max_impressions" type="number" value={form.max_impressions} onChange={handleChange} placeholder="Max Impressions" />
+                    <button onClick={handleSubmit}>Add</button>
+                </div>
+
+                <div className={cx('ads-details')}>
+                    <table className={cx('table-ads')}>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Package Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Max Impressions</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {packageAds.length > 0 ? (
+                                packageAds.map((ads, index) => (
+                                    <tr key={ads.id}>
+                                        <td>{index + 1}</td>
+                                        <td>{ads.name}</td>
+                                        <td>{ads.description}</td>
+                                        <td>{ads.price} $</td>
+                                        <td>{ads.max_impressions}</td>
+                                        <td>
+                                            <EditIcon className={cx('icon-btn')} onClick={() => onEdit(ads)} />
+                                            <TrashIcon className={cx('icon-btn')} onClick={() => onDelete(ads.id)} />
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr><td colSpan="6">No ads found</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className={cx('ads-footer')}>
+                    <div className={cx('page-current')}>
+                        {`${pageCurrent + 1} of ${totalsPage} Page`}
+                    </div>
+
+                    <div className={cx('pagination')}>
+                        <LeftIcon onClick={handleReducePage} className={cx('prev-btn', { 'disable': pageCurrent === 0 })} />
+                        <RightIcon onClick={handleIncreasePage} className={cx('next-btn', { 'disable': (pageCurrent + 1) === totalsPage })} />
                     </div>
                 </div>
 
-                <AddForm onAdd={handleAddAd} />
-
-                <AdsTable
-                    adsList={filteredAds}
-                    onEdit={setEditingAd}
-                    onDelete={handleDelete}
-                />
-
-                <div className={cx('ads-footer')}>
-                                    <div className={cx('page-current')}>
-                                        {`${pageCurrent + 1} of ${totalsPage} Page`}
-                                    </div>
-                
-                                    <div className={cx('pagination')}>
-                                        <LeftIcon onClick={handleReducePage} className={cx('prev-btn', { 'disable': pageCurrent === 0 })} />
-                                        <RightIcon onClick={handleIncreasePage} className={cx('next-btn', { 'disable': (pageCurrent + 1) === totalsPage })} />
-                                    </div>
-                                </div>
-
-                {editingAd && (
-                    <EditModal
-                        ad={editingAd}
-                        onSave={handleSaveEdit}
-                        onCancel={() => setEditingAd(null)}
+                {modalEdit && (
+                    <ModalEdit
+                        text='package'
+                        fields={[
+                            {
+                                name: 'name',
+                                value: modalEdit.name,
+                                type: 'text',
+                            },
+                            {
+                                name: 'description',
+                                value: modalEdit.description,
+                                type: 'text',
+                            },
+                            {
+                                name: 'price',
+                                value: modalEdit.price,
+                                type: 'number',
+                            },
+                            {
+                                name: 'max_impressions',
+                                value: modalEdit.max_impressions,
+                                type: 'number',
+                            },
+                        ]}
+                        handleCancel={() => setModalEdit(null)}
+                        handleEdit=''
+                    />
+                )}
+                {modalDel && (
+                    <ModalDel
+                        text='package'
+                        handleDelete={handleDelete}
+                        onCancel={() => setModalDel(null)}
                     />
                 )}
             </div>

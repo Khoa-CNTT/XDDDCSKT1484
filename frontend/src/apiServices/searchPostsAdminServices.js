@@ -13,7 +13,7 @@ const searchPostsAdmin = async (page, size, content, language, token) => {
                 'Authorization': `Bearer ${token}`
             }
         }
-        const res = await request.get('posts', config)
+        const res = await request.get('posts/find', config)
 
         return res;
     } catch (error) {

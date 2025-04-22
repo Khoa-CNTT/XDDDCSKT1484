@@ -53,3 +53,7 @@ export { default as deletedPackageAdsServices } from './deletedPackageAdsService
 export { default as postPackageAdsServices } from './postPackageAdsServices'
 export { default as putPackageAdsServices } from './putPackageAdsServices'
 export { default as translateServices } from './translateServices'
+export { default as getAllPostAdsServices } from './getAllPostAdsServices'
+export { default as getPostAdsByIdServices } from './getPostAdsByIdServices'
+export { default as deletedUserServices } from './deletedUserServices'
+export { default as patchStatusUserServices } from './patchStatusUserServices'

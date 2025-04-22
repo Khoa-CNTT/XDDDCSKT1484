@@ -12,8 +12,10 @@ function Sidebar() {
     const navigate = useNavigate();
 
     const location = useLocation();
+    const pathname = location.pathname;
 
     const handleGetPostByLanguage = (lang) => {
+
         const searchParams = new URLSearchParams(location.search);
         searchParams.set("language", lang);
         const newSearch = searchParams.toString();
@@ -28,7 +30,7 @@ function Sidebar() {
 
                     <span className={cx('title')}>main</span>
                     <ul className={cx('navList')}>
-                        <Link to='/' className={cx('navItem', 'active')}>
+                        <Link to='/' className={cx('navItem', pathname === '' ? 'active' : '')}>
                             <HomeIcon />
                             <span>{t('home')}</span>
                         </Link>

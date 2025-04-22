@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './PostAdsDetail.module.scss';
 import classNames from 'classnames/bind';
 import { LeftIcon } from '~/components/Icons';
+import Button from '~/components/Button';
 const cx = classNames.bind(styles);
 
 const data = {
@@ -41,10 +42,7 @@ function PostAdsDetail() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('back')}>
-                <button onClick={() => navigate(-1)}>
-                    <LeftIcon width="20px" height="20px" />
-                    <span>Back</span>
-                </button>
+                <Button leftIcon={<LeftIcon />}>Back</Button>
             </div>
 
             <h2 className={cx('title')}>{ad.title}</h2>

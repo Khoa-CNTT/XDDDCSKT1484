@@ -1,10 +1,11 @@
 .wrapper {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .ads {
-    width: 80%;
+    width: 70%;
     margin-top: 24px;
     padding: 12px;
     background-color: white;
@@ -14,30 +15,11 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
     }
 
     &-heading {
         font-size: 24px;
         font-weight: bold;
-    }
-
-    .ads-search {
-        position: relative;
-
-        .search-icon {
-            position: absolute;
-            top: 6px;
-            left: 8px;
-        }
-
-        .search-input {
-            font-size: 1.4rem;
-            font-weight: 500;
-            padding: 10px 16px 10px 36px;
-            border: 1px solid #999;
-            border-radius: 20px;
-        }
     }
 
     .table-ads {
@@ -65,7 +47,6 @@
         }
     }
 
-    
     .ads-footer {
         display: flex;
         justify-content: space-between;
@@ -77,12 +58,12 @@
         font-size: 1.6rem;
         font-weight: 600;
     }
-    
+
     .pagination {
         display: flex;
         align-items: center;
     }
-    
+
     .prev-btn,
     .next-btn {
         width: 32px;
@@ -93,7 +74,7 @@
         margin: 0 6px;
         cursor: pointer;
     }
-    
+
     .disable {
         pointer-events: none;
         opacity: 0.5;
@@ -102,8 +83,9 @@
 
     .add-form {
         display: flex;
+        flex-direction: column;
         gap: 12px;
-        margin: 16px 0;
+        margin: 16px 0 32px;
 
         input {
             padding: 8px 12px;
@@ -147,17 +129,25 @@
         z-index: 999;
     }
 
-    .modal-content {
+    .modal-body {
         background-color: #fff;
         border-radius: 12px;
         padding: 24px;
         width: 400px;
         max-width: 90%;
 
-        h3 {
+        .content {
             margin-bottom: 16px;
-            font-size: 18px;
+        }
+
+        .heading {
+            margin-bottom: 16px;
+            font-size: 2rem;
             font-weight: 600;
+        }
+
+        .title {
+            font-size: 1.7rem;
         }
 
         input {
@@ -173,36 +163,9 @@
             }
         }
 
-        .modal-actions {
+        .actions {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-
-            button {
-                padding: 8px 14px;
-                border-radius: 6px;
-                border: none;
-                font-weight: 500;
-                cursor: pointer;
-
-                &:first-child {
-                    background-color: #28a745;
-                    color: white;
-
-                    &:hover {
-                        background-color: #218838;
-                    }
-                }
-
-                &:last-child {
-                    background-color: #dc3545;
-                    color: white;
-
-                    &:hover {
-                        background-color: #c82333;
-                    }
-                }
-            }
         }
     }
 }

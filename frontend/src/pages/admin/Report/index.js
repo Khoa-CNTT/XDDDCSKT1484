@@ -3,7 +3,9 @@ import styles from './Report.module.scss'
 import { EditIcon, FilterIcon, LeftIcon, RightIcon, TrashIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { getReportServices } from "~/apiServices";
+import { deletedReportServices, getReportServices, patchReportServices } from "~/apiServices";
+import ModalDel from "~/components/ModalDel";
+import ModalEdit from "~/components/ModalEdit";
 
 const cx = classNames.bind(styles)
 
@@ -12,13 +14,16 @@ function Report() {
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listReport, setListReport] = useState([]);
     const [typeReport, setTypeReport] = useState('');
-    useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        fetchAllReport(pageCurrent, 10, token);
-    }, [pageCurrent])
+    const [modalEdit, setModalEdit] = useState(null);
+    const [modalDel, setModalDel] = useState(null);
+    const token = localStorage.getItem('authToken');
 
-    const fetchAllReport = async (page, size, token) => {
-        const res = await getReportServices(page, size, token);
+    useEffect(() => {
+        fetchAllReport(pageCurrent, token);
+    }, [pageCurrent, token])
+
+    const fetchAllReport = async (page, token) => {
+        const res = await getReportServices(page, 10, token);
         if (res?.data) {
             setListReport(res.data.content);
             setTotalsPage(res.data?.totalPages);
@@ -37,6 +42,22 @@ function Report() {
 
     const handleChange = e => {
         setTypeReport(e.target.value)
+    }
+
+    const handleDelete = async () => {
+        const res = await deletedReportServices(modalDel, token);
+        if (res?.data) {
+            fetchAllReport(pageCurrent, token);
+            setModalDel(null);
+        }
+    }
+
+    const handleEdit = async () => {
+        const res = await patchReportServices(modalEdit, token);
+        if (res?.data.result) {
+            fetchAllReport(pageCurrent, token);
+            setModalEdit(null);
+        }
     }
 
     return (
@@ -64,35 +85,36 @@ function Report() {
                 <div className={cx('report-details')}>
                     <table className={cx('table-report')}>
                         <thead>
-                            <th>STT</th>
-                            <th>Type Post</th>
-                            <th>Reason</th>
-                            <th>Date Post</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <tr>
+                                <th>STT</th>
+                                <th>Type Post</th>
+                                <th>Reason</th>
+                                <th>Date Post</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {listReport.length > 0 ?
                                 (
                                     listReport.map((report, index) => (
-                                        !report.status && (
-                                            <tr key={report.id}>
-                                                <th>{index + 1}</th>
-                                                <td>{report.typePost}</td>
-                                                <td>{report.reason}</td>
-                                                <td>{format(new Date(report.createdAt), 'dd/MM/yyyy HH:mm')}</td>
-                                                <td>{report.status}</td>
-                                                <td>
-                                                    <EditIcon />
-                                                    <TrashIcon />
-                                                </td>
-                                            </tr>
-                                        )
-                                    ))
+                                        <tr key={index}>
+                                            <th>{index + 1}</th>
+                                            <td>{report.typePost}</td>
+                                            <td>{report.reason}</td>
+                                            <td>{format(new Date(report.createdAt), 'dd/MM/yyyy HH:mm')}</td>
+                                            <td>{report.status.toString()}</td>
+                                            <td style={{ minWidth: 80 }}>
+                                                <EditIcon onClick={() => setModalEdit(report.id)} />
+                                                <TrashIcon onClick={() => setModalDel(report.id)} />
+                                            </td>
+                                        </tr>
+                                    )
+                                    )
                                 )
                                 :
                                 (
-                                    <tr><td colspan="6">Không có report nào</td></tr>
+                                    <tr><td colSpan="6">Không có report nào</td></tr>
                                 )
                             }
                         </tbody>
@@ -109,6 +131,27 @@ function Report() {
                     </div>
                 </div>
             </div>
+            {modalEdit &&
+                <ModalEdit
+                    text='Report'
+                    fields={[
+                        {
+                            name: 'status',
+                            value: modalEdit,
+                            type: 'text'
+                        },
+                    ]}
+                    handleEdit={handleEdit}
+                    handleCancel={() => setModalEdit(null)}
+                />
+            }
+            {modalDel &&
+                <ModalDel
+                    text='report'
+                    handleDelete={handleDelete}
+                    handleCancel={() => setModalDel(null)}
+                />
+            }
         </div>
     );
 }
