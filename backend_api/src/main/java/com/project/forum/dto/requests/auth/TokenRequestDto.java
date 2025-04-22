@@ -1,5 +1,7 @@
 package com.project.forum.dto.requests.auth;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class TokenRequestDto {
 
+    @NotEmpty
     String token;
 
 }
+

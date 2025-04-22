@@ -131,6 +131,4 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
     PostTotalResponse getPostStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
 
-
-
 }

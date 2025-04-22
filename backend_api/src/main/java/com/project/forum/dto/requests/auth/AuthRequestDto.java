@@ -1,5 +1,6 @@
 package com.project.forum.dto.requests.auth;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -12,10 +13,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 @NoArgsConstructor
 public class AuthRequestDto {
 
-    @NotNull
+    @NotEmpty
     String username;
 
-    @NotNull
+    @NotEmpty
     String password;
 
 }

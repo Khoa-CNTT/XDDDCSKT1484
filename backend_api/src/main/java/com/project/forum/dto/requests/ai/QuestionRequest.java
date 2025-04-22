@@ -1,5 +1,6 @@
 package com.project.forum.dto.requests.ai;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,5 +12,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class QuestionRequest {
 
+    @NotNull
     String question;
 }
