@@ -31,4 +31,6 @@ public class UserResponse {
 
     String roles;
 
+    String active;
+
 }

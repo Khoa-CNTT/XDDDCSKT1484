@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PostReportsRepository extends JpaRepository<PostReports, String> {
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostRepostResponse(" +
-            " pr.reason, pr.createdAt, pr.posts.id, p.type_post, p.postShow) " +
+            " pr.id, pr.reason, pr.createdAt, pr.posts.id, p.type_post, p.postShow) " +
             "FROM PostReports pr " +
             "LEFT JOIN pr.posts p  " +
             "WHERE (:postId IS NULL OR :postId = '' OR p.id = :postId) ")

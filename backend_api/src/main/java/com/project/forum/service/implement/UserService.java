@@ -80,9 +80,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Page<UserResponse> getAllUsers(Integer page, Integer size) {
+    public Page<UserResponse> getAllUsers(String username,Integer page, Integer size) {
         Pageable pageable =  PageRequest.of(page,size);
-        Page<UserResponse> userResponsePage = usersRepository.getAllUsers(pageable);
+        Page<UserResponse> userResponsePage = usersRepository.getAllUsers(username,pageable);
         return userResponsePage;
     }
 

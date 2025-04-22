@@ -50,10 +50,11 @@ public class UserController {
 
     @SecurityRequirement(name = "BearerAuth")
     @GetMapping()
-    ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(@RequestParam(defaultValue = "0") Integer page,
-                                                                @RequestParam(defaultValue = "10") Integer size) {
+    ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(
+            @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
-                .data(userService.getAllUsers(page, size))
+                .data(userService.getAllUsers(username,page, size))
                 .build());
     }
 
