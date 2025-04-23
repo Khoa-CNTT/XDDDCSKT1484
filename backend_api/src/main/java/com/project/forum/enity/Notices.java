@@ -46,5 +46,7 @@ public class Notices {
     @JoinColumn(name = "user_id")
     Users users;
 
+    String user_send;
+
     boolean isShow;
 }

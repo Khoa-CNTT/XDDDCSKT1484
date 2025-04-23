@@ -1,5 +1,6 @@
 package com.project.forum.service.implement;
 
+import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
 import com.project.forum.enity.Advertisement;
@@ -158,7 +159,18 @@ public class PostService implements IPostService {
         return postsRepository.getPostStats(start,end);
     }
 
-
+    @Override
+    public PostResponse showPostById(String id, PostShowRequest postShowRequest) {
+        Posts posts = postsRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+        posts.setPostShow(postShowRequest.isStatus());
+        postsRepository.save(posts);
+        return PostResponse.builder()
+                .isShow(posts.isPostShow())
+                .type_post(posts.getType_post())
+                .created_at(posts.getCreated_at())
+                .id(posts.getId())
+                .build();
+    }
 
 
 }

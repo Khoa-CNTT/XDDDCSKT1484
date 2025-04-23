@@ -1,6 +1,7 @@
 package com.project.forum.service;
 
 
+import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,6 @@ public interface IPostService {
     Page<PostResponse> findAllPostAdmin(Integer page, Integer size, String content, String language);
 
     PostTotalResponse postTotal(LocalDateTime start, LocalDateTime end);
+
+    PostResponse showPostById(String id, PostShowRequest postShowRequest);
 }

@@ -50,7 +50,13 @@ public class FriendShipController {
                 .data(friendRequestService.rejectFriendRequest(userId))
                 .build());
     }
-
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping("/un-accept/{userId}")
+    public ResponseEntity<ApiResponse<Boolean>> deletedFriendRequest(@PathVariable String userId) {
+        return ResponseEntity.ok(ApiResponse.<Boolean>builder()
+                .data(friendRequestService.deleteRequestFriend(userId))
+                .build());
+    }
     @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/friendship")
     public ResponseEntity<ApiResponse<Page<UserFriendResponse>>> getFriendShip(@RequestParam(defaultValue = "0") Integer page,
