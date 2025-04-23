@@ -18,12 +18,13 @@ public interface AdsPackageRepository extends JpaRepository<AdsPackage, String> 
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsPackageResponse( " +
             "a.id, a.name, a.description, a.price, a.max_impressions, a.created) " +
-            "FROM AdsPackage a")
+            "FROM AdsPackage a " +
+            "ORDER BY a.price ASC ")
     Page<AdsPackageResponse> findAllAdsPackage(Pageable pageable);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsPackageResponse( " +
             "a.id, a.name, a.description, a.price, a.max_impressions, a.created) " +
             "FROM AdsPackage a " +
-            "WHERE a.id = :id")
+            "WHERE a.id = :id ")
     Optional<AdsPackageResponse> findAdsPackageById(@Param("id") String id);
 }

@@ -45,4 +45,6 @@ public class Notices {
     @ManyToOne
     @JoinColumn(name = "user_id")
     Users users;
+
+    boolean isShow;
 }

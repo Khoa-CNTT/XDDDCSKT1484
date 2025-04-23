@@ -1,9 +1,9 @@
 .wrapper {
     padding: 34px;
     background-color: #f5f5f5;
-    min-height: 100vh;
+    width: 56%;
 }
-.title{
+.title {
     font-size: 3rem;
     margin-bottom: 15px;
 }
@@ -19,7 +19,10 @@
     background: #fff;
     border-radius: 12px;
     width: 23%;
-    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 
@@ -29,8 +32,9 @@
     }
 
     .header-figures {
+        width: 100%;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-evenly;
         align-items: center;
 
         h5 {
@@ -57,12 +61,12 @@
 
         svg {
             margin-right: 6px;
-            color: #22c55e; 
+            color: #22c55e;
         }
     }
 
     &.total-ads .footer-figures svg {
-        color: #ef4444; 
+        color: #ef4444;
     }
 }
 
@@ -97,8 +101,6 @@
             border-bottom: 1px solid #eee;
         }
     }
-
-    
 }
 .postAds-footer {
     display: flex;

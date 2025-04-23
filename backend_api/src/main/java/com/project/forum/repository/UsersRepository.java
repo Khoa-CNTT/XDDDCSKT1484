@@ -20,21 +20,22 @@ public interface UsersRepository extends JpaRepository<Users, String> {
 
       boolean existsByEmail(String email);
 
-    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name) " +
+    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name, u.status) " +
             "FROM Users u " +
-            "LEFT JOIN u.roles r")
-    Page<UserResponse> getAllUsers(Pageable pageable);
+            "LEFT JOIN u.roles r " +
+            "WHERE (:username IS NULL OR :username = '' OR u.username LIKE %:username%)")
+    Page<UserResponse> getAllUsers(@Param("username") String username, Pageable pageable);
 
     Optional<Users> findByEmail(String email);
 
 
-    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name) " +
+    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name, u.status) " +
             "FROM Users u " +
             "LEFT JOIN u.roles r " +
             "WHERE u.username = :username")
     Optional<UserResponse> findUserByUsername(@Param("username") String username);
 
-    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name) " +
+    @Query("SELECT NEW com.project.forum.dto.responses.user.UserResponse(u.id,u.name, u.language, u.gender, u.img, u.email, u.username, r.name, u.status) " +
             "FROM Users u " +
             "LEFT JOIN u.roles r " +
             "WHERE u.name LIKE %:name%")

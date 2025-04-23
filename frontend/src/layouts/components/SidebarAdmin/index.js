@@ -5,6 +5,7 @@ import Button from '~/components/Button';
 import { useEffect, useState } from 'react';
 import { DashboardIcon, PostManagementIcon, ReportAdminIcon, StatisticIcon, UserManagementIcon } from '~/components/Icons';
 import { useLocation } from 'react-router-dom';
+import AdsManagement from '~/pages/admin/AdvManagement';
 
 const cx = classNames.bind(styles);
 
@@ -12,6 +13,7 @@ const item = [
     { to: routes.dashboard, icon: <DashboardIcon />, title: 'Dashboard' },
     { to: routes.usersManagement, icon: <UserManagementIcon />, title: 'Users' },
     { to: routes.postsManagement, icon: <PostManagementIcon />, title: 'Posts' },
+    { to: routes.advManagement, icon: <PostManagementIcon />, title: 'Advertisement' },
     { to: routes.statistic, icon: <StatisticIcon />, title: 'Statistic' },
     { to: routes.report, icon: <ReportAdminIcon />, title: 'Report' },
 ]

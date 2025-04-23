@@ -4,22 +4,26 @@ import { EditIcon, LeftIcon, RightIcon, SearchIcon, TrashIcon } from "~/componen
 import Image from "~/components/Image";
 import images from "~/assets/images";
 import { useEffect, useState } from "react";
-import { getAllUserServices } from "~/apiServices";
+import { deletedUserServices, getAllUserServices, patchStatusUserServices } from "~/apiServices";
+import ModalEdit from "~/components/ModalEdit";
+import ModalDel from "~/components/ModalDel";
 
 const cx = classNames.bind(styles)
 
 function UsersManagement() {
+    const [modalEdit, setModalEdit] = useState(null);
+    const [modalDel, setModalDel] = useState(null);
     const [totalsPage, setTotalsPage] = useState(1)
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listUser, setListUser] = useState([]);
+    const token = localStorage.getItem('authToken');
 
     useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        fetchAllUser(pageCurrent, 10, token);
-    }, [pageCurrent])
+        fetchAllUser(pageCurrent, token);
+    }, [pageCurrent, token])
 
-    const fetchAllUser = async (page, size, token) => {
-        const res = await getAllUserServices(page, size, token);
+    const fetchAllUser = async (page, token) => {
+        const res = await getAllUserServices(page, 10, token);
         if (res?.data) {
             setListUser(res.data.content);
             setTotalsPage(res.data?.totalPages);
@@ -33,6 +37,24 @@ function UsersManagement() {
     const handleIncreasePage = () => {
         setPageCurrent(prev => Math.max(prev - 1, totalsPage - 1));
     };
+
+    const handleDelete = async () => {
+        const res = await deletedUserServices(modalDel, token);
+        if (res?.data) {
+            fetchAllUser(pageCurrent, token);
+            setModalDel(null);
+        }
+
+    }
+
+    const handleEdit = async (data) => {
+        const res = await patchStatusUserServices(modalEdit.id, data, token);
+        if (res?.data) {
+            fetchAllUser(pageCurrent, token);
+            setModalEdit(null);
+        }
+
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -49,12 +71,15 @@ function UsersManagement() {
                 <div className={cx('user-details')}>
                     <table className={cx('table-user')}>
                         <thead>
-                            <th>STT</th>
-                            <th>Avatar</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Language</th>
-                            <th>Action</th>
+                            <tr>
+                                <th>STT</th>
+                                <th>Avatar</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Language</th>
+                                {/* <th>Active</th> */}
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {listUser.length > 0 ?
@@ -67,15 +92,15 @@ function UsersManagement() {
                                             <td>{user.email}</td>
                                             <td>{user.language}</td>
                                             <td>
-                                                <EditIcon />
-                                                <TrashIcon />
+                                                <EditIcon onClick={() => setModalEdit(user)} />
+                                                <TrashIcon onClick={() => setModalDel(user.id)} />
                                             </td>
                                         </tr>
                                     ))
                                 )
                                 :
                                 (
-                                    <tr><td colspan="6">Không có user nào</td></tr>
+                                    <tr><td colSpan="6">Không có user nào</td></tr>
                                 )
                             }
                         </tbody>
@@ -92,6 +117,27 @@ function UsersManagement() {
                     </div>
                 </div>
             </div>
+            {modalEdit &&
+                <ModalEdit
+                    text='User'
+                    fields={[
+                        {
+                            name: 'statusUser',
+                            value: modalEdit.name,
+                            type: 'text'
+                        },
+                    ]}
+                    handleEdit={handleEdit}
+                    handleCancel={() => setModalEdit(null)}
+                />
+            }
+            {modalDel &&
+                <ModalDel
+                    text='user'
+                    handleDelete={handleDelete}
+                    handleCancel={() => setModalDel(null)}
+                />
+            }
         </div>
     );
 }

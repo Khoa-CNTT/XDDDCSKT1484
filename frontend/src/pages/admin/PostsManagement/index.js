@@ -3,25 +3,46 @@ import styles from './PostsManagement.module.scss'
 import { EditIcon, LeftIcon, RightIcon, SearchIcon, TrashIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { searchPostsAdminServices } from "~/apiServices";
+import { deletedPostServices, editPostServices, searchPostsAdminServices } from "~/apiServices";
+import ModalEdit from "~/components/ModalEdit";
+import ModalDel from "~/components/ModalDel";
 
 const cx = classNames.bind(styles)
 
 function PostsManagement() {
+    const [modalEdit, setModalEdit] = useState(null);
+    const [modalDel, setModalDel] = useState(null);
     const [totalsPage, setTotalsPage] = useState(1)
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listPost, setListPost] = useState([]);
+    const token = localStorage.getItem('authToken');
 
     useEffect(() => {
-        const token = localStorage.getItem('authToken');
-        fetchAllPost(pageCurrent, 10, token);
-    }, [pageCurrent])
+        fetchAllPost(pageCurrent, token);
+    }, [pageCurrent, token])
 
-    const fetchAllPost = async (page, size, token) => {
-        const res = await searchPostsAdminServices(page, size, '', '', token);
+    const fetchAllPost = async (page, token) => {
+        const res = await searchPostsAdminServices(page, 10, '', '', token);
         if (res?.data) {
             setListPost(res.data.content);
             setTotalsPage(res.data?.totalPages);
+        }
+    }
+
+    const handleEdit = async (data) => {
+        const res = await editPostServices(modalEdit.id, data, token);
+        if (res?.data) {
+            fetchAllPost(pageCurrent, token);
+            setModalEdit(null);
+        }
+
+    }
+
+    const handleDelete = async () => {
+        const res = await deletedPostServices(modalDel, token);
+        if (res?.data) {
+            fetchAllPost(pageCurrent, token);
+            setModalDel(null);
         }
     }
 
@@ -30,10 +51,12 @@ function PostsManagement() {
     };
 
     const handleIncreasePage = () => {
-        console.log('tang');
-
         setPageCurrent(prev => Math.max(prev + 1, totalsPage - 1));
     };
+
+    const onEdit = (post) => {
+        setModalEdit(post);
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -50,12 +73,16 @@ function PostsManagement() {
                 <div className={cx('post-details')}>
                     <table className={cx('table-post')}>
                         <thead>
-                            <th>STT</th>
-                            <th>Full Name</th>
-                            <th>Type Post</th>
-                            <th>Date Post</th>
-                            <th>Language</th>
-                            <th>Action</th>
+                            <tr>
+                                <th>STT</th>
+                                <th>Full Name</th>
+                                <th>Type Post</th>
+                                <th>Date Post</th>
+                                <th>Language</th>
+                                <th>Advertisement</th>
+                                <th>Show</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {listPost.length > 0 ?
@@ -67,16 +94,18 @@ function PostsManagement() {
                                             <td>{post.type_post}</td>
                                             <td>{format(new Date(post.created_at), 'dd/MM/yyyy HH:mm')}</td>
                                             <td>{post.language}</td>
+                                            <td>{post.ads.toString()}</td>
+                                            <td>{post.show.toString()}</td>
                                             <td>
-                                                <EditIcon />
-                                                <TrashIcon />
+                                                {post.type_post === 'CONTENT' && <EditIcon onClick={() => onEdit(post)} />}
+                                                <TrashIcon onClick={() => setModalDel(post.id)} />
                                             </td>
                                         </tr>
                                     ))
                                 )
                                 :
                                 (
-                                    <tr><td colspan="6">Không có post nào</td></tr>
+                                    <tr><td colSpan="6">Không có post nào</td></tr>
                                 )
                             }
                         </tbody>
@@ -93,6 +122,27 @@ function PostsManagement() {
                     </div>
                 </div>
             </div>
+            {modalEdit &&
+                <ModalEdit
+                    text='Post'
+                    fields={[
+                        {
+                            name: 'show',
+                            value: modalEdit.show.toString(),
+                            type: 'text'
+                        }
+                    ]}
+                    handleEdit={handleEdit}
+                    handleCancel={() => setModalEdit(null)}
+                />
+            }
+            {modalDel &&
+                <ModalDel
+                    text='Post'
+                    handleDelete={handleDelete}
+                    handleCancel={() => setModalDel(null)}
+                />
+            }
         </div>
     );
 }

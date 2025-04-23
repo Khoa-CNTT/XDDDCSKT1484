@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostRepostResponse {
 
+    String id;
+
     String reason;
 
     LocalDateTime createdAt;

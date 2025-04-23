@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import { searchPostsServices } from '~/apiServices';
@@ -8,10 +8,10 @@ import { useScroll } from '~/hooks';
 import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
-
 function Home() {
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const isInitialized = useRef(false); // dùng ref để không trigger re-render
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -19,10 +19,7 @@ function Home() {
         // eslint-disable-next-line
     }, []);
 
-
-
     const fetchPosts = async ({ page, size, token }) => {
-
         const res = await searchPostsServices(page, size, '', '', token);
         if (res?.data) {
             if (res.data?.content.length > 0) {
@@ -37,18 +34,19 @@ function Home() {
 
     const initializePosts = async () => {
         const token = localStorage.getItem('authToken');
-
         setPosts([]);
         await fetchPosts({
-            page: currentPage,
+            page: 0,
             size: 5,
             token,
         });
+        isInitialized.current = true; // đánh dấu đã load xong lần đầu
     };
 
     useScroll(() => {
-        const token = localStorage.getItem('authToken');
+        if (!isInitialized.current) return; // nếu chưa load xong lần đầu thì không fetch
 
+        const token = localStorage.getItem('authToken');
         const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
         fetchPosts({ page: nextPage, size: 5, token });

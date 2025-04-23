@@ -1081,21 +1081,21 @@ export const UserAdminIcon = ({ width = '2.8rem', height = '2.8rem', onClick, cl
     >
         <path
             opacity="0.21"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M0 30V37C0 49.7025 10.2975 60 23 60H30H37C49.7025 60 60 49.7025 60 37V30V23C60 10.2975 49.7025 0 37 0H30H23C10.2975 0 0 10.2975 0 23V30Z"
             fill="#8280FF"
         ></path>
         <path
             opacity="0.587821"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M20.6667 23.3333C20.6667 26.2789 23.0545 28.6667 26 28.6667C28.9455 28.6667 31.3333 26.2789 31.3333 23.3333C31.3333 20.3878 28.9455 18 26 18C23.0545 18 20.6667 20.3878 20.6667 23.3333ZM34 28.6667C34 30.8758 35.7909 32.6667 38 32.6667C40.2091 32.6667 42 30.8758 42 28.6667C42 26.4575 40.2091 24.6667 38 24.6667C35.7909 24.6667 34 26.4575 34 28.6667Z"
             fill="#8280FF"
         ></path>
         <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M25.9778 31.3333C19.6826 31.3333 14.5177 34.5687 14.0009 40.9323C13.9727 41.2789 14.6356 42 14.97 42H36.9956C37.9972 42 38.0128 41.194 37.9972 40.9333C37.6065 34.3909 32.3616 31.3333 25.9778 31.3333ZM45.2746 42L40.1333 42C40.1333 38.9988 39.1417 36.2291 37.4683 34.0008C42.0103 34.0505 45.7189 36.3469 45.998 41.2C46.0092 41.3955 45.998 42 45.2746 42Z"
             fill="#8280FF"
         ></path>
@@ -1119,8 +1119,8 @@ export const PostAdminIcon = ({ width = '2.8rem', height = '2.8rem', onClick, cl
             fill="#FF947A"
         ></circle>
         <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M12 14C12 11.7909 13.7909 10 16 10H22V14C22 16.2091 23.7909 18 26 18H28V26C28 28.2091 26.2091 30 24 30H16C13.7909 30 12 28.2091 12 26V14ZM16 19C15.4477 19 15 19.4477 15 20C15 20.5523 15.4477 21 16 21H18C18.5523 21 19 20.5523 19 20C19 19.4477 18.5523 19 18 19H16ZM16 23C15.4477 23 15 23.4477 15 24C15 24.5523 15.4477 25 16 25H20C20.5523 25 21 24.5523 21 24C21 23.4477 20.5523 23 20 23H16ZM24.6818 12.1988L24.5509 14.1629C24.5106 14.7666 25.0115 15.2674 25.6152 15.2272L27.5792 15.0962C28.4365 15.0391 28.8274 13.9989 28.2198 13.3913L26.3867 11.5582C25.7792 10.9507 24.7389 11.3415 24.6818 12.1988Z"
             fill="white"
         ></path>
@@ -1158,8 +1158,8 @@ export const SalesAdminIcon = ({ width = '2.8rem', height = '2.8rem', onClick, c
     >
         <path
             opacity="0.21"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M0 30V37C0 49.7025 10.2975 60 23 60H30H37C49.7025 60 60 49.7025 60 37V30V23C60 10.2975 49.7025 0 37 0H30H23C10.2975 0 0 10.2975 0 23V30Z"
             fill="#4AD991"
         ></path>
@@ -1175,3 +1175,62 @@ export const SalesAdminIcon = ({ width = '2.8rem', height = '2.8rem', onClick, c
     </svg>
 
 );
+
+export const AdvertisementIcon = ({ width = '2.8rem', height = '2.8rem', onClick, className }) => (
+    <svg
+        onClick={onClick}
+        className={className}
+        width={width}
+        height={height}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+    >
+        <path d="M21 5v14c0 .55-.45 1-1 1s-1-.45-1-1v-3.18l-5.24.95c-.39.07-.76.11-1.14.12-.36.01-.71-.01-1.06-.07L8 19.45V15.4L4.24 16.1c-.41.08-.82-.11-1.01-.49a.99.99 0 01.15-1.08L8 9.4V4.55l4.62 2.02c.35-.06.7-.09 1.06-.08.39.01.77.05 1.15.12L19 7.18V5c0-.55.45-1 1-1s1 .45 1 1zM10 14.38v2.23l1.26-.21c.17-.03.34-.04.51-.04.17 0 .34.01.51.04L17 15.95v-7.9l-4.71-.85c-.39-.07-.76-.1-1.14-.1-.36 0-.71.03-1.06.1L10 7.38v7z" />
+    </svg>
+);
+
+export const TotalAdsIcon = ({ width = "36px", height = "36px", color = "#4CAF50" }) => (
+    <svg
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke={color} strokeWidth="2" />
+        <line x1="7" y1="8" x2="17" y2="8" stroke={color} strokeWidth="1.5" />
+        <line x1="7" y1="12" x2="17" y2="12" stroke={color} strokeWidth="1.5" />
+        <line x1="7" y1="16" x2="13" y2="16" stroke={color} strokeWidth="1.5" />
+    </svg>
+);
+
+// components/Icons/TotalViewsIcon.jsx
+export const TotalViewsIcon = ({ width = "36px", height = "36px", color = "#2196F3" }) => (
+    <svg
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            d="M1 12C2.73 7.61 6.97 4.5 12 4.5C17.03 4.5 21.27 7.61 23 12C21.27 16.39 17.03 19.5 12 19.5C6.97 19.5 2.73 16.39 1 12Z"
+            stroke={color}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <circle
+            cx="12"
+            cy="12"
+            r="3"
+            stroke={color}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </svg>
+);
+
+

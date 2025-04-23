@@ -99,6 +99,9 @@ public class MailService implements IMailService {
                 if (users.getStatus().equals(StatusUser.ACTIVE)) {
                     throw new WebException(ErrorCode.E_USER_IS_ACTIVE);
                 }
+                if (users.getStatus().equals(StatusUser.LOCKED)) {
+                    throw new WebException(ErrorCode.E_USER_IS_LOCKED);
+                }
                 users.setStatus(StatusUser.ACTIVE.toString());
                 usersRepository.save(users);
                 return MailResponse.builder()

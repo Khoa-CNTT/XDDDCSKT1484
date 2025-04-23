@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './PostAds.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { LeftIcon, RightIcon, TotalAdsIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon  } from '~/components/Icons';
+import { LeftIcon, RightIcon, TotalAdsIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
@@ -35,7 +35,7 @@ function PostAds() {
     const [totalsPage, setTotalsPage] = useState(1);
     const [pageCurrent, setPageCurrent] = useState(0);
 
-    const handleDetailAds = (id) =>{
+    const handleDetailAds = (id) => {
         navigate(`/postAds/${id}`)
     }
 
@@ -51,51 +51,51 @@ function PostAds() {
 
     return (
         <div className={cx('wrapper')}>
-                <h2 className={cx('title')}>advertisement</h2>
+            <h2 className={cx('title')}>Advertisement</h2>
             <div className={cx('header')}>
-            <div className={cx('figures-total', 'total-post')}>
-        <div className={cx('header-figures')}>
-            <h5>Total Post Ads</h5>
-            <PostAdminIcon width="32px" height="32px" />
-        </div>
-        <p className={cx('body-figures')}>4</p>
-        <p className={cx('footer-figures')}>
-            <GrowIcon /> 5.2% Up from yesterday
-        </p>
-    </div>
+                <div className={cx('figures-total', 'total-post')}>
+                    <div className={cx('header-figures')}>
+                        <h5>Total Post Ads</h5>
+                        <PostAdminIcon width="32px" height="32px" />
+                    </div>
+                    <p className={cx('body-figures')}>4</p>
+                    <p className={cx('footer-figures')}>
+                        <GrowIcon /> 5.2% Up from yesterday
+                    </p>
+                </div>
 
-    <div className={cx('figures-total', 'total-price')}>
-        <div className={cx('header-figures')}>
-            <h5>Total Price Ads</h5>
-            <SalesAdminIcon width="32px" height="32px" />
-        </div>
-        <p className={cx('body-figures')}>$730</p>
-        <p className={cx('footer-figures')}>
-            <GrowIcon /> 3.7% Up from yesterday
-        </p>
-    </div>
+                <div className={cx('figures-total', 'total-price')}>
+                    <div className={cx('header-figures')}>
+                        <h5>Total Price Ads</h5>
+                        <SalesAdminIcon width="32px" height="32px" />
+                    </div>
+                    <p className={cx('body-figures')}>$730</p>
+                    <p className={cx('footer-figures')}>
+                        <GrowIcon /> 3.7% Up from yesterday
+                    </p>
+                </div>
 
-    <div className={cx('figures-total', 'total-views')}>
-        <div className={cx('header-figures')}>
-            <h5>Total Views</h5>
-            <TotalViewsIcon width="32px" height="32px" />
-        </div>
-        <p className={cx('body-figures')}>73,123</p>
-        <p className={cx('footer-figures')}>
-            <GrowIcon /> 1.2% Up from yesterday
-        </p>
-    </div>
+                <div className={cx('figures-total', 'total-views')}>
+                    <div className={cx('header-figures')}>
+                        <h5>Total Views</h5>
+                        <TotalViewsIcon width="32px" height="32px" />
+                    </div>
+                    <p className={cx('body-figures')}>73,123</p>
+                    <p className={cx('footer-figures')}>
+                        <GrowIcon /> 1.2% Up from yesterday
+                    </p>
+                </div>
 
-    <div className={cx('figures-total', 'total-ads')}>
-        <div className={cx('header-figures')}>
-            <h5>Total Ads</h5>
-            <TotalAdsIcon width="32px" height="32px" />
-        </div>
-        <p className={cx('body-figures')}>73,123</p>
-        <p className={cx('footer-figures')}>
-            <ShrinkIcon /> 0.6% Down from yesterday
-        </p>
-    </div>
+                <div className={cx('figures-total', 'total-ads')}>
+                    <div className={cx('header-figures')}>
+                        <h5>Total Ads</h5>
+                        <TotalAdsIcon width="32px" height="32px" />
+                    </div>
+                    <p className={cx('body-figures')}>73,123</p>
+                    <p className={cx('footer-figures')}>
+                        <ShrinkIcon /> 0.6% Down from yesterday
+                    </p>
+                </div>
             </div>
             <div className={cx('body')}>
                 <table className={cx('table')}>
@@ -114,7 +114,7 @@ function PostAds() {
                     <tbody>
                         {adsList.map((ad, index) => {
                             return (
-                                <tr key={ad.id} onClick={() =>handleDetailAds(ad.id)}>
+                                <tr key={ad.id} onClick={() => handleDetailAds(ad.id)}>
                                     <td>{index + 1}</td>
                                     <td>{ad.title}</td>
                                     <td>{ad.package}</td>

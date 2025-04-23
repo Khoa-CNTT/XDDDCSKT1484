@@ -20,11 +20,12 @@ import { ChatContext } from "~/context/ChatContext";
 import { useLocation } from "react-router-dom";
 import images from "~/assets/images";
 import { CameraIcon, DownIcon } from "~/components/Icons";
+import { UserContext } from "~/context/UserContext";
 
 const cx = classNames.bind(styles);
 
 function Profile() {
-    const [user, setUser] = useState(null);
+    const [userCurrent, setUserCurrent] = useState(null);
     const [postsUser, setPostsUser] = useState([]);
     const [friends, setFriends] = useState([]);
     const [option, setOption] = useState("Post");
@@ -35,17 +36,17 @@ function Profile() {
     const respondRef = useRef(null);
     const { toggleChat } = useContext(ChatContext);
     const location = useLocation();
+    const { user, setUser } = useContext(UserContext);
 
     const token = localStorage.getItem("authToken");
-    const idUserPrimary = JSON.parse(localStorage.getItem("currentUser"));
     const userId = location.pathname.split("/").pop();
 
     // Fetch user profile
     const fetchUser = useCallback(async (id) => {
         const res = await getUserByIdServices(id);
         if (res?.data) {
-            setUser(res.data);
-            const isPrimary = res.data.id === idUserPrimary.id;
+            setUserCurrent(res.data);
+            const isPrimary = res.data.id === user.id;
             setUserPrimary(isPrimary);
 
             if (!isPrimary && token) {
@@ -70,7 +71,7 @@ function Profile() {
                 }
             }
         }
-    }, [idUserPrimary.id, token]);
+    }, [user.id, token]);
 
     // Fetch posts
     const fetchPosts = useCallback(async (id, page) => {
@@ -90,7 +91,7 @@ function Profile() {
 
     useEffect(() => {
         if (!userId) return;
-        setUser(null);
+        setUserCurrent(null);
         setCurrentPage(0);
         setPostsUser([]);
         setFriends([]);
@@ -112,8 +113,8 @@ function Profile() {
 
     const handleAddFriend = async () => {
         if (statusFriend === 'Add Friends') {
-            const res = await addFriendServices(user.id, token);
-            if (res?.data?.receiver === user.name) {
+            const res = await addFriendServices(userCurrent.id, token);
+            if (res?.data?.receiver === userCurrent.name) {
                 setStatusFriend("Sent");
             }
         } else if (statusFriend === 'Respond') {
@@ -142,7 +143,9 @@ function Profile() {
         if (file) {
             const res = await uploadImageServices(file);
             if (res?.data) {
+                const infoUserUpdate = { ...user, img: res.data.url };
                 await updateInfoUserServices({ img: res.data.url }, token);
+                setUser(infoUserUpdate);
                 fetchUser(userId);
             } else {
                 alert("File Image Error");
@@ -186,14 +189,15 @@ function Profile() {
             <div className={cx("header")}>
                 <div className={cx("avatar")}>
                     <Image
-                        src={user?.img || images.avatar}
+                        src={userCurrent?.img || images.avatar}
                         className={cx("img")}
-                        alt={user?.name}
-                        onClick={handleImageClick}
+                        alt={userCurrent?.name}
                     />
-                    <div className={cx("camera")} onClick={handleImageClick}>
-                        <CameraIcon />
-                    </div>
+                    {userPrimary && (
+                        <div className={cx("camera")} onClick={handleImageClick}>
+                            <CameraIcon />
+                        </div>
+                    )}
                 </div>
                 <input
                     type="file"
@@ -202,13 +206,13 @@ function Profile() {
                     style={{ display: "none" }}
                     onChange={handleFileChange}
                 />
-                <div className={cx("fullname")}>{user?.name}</div>
+                <div className={cx("fullname")}>{userCurrent?.name}</div>
                 <div className={cx("action")}>
                     {userPrimary ? (
-                        <>
+                        <div className={cx('friend-nav')}>
                             <Button onClick={() => handleOptionChange("Post")} primary={option === "Post"}>Post</Button>
                             <Button onClick={() => handleOptionChange("Friends")} primary={option === "Friends"}>Friends</Button>
-                        </>
+                        </div>
                     ) : (
                         <div className={cx('friend')}>
                             <div className={cx('friend-nav')}>
