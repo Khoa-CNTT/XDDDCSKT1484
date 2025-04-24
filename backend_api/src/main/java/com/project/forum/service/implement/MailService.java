@@ -57,7 +57,7 @@ public class MailService implements IMailService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        if (users.getStatus().equals(StatusUser.ACTIVE)) {
+        if (users.getStatus().equals(StatusUser.ACTIVE.toString())) {
             throw new WebException(ErrorCode.E_USER_IS_ACTIVE);
         }
         String token = generateTokenActive(users);
@@ -96,10 +96,10 @@ public class MailService implements IMailService {
                 }
                 Users users = usersRepository.findByUsername(username)
                         .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-                if (users.getStatus().equals(StatusUser.ACTIVE)) {
+                if (users.getStatus().equals(StatusUser.ACTIVE.toString())) {
                     throw new WebException(ErrorCode.E_USER_IS_ACTIVE);
                 }
-                if (users.getStatus().equals(StatusUser.LOCKED)) {
+                if (users.getStatus().equals(StatusUser.LOCKED.toString())) {
                     throw new WebException(ErrorCode.E_USER_IS_LOCKED);
                 }
                 users.setStatus(StatusUser.ACTIVE.toString());

@@ -47,7 +47,6 @@ public class Posts {
     @JoinColumn(name = "user_id")
     Users users;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT true")
     boolean postShow;
 
     @ManyToOne(fetch = FetchType.LAZY)

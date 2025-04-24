@@ -79,7 +79,7 @@ public class PostController {
                 .build());
     }
     @SecurityRequirement(name = "BearerAuth")
-    @GetMapping("/{id}/status")
+    @PatchMapping("/{id}/status")
     ResponseEntity<ApiResponse<PostResponse>> setStatus(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {
         return ResponseEntity.ok(ApiResponse.<PostResponse>builder()
                 .data(postService.showPostById(id,postShowRequest))
