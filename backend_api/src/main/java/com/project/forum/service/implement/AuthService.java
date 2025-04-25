@@ -54,7 +54,7 @@ public class AuthService implements IAuthService {
             throw new WebException(ErrorCode.E_WRONG_PASSWORD);
         }
         String token = generateToken(user);
-        if (user.getStatus().equals(StatusUser.LOCKED)){
+        if (user.getStatus().equals(StatusUser.LOCKED.toString())){
             throw new WebException(ErrorCode.E_USER_IS_LOCKED);
         }
         if (iCacheService.getData("user:" + user.getUsername() + "token") != null) {

@@ -69,7 +69,8 @@ public interface FriendShipRepository extends JpaRepository<FriendShip, String> 
             "s.id, s.name, s.img, s.created) " +
             "FROM FriendShip f " +
             "LEFT JOIN f.sender s " +
-            "WHERE f.receiver.id = :userId ")
+            "WHERE f.receiver.id = :userId " +
+            "AND f.status = 'pending' ")
     Page<FriendRequestListResponse> getListFriendRequest(@Param("userId") String id,
                                                          Pageable pageable);
 

@@ -43,7 +43,7 @@ public interface NoticesRepository extends JpaRepository<Notices, String> {
 
 
     @Query("SELECT new com.project.forum.dto.responses.notices.NoticeResponse(" +
-            "n.message, n.created_at, n.status, n.post_id, n.type) " +
+            "n.id, n.message, n.created_at, n.status, n.post_id, n.type) " +
             "FROM Notices n WHERE n.users.id = :userId ORDER BY n.created_at DESC")
     Page<NoticeResponse> getAllNoticesByUserId(
             @Param("userId") String userId,

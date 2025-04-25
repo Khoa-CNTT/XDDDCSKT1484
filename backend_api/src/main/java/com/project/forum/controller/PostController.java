@@ -1,5 +1,6 @@
 package com.project.forum.controller;
 
+import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IPostService;
@@ -77,5 +78,11 @@ public class PostController {
                 .data(postService.findAllPostAdmin(page, size, content, language))
                 .build());
     }
-
+    @SecurityRequirement(name = "BearerAuth")
+    @PatchMapping("/{id}/status")
+    ResponseEntity<ApiResponse<PostResponse>> setStatus(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {
+        return ResponseEntity.ok(ApiResponse.<PostResponse>builder()
+                .data(postService.showPostById(id,postShowRequest))
+                .build());
+    }
 }

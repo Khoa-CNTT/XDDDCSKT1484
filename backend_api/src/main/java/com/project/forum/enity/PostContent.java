@@ -28,6 +28,7 @@ public class PostContent {
 
     String title;
 
+    @Column(length = 5000)
     String content;
 
     String img_url;

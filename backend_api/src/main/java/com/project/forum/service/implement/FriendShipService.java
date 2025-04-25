@@ -128,6 +128,16 @@ public class FriendShipService implements IFriendShipService {
     }
 
     @Override
+    public boolean deleteRequestFriend(String userId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        FriendShip friendShip = friendShipRepository.findByReceiver_IdAndSender_Id(userId,users.getId())
+                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        friendShipRepository.delete(friendShip);
+        return true;
+    }
+
+    @Override
     public Page<UserFriendResponse> getUserListFriend(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page,size);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

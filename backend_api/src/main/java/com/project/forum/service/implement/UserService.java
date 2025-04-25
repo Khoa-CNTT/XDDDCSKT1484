@@ -64,7 +64,7 @@ public class UserService implements IUserService {
     @Override
     public UserResponse setStatus(String id, StatusUser statusUser) {
         Users users = usersRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        users.setStatus(statusUser.getActive());
+        users.setStatus(statusUser.toString());
         usersRepository.save(users);
         return userMapper.toUserResponse(users);
     }

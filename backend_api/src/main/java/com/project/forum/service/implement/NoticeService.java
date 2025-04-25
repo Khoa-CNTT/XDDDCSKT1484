@@ -31,62 +31,77 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NoticeService implements INoticeService {
 
-     final SimpMessagingTemplate messagingTemplate;
-     final NoticesRepository noticesRepository;
-     final UsersRepository usersRepository;
-     final PostsRepository postsRepository;
+    final SimpMessagingTemplate messagingTemplate;
+    final NoticesRepository noticesRepository;
+    final UsersRepository usersRepository;
+    final PostsRepository postsRepository;
     private final ObjectMapper objectMapper;
 
     @Transactional
     public void sendNotification(Users users, String type, String message, String postId, String userId) throws JsonProcessingException {
-        Posts posts = postsRepository.findById(postId).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
-        if (noticesRepository.existsNoticesByTypeAndPost_idAndUser_id(type, postId, users.getId())) {
-            noticesRepository.updateNoticeMessage(type,postId,users.getId(),message);
-            String destination = "/queue/notifications";
+
+        if (postId != null) {
+            Posts posts = postsRepository.findById(postId).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+            if (noticesRepository.existsNoticesByTypeAndPost_idAndUser_id(type, postId, users.getId())) {
+                noticesRepository.updateNoticeMessage(type, postId, users.getId(), message);
+                String destination = "/queue/notifications";
+                NoticeMessage noticeMessage = NoticeMessage.builder()
+                        .message(message)
+                        .postId(postId)
+                        .build();
+                String resultNoticeJson = objectMapper.writeValueAsString(noticeMessage);
+                messagingTemplate.convertAndSendToUser(users.getId().toString(), destination, resultNoticeJson);
+            } else {
+                Notices notice = Notices.builder()
+                        .users(users)
+                        .post_id(postId)
+                        .type(type)
+                        .message(message)
+                        .created_at(LocalDateTime.now())
+                        .status(false)
+                        .isShow(posts.isPostShow())
+                        .build();
+                noticesRepository.save(notice);
+                String destination = "/queue/notifications";
+
+                NoticeMessage noticeMessage = NoticeMessage.builder()
+                        .message(message)
+                        .postId(postId)
+                        .build();
+
+                String resultNoticeJson = objectMapper.writeValueAsString(noticeMessage);
 //            String destination = "/topic/"+users.getId();
-            NoticeMessage noticeMessage = NoticeMessage.builder()
-                    .message(message)
-                    .postId(postId)
-                    .build();
-            String resultNoticeJson = objectMapper.writeValueAsString(noticeMessage);
-            messagingTemplate.convertAndSendToUser(users.getId().toString(), destination, resultNoticeJson);
+                messagingTemplate.convertAndSendToUser(users.getId().toString(), destination, resultNoticeJson);
+            }
         } else {
             Notices notice = Notices.builder()
                     .users(users)
-                    .post_id(postId)
                     .type(type)
                     .message(message)
                     .created_at(LocalDateTime.now())
                     .status(false)
-                    .isShow(posts.isPostShow())
+                    .user_send(userId)
                     .build();
             noticesRepository.save(notice);
             String destination = "/queue/notifications";
-            NoticeMessage noticeMessage;
-            if (postId != null){
-                 noticeMessage = NoticeMessage.builder()
-                        .message(message)
-                        .postId(postId)
-                        .build();
-            } else {
-                noticeMessage = NoticeMessage.builder()
-                        .message(message)
-                        .userId(userId)
-                        .build();
-            }
+
+            NoticeMessage noticeMessage = NoticeMessage.builder()
+                    .message(message)
+                    .userId(userId)
+                    .build();
+
             String resultNoticeJson = objectMapper.writeValueAsString(noticeMessage);
-//            String destination = "/topic/"+users.getId();
             messagingTemplate.convertAndSendToUser(users.getId().toString(), destination, resultNoticeJson);
         }
     }
 
     @Override
     public Page<NoticeResponse> getNotices(Pageable pageable) {
-         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-         Page<NoticeResponse> noticeResponses = noticesRepository.getAllNoticesByUserId(users.getId(), pageable);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        Page<NoticeResponse> noticeResponses = noticesRepository.getAllNoticesByUserId(users.getId(), pageable);
 
-         return noticeResponses;
+        return noticeResponses;
     }
 
     @Override
@@ -95,7 +110,7 @@ public class NoticeService implements INoticeService {
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
 
 
-        return noticesRepository.countNoticesByStatusAndUsers_Id(false,users.getId());
+        return noticesRepository.countNoticesByStatusAndUsers_Id(false, users.getId());
     }
 
     @Override

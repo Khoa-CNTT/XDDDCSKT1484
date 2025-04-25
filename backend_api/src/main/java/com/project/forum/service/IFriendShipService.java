@@ -18,6 +18,8 @@ public interface IFriendShipService {
 
    boolean rejectFriendRequest(String userId);
 
+   boolean deleteRequestFriend(String userId);
+
    Page<UserFriendResponse> getUserListFriend(Integer page, Integer size);
 
    Page<FriendRequestListResponse> getFriendShipList(Integer page, Integer size);
