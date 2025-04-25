@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NoticeResponse {
 
+    String id;
+
     String message;
 
     LocalDateTime created_at;
