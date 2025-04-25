@@ -59,7 +59,7 @@ public class LikeService implements ILikeService {
                     .build();
             likesRepository.save(likes);
 
-            String postOwnerId = posts.getUsers().getId();
+            String postOwnerId = posts.getId();
 
             int likeCount = noticesRepository.countNoticesByTypeAndPost_id(
                     TypeNotice.LIKE.toString(), posts.getId());
