@@ -2,6 +2,7 @@ package com.project.forum.service;
 
 import com.project.forum.dto.requests.transaction.TransactionDto;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
+import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import org.springframework.data.domain.Page;
 
 public interface ITransactionService {
@@ -18,4 +19,5 @@ public interface ITransactionService {
 
     TransactionResponse getTransaction(String id);
 
+    TransactionTotalResponse getTotalRevenue();
 }

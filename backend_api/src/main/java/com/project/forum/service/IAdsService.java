@@ -1,7 +1,10 @@
 package com.project.forum.service;
 
 import com.project.forum.dto.responses.ads.AdsResponse;
+import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDateTime;
 
 public interface IAdsService {
 
@@ -11,5 +14,5 @@ public interface IAdsService {
 
     AdsResponse findById(String id);
 
-
+    AdsTotalResponse adsTotal(LocalDateTime start, LocalDateTime end);
 }

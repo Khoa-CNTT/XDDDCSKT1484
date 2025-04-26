@@ -42,5 +42,4 @@ public class TransactionController {
                 .data(transactionService.getTransaction(id))
                 .build());
     }
-
 }

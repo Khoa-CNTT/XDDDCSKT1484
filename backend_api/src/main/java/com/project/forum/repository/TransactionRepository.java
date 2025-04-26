@@ -1,6 +1,7 @@
 package com.project.forum.repository;
 
 import com.project.forum.dto.responses.transaction.TransactionResponse;
+import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import com.project.forum.enity.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,4 +42,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "AND t.users.id = :userId")
     Optional<TransactionResponse> getTransactionById(@Param("id") String id,@Param("userId") String userId);
 
+    @Query("SELECT new com.project.forum.dto.responses.transaction.TransactionTotalResponse(" +
+            "SUM(t.amount), t.currency) " +
+            "FROM Transaction t " +
+            "WHERE t.status = 'completed' " +
+            "GROUP BY t.currency")
+    TransactionTotalResponse getTotalRevenue();
 }

@@ -1,6 +1,7 @@
 package com.project.forum.service.implement;
 
 import com.project.forum.dto.responses.ads.AdsResponse;
+import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -47,5 +50,10 @@ public class AdsService implements IAdsService {
     public AdsResponse findById(String id) {
         AdsResponse adsResponse = advertisementRepository.findAds(id).orElseThrow(() -> new WebException(ErrorCode.ADS_NOT_FOUND));
         return adsResponse;
+    }
+
+    @Override
+    public AdsTotalResponse adsTotal(LocalDateTime start, LocalDateTime end) {
+        return advertisementRepository.getAdsStats(start, end);
     }
 }

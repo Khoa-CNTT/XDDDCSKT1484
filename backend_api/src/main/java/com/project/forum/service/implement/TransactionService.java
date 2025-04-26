@@ -2,6 +2,7 @@ package com.project.forum.service.implement;
 
 import com.project.forum.dto.requests.transaction.TransactionDto;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
+import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import com.project.forum.enity.Transaction;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
@@ -77,8 +78,11 @@ public class TransactionService implements ITransactionService {
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         TransactionResponse transactionResponse = transactionRepository.getTransactionById(id,users.getId()).orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
 
-
-
         return transactionResponse;
+    }
+
+    @Override
+    public TransactionTotalResponse getTotalRevenue() {
+        return transactionRepository.getTotalRevenue();
     }
 }
