@@ -15,4 +15,6 @@ public interface IAdsService {
     AdsResponse findById(String id);
 
     AdsTotalResponse adsTotal(LocalDateTime start, LocalDateTime end);
+
+    AdsTotalResponse adsTotalByUser(LocalDateTime start, LocalDateTime end);
 }

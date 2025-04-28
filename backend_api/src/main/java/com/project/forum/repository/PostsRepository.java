@@ -121,18 +121,16 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "COUNT(DISTINCT p.id), " +
             "COUNT(DISTINCT c.id), " +
             "COUNT(DISTINCT l.id), " +
-            "COUNT(DISTINCT u.id), " +
-            "MIN(p.created_at), " +
-            "MAX(p.created_at)) " +
+            "(SELECT COUNT(DISTINCT u2.id) FROM Users u2 WHERE (:from IS NULL OR u2.created >= :from) AND (:to IS NULL OR u2.created <= :to)), " +
+            "CASE WHEN :from IS NULL THEN (SELECT MIN(u3.created) FROM Users u3) ELSE :from END, " +
+            "CASE WHEN :to IS NULL THEN CAST(CURRENT_TIMESTAMP as java.time.LocalDateTime) ELSE :to END) " +
             "FROM Posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
             "LEFT JOIN p.likes l " +
             "WHERE (:from IS NULL OR p.created_at >= :from ) " +
             "AND p.postShow = true " +
-            "AND (:to IS NULL OR p.created_at <= :to) " +
-            "AND (:from IS NULL OR u.created >= :from ) " +
-            "AND (:to IS NULL OR u.created <= :to )")
+            "AND (:to IS NULL OR p.created_at <= :to)")
     PostTotalResponse getPostStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
 
