@@ -5,10 +5,11 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { useMemo } from 'react';
 import HistoryItem from './HistoryItem';
 import Header from './Header';
+import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);
 
-function History({ children, items = [], title, textBtn, avatar }) {
+function History({ children, items = [], title, avatar, handleLoadMore, showLoadMore }) {
 
     const renderItems = useMemo(
         () =>
@@ -32,9 +33,10 @@ function History({ children, items = [], title, textBtn, avatar }) {
                 render={(attrs) => (
                     <ul className={cx('history-list')} tabIndex="-1" {...attrs}>
                         <PopperWrapper className={cx('history-popper')}>
-                            <Header title={title} textBtn={textBtn} />
+                            <Header title={title} />
                             <div className={cx('history-body')}>
                                 {renderItems}
+                                {!showLoadMore && <Button onClick={handleLoadMore} className={cx('btn-load')} normal>Load more</Button>}
                             </div>
                         </PopperWrapper>
                     </ul>

@@ -92,8 +92,6 @@
     &.inactive {
         opacity: 0.6;
         filter: blur(2px);
-        pointer-events: none;
-        user-select: none;
     }
 }
 
@@ -258,13 +256,6 @@
     span {
         line-height: 1.6rem;
         min-width: 14px;
-    }
-
-    &.inactive {
-        opacity: 0.6;
-        filter: blur(2px);
-        pointer-events: none;
-        user-select: none;
     }
 }
 

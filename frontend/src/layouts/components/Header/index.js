@@ -11,13 +11,13 @@ import Image from '~/components/Image';
 import Menu from '~/components/Popper/Menu';
 import History from '~/components/Popper/History';
 import routesConfig from '~/config/routes';
-import { infoUserCurrentServices, notifyServices } from '~/apiServices';
+import { infoUserCurrentServices, notifyServices, putNotifyServices } from '~/apiServices';
 import Notifications from '~/components/Notifications';
 import { UserContext } from '~/context/UserContext';
 import { ChatContext } from '~/context/ChatContext';
 import { NavBarsContext } from '~/context/NavBarsContext';
 import { useTranslation } from 'react-i18next';
-import { AdvertiseIcon, BarsIcon, ClearSearchIcon, HelpIcon, LanguagesIcon, LogoutIcon, MessageIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
+import { AdvertiseIcon, BarsIcon, ClearSearchIcon, DashboardIcon, HelpIcon, LanguagesIcon, LogoutIcon, MessageIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
 import { useWebSocket } from '~/hooks';
 
 const cx = classNames.bind(styles);
@@ -27,12 +27,74 @@ function Header() {
     const [searchValue, setSearchValue] = useState('');
     const [notifications, setNotifications] = useState([]);
     const [notify, setNotify] = useState({});
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalsPage, setTotalsPage] = useState(1);
     const navigate = useNavigate();
     const inputRef = useRef();
     const { user, setUser } = useContext(UserContext);
     const { setShowNav } = useContext(NavBarsContext);
     const { toggleChat } = useContext(ChatContext);
     const { notification } = useWebSocket();
+    const token = localStorage.getItem('authToken');
+
+    const menuItems = useMemo(() => {
+        const items = [
+            {
+                icon: <UserIcon />,
+                title: user?.name || '',
+                to: `/user/${user?.id || ''}`,
+                separate: true,
+            },
+            {
+                icon: <AdvertiseIcon />,
+                title: 'Post Ads',
+                to: routesConfig.postAds,
+            },
+            {
+                icon: <SettingIcon />,
+                title: t('setting'),
+                to: routesConfig.setting,
+            },
+            {
+                icon: <HelpIcon />,
+                title: t('support'),
+                to: routesConfig.help,
+            },
+            {
+                icon: <LanguagesIcon />,
+                title: t('language'),
+                children: {
+                    title: t('language'),
+                    data: [
+                        { type: 'language', code: 'en', title: t('langEnglish') },
+                        { type: 'language', code: 'jp', title: t('langJapanese') },
+                        { type: 'language', code: 'cn', title: t('langChinese') },
+                    ],
+                },
+            },
+        ];
+
+        if (user) {
+            const userRole = user.roles.substring(1, user.roles.length - 1);
+
+            if (userRole === 'ADMIN') {
+                items.push({
+                    icon: <DashboardIcon width='24px' height='24px' />,
+                    title: 'Admin Management',
+                    to: routesConfig.dashboard,
+                });
+            }
+        }
+
+        items.push({
+            icon: <LogoutIcon />,
+            title: t('logout'),
+            to: routesConfig.login,
+        });
+
+        return items;
+    }, [t, user]);
+
     useEffect(() => {
         if (notification.length > 0) {
             setNotify({
@@ -51,9 +113,7 @@ function Header() {
                 const token = localStorage.getItem('authToken');
                 if (token) {
                     const isValid = await fetchInfoUser();
-                    if (isValid) {
-                        fetchNotifications(token);
-                    } else {
+                    if (!isValid) {
                         localStorage.clear();
                         setUser(null);
                     }
@@ -67,32 +127,23 @@ function Header() {
 
 
     const fetchInfoUser = useCallback(async () => {
-        try {
-            const token = localStorage.getItem('authToken');
-            if (!token) return false;
+        if (!token) return false;
 
-            const res = await infoUserCurrentServices(token);
-            if (!res?.data) {
-                localStorage.clear();
-                setUser(null);
-                return false;
-            }
-            return true;
-        } catch (error) {
-            console.log(error);
+        const res = await infoUserCurrentServices(token);
+        if (!res?.data) {
+            localStorage.clear();
             setUser(null);
             return false;
         }
+        return true;
+        // eslint-disable-next-line
     }, [setUser]);
 
-    const fetchNotifications = async (token) => {
-        try {
-            const res = await notifyServices(token);
-            if (res?.data) {
-                setNotifications(res.data.content);
-            }
-        } catch (error) {
-            console.log(error);
+    const fetchNotifications = async (page) => {
+        const res = await notifyServices(page, 5, token);
+        if (res?.data) {
+            setNotifications(prev => [...prev, ...res.data.content]);
+            setTotalsPage(res.data.totalsPage);
         }
     };
 
@@ -118,56 +169,33 @@ function Header() {
         }
     }, []);
 
-    const menuItems = [
-        {
-            icon: <UserIcon />,
-            title: user?.name || '',
-            to: `/user/${user?.id || ''}`,
-            separate: true,
-        },
-        {
-            icon: <AdvertiseIcon />, title: 'Post Ads', to: routesConfig.postAds
-        },
-        {
-            icon: <SettingIcon />, title: t('setting'), to: routesConfig.setting
-        },
-        {
-            icon: <HelpIcon />, title: t('support'), to: routesConfig.help
-        },
-        {
-            icon: <LanguagesIcon />,
-            title: t('language'),
-            children: {
-                title: t('language'),
-                data: [
-                    {
-                        type: 'language',
-                        code: 'en',
-                        title: t('langEnglish'),
-                    },
-                    {
-                        type: 'language',
-                        code: 'jp',
-                        title: t('langJapanese'),
-                    },
-                    {
-                        type: 'language',
-                        code: 'cn',
-                        title: t('langChinese'),
-                    },
-                ]
-            }
-        },
-        {
-            icon: <LogoutIcon />, title: t('logout'), to: routesConfig.login
-        },
-    ]
+    useEffect(() => {
+        if (token) {
+            fetchNotifications(currentPage);
+        }
+        // eslint-disable-next-line
+    }, [token, currentPage]);
 
     const handleMenuChange = async (menuItem) => {
         if (menuItem.type === 'language') {
             i18n.changeLanguage(menuItem.code)
         }
     };
+
+    const handleClickNotify = async () => {
+        await putNotifyServices(token);
+        setCurrentPage(0);
+        setNotifications([]);
+        fetchNotifications(0);
+    }
+
+
+    const handleLoadMore = () => {
+        const nextPage = currentPage + 1;
+        setCurrentPage(nextPage);
+        fetchNotifications(nextPage);
+    };
+
 
     return (
         <header className={cx('wrapper')}>
@@ -222,8 +250,11 @@ function Header() {
                                 avatar={user.img}
                                 header
                                 title={t('notifications')}
-                                textBtn={t('markRead')}>
-                                <Button className={cx('notify-btn')} iconText leftIcon={<NotifyIcon />} />
+                                textBtn={t('markRead')}
+                                handleLoadMore={handleLoadMore}
+                                showLoadMore={totalsPage === (currentPage + 1)}
+                            >
+                                <Button onClick={handleClickNotify} className={cx('notify-btn')} iconText leftIcon={<NotifyIcon />} />
                             </History>
                             <Menu items={menuItems} onChange={handleMenuChange}>
                                 <Image

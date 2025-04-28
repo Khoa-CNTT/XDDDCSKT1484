@@ -11,7 +11,8 @@ import {
     uploadImageServices,
     updateInfoUserServices,
     acceptFriendServices,
-    rejectFriendServices
+    rejectFriendServices,
+    getRequestFriendsServices
 } from "~/apiServices";
 import Post from "~/components/Post";
 import { useScroll } from "~/hooks";
@@ -28,12 +29,14 @@ function Profile() {
     const [userCurrent, setUserCurrent] = useState(null);
     const [postsUser, setPostsUser] = useState([]);
     const [friends, setFriends] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [option, setOption] = useState("Post");
+    const [totalsPage, setTotalsPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(0);
     const [userPrimary, setUserPrimary] = useState(false);
     const [statusFriend, setStatusFriend] = useState('');
+    const [showRespond, setShowRespond] = useState(false);
     const fileInputRef = useRef(null);
-    const respondRef = useRef(null);
     const { toggleChat } = useContext(ChatContext);
     const location = useLocation();
     const { user, setUser } = useContext(UserContext);
@@ -76,7 +79,7 @@ function Profile() {
     // Fetch posts
     const fetchPosts = useCallback(async (id, page) => {
         const res = await getPostByIdUserServices(id, page, 5, token);
-        if (res?.data?.content?.length) {
+        if (res?.data?.content.length > 0) {
             setPostsUser(prev => page === 0 ? res.data.content : [...prev, ...res.data.content]);
         }
     }, [token]);
@@ -84,8 +87,18 @@ function Profile() {
     // Fetch friends
     const fetchFriends = useCallback(async (page) => {
         const res = await getFriendsServices(page, 5, token);
-        if (res?.data?.content?.length) {
+        if (res?.data?.content.length > 0) {
             setFriends(prev => page === 0 ? res.data.content : [...prev, ...res.data.content]);
+        }
+    }, [token]);
+
+    // Fetch Request Add Friends
+    const fetchRequests = useCallback(async (page) => {
+        const res = await getRequestFriendsServices(page, 5, token);
+
+        if (res?.data?.content.length > 0) {
+            setRequests(prev => page === 0 ? res.data.content : [...prev, ...res.data.content]);
+            setTotalsPage(res.data.totalPages);
         }
     }, [token]);
 
@@ -99,26 +112,41 @@ function Profile() {
     }, [userId, fetchUser]);
 
     useScroll(() => {
-        setCurrentPage(prev => prev + 1);
+        if (statusFriend !== 'Request') {
+            setCurrentPage(prev => prev + 1);
+        }
     });
 
     useEffect(() => {
-        if (!userId) return;
+        setCurrentPage(0);
+        if (option === "Post") {
+            setPostsUser([]);
+        } else if (option === "Friends") {
+            setFriends([]);
+        } else {
+            setRequests([]);
+        }
+    }, [option, userId]);
+
+    useEffect(() => {
         if (option === "Post") {
             fetchPosts(userId, currentPage);
-        } else {
+        } else if (option === "Friends") {
             fetchFriends(currentPage);
+        } else {
+            fetchRequests(currentPage);
         }
-    }, [currentPage, option, userId, fetchPosts, fetchFriends]);
+    }, [option, userId, currentPage, fetchPosts, fetchFriends, fetchRequests]);
+
 
     const handleAddFriend = async () => {
-        if (statusFriend === 'Add Friends') {
+        if (statusFriend === 'Add Friend') {
             const res = await addFriendServices(userCurrent.id, token);
             if (res?.data?.receiver === userCurrent.name) {
                 setStatusFriend("Sent");
             }
         } else if (statusFriend === 'Respond') {
-            respondRef.current.style.display = 'flex';
+            setShowRespond(true)
         }
     };
 
@@ -128,8 +156,10 @@ function Profile() {
             setCurrentPage(0);
             if (newOption === "Post") {
                 setPostsUser([]);
-            } else {
+            } else if (newOption === "Friends") {
                 setFriends([]);
+            } else {
+                setRequests([]);
             }
         }
     };
@@ -153,36 +183,56 @@ function Profile() {
         }
     };
 
-    const handleAccept = async () => {
-        const res = await acceptFriendServices(userId, token);
+    const handleAccept = async (id) => {
+        const res = await acceptFriendServices(id, token);
         if (res?.data) {
-            setStatusFriend('Friend');
-            respondRef.current.style.display = 'none';
+            if (!userPrimary) {
+                setStatusFriend('Friend');
+                setShowRespond(false);
+            } else {
+                setRequests([])
+                setCurrentPage(0)
+                fetchRequests(0)
+            }
         }
     }
 
-    const handleReject = async () => {
-        const res = await rejectFriendServices(userId, token);
+    const handleReject = async (id) => {
+        const res = await rejectFriendServices(id, token);
         if (res?.data) {
-            setStatusFriend('Add Friend');
-            respondRef.current.style.display = 'none';
+            if (!userPrimary) {
+                setStatusFriend('Add Friend');
+                setShowRespond(false);
+            } else {
+                setCurrentPage(0)
+                fetchRequests(currentPage)
+            }
         }
     }
 
-    const friendList = useMemo(() => (
-        friends.map((friend, index) => (
-            <div key={index} className={cx("item")}>
-                <div className={cx("box-left")}>
-                    <Image src={friend.img || images.avatar} className={cx("avatar-friends")} />
-                    <h3 className={cx("name-friends")}>{friend.name}</h3>
+    const handleSeeAllRequest = () => {
+        setCurrentPage(prev => prev + 1);
+    }
+
+    const friendList = useMemo(() => {
+        if (friends.length > 0) {
+            return friends.map((friend, index) => (
+                <div key={index} className={cx("item")}>
+                    <div className={cx("box-left")}>
+                        <Image src={friend.img || images.avatar} className={cx("avatar-friends")} />
+                        <h3 className={cx("name-friends")}>{friend.name}</h3>
+                    </div>
+                    <div className={cx("box-right")}>
+                        <Button className={cx("chat-friends")} normal>Chat</Button>
+                        <DownIcon className={cx("btn-more")} />
+                    </div>
                 </div>
-                <div className={cx("box-right")}>
-                    <Button className={cx("chat-friends")} normal>Chat</Button>
-                    <DownIcon className={cx("btn-more")} />
-                </div>
-            </div>
-        ))
-    ), [friends]);
+            ));
+        } else {
+            return <div className={cx('title-no')}>No friends</div>;
+        }
+    }, [friends]);
+    
 
     return (
         <div className={cx("wrapper")}>
@@ -212,6 +262,7 @@ function Profile() {
                         <div className={cx('friend-nav')}>
                             <Button onClick={() => handleOptionChange("Post")} primary={option === "Post"}>Post</Button>
                             <Button onClick={() => handleOptionChange("Friends")} primary={option === "Friends"}>Friends</Button>
+                            <Button onClick={() => handleOptionChange("Request")} primary={option === "Request"}>Request</Button>
                         </div>
                     ) : (
                         <div className={cx('friend')}>
@@ -219,10 +270,12 @@ function Profile() {
                                 <Button onClick={handleAddFriend} primary>{statusFriend}</Button>
                                 <Button onClick={toggleChat} normal>Chat</Button>
                             </div>
-                            <div ref={respondRef} className={cx('friend-res')}>
-                                <Button onClick={handleAccept} primary>Accept</Button>
-                                <Button onClick={handleReject} normal>Reject</Button>
-                            </div>
+                            {showRespond && (
+                                <div className={cx('friend-res')}>
+                                    <Button onClick={() => handleAccept(userId)} primary>Accept</Button>
+                                    <Button onClick={() => handleReject(userId)} normal>Reject</Button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -233,6 +286,28 @@ function Profile() {
                     postsUser.map(post => (
                         <Post key={post.id} data={post} profile show={post.show} />
                     ))
+                ) : option === "Request" ? (
+                    <>
+                        <div className={cx('list-request')}>
+                            {
+                                requests.map((request, index) => (
+                                    <div key={index} className={cx('user-request')}>
+                                        <img className={cx('img-user')} alt={request.name} src={request.img || images.avatar} />
+                                        <h3 className={cx('name-user')}>{request.name}</h3>
+                                        <div className={cx('action-user')}>
+                                            <Button className={cx('action-accept')} primary onClick={() => handleAccept(request.userSend_id)}>Accept</Button>
+                                            <Button className={cx('action-reject')} normal onClick={() => handleReject(request.userSend_id)}>Reject</Button>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        {totalsPage !== (currentPage + 1) ?
+                            <Button normal className={cx('see-btn')} onClick={handleSeeAllRequest}>See All</Button>
+                            :
+                            <div className={cx('title-no')}>No friend requests</div>
+                        }
+                    </>
                 ) : (
                     <div className={cx("list")}>{friendList}</div>
                 )}

@@ -1,16 +1,16 @@
 import * as request from '~/utils/request'
 
-const patchStatusUser = async (id, data, token) => {
+const putNotify = async (token) => {
     try {
-        const res = await request.patch(`users/${id}/status`, data, {
+        const res = await request.put('notices/read', {}, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        })
-        return res
+        });
+        return res;
     } catch (error) {
         return error;
     }
 }
 
-export default patchStatusUser;
+export default putNotify;

@@ -1,8 +1,9 @@
 import classNames from 'classnames/bind';
 import styles from './PostAds.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { LeftIcon, RightIcon, TotalAdsIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon } from '~/components/Icons';
+import { useEffect, useState } from 'react';
+import { LeftIcon, RightIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon, InteractAdminIcon } from '~/components/Icons';
+import { getPostAdsUserServices } from '~/apiServices';
 
 const cx = classNames.bind(styles);
 
@@ -30,10 +31,12 @@ const adsList = [
         price: 100,
     },
 ];
+
 function PostAds() {
     const navigate = useNavigate();
     const [totalsPage, setTotalsPage] = useState(1);
     const [pageCurrent, setPageCurrent] = useState(0);
+    const [postAds, setPostAds] = useState([]);
 
     const handleDetailAds = (id) => {
         navigate(`/postAds/${id}`)
@@ -48,6 +51,18 @@ function PostAds() {
 
         setPageCurrent((prev) => Math.max(prev + 1, totalsPage - 1));
     };
+
+    useEffect(() => {
+        fetchPostAds(pageCurrent);
+    }, [pageCurrent])
+
+    const fetchPostAds = async (page) => {
+        const token = localStorage.getItem('authToken')
+        const res = await getPostAdsUserServices(page, 10, token);
+        if (res?.data?.content.length > 0) {
+            setPostAds(res.data.content);
+        }
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -64,17 +79,6 @@ function PostAds() {
                     </p>
                 </div>
 
-                <div className={cx('figures-total', 'total-price')}>
-                    <div className={cx('header-figures')}>
-                        <h5>Total Price Ads</h5>
-                        <SalesAdminIcon width="32px" height="32px" />
-                    </div>
-                    <p className={cx('body-figures')}>$730</p>
-                    <p className={cx('footer-figures')}>
-                        <GrowIcon /> 3.7% Up from yesterday
-                    </p>
-                </div>
-
                 <div className={cx('figures-total', 'total-views')}>
                     <div className={cx('header-figures')}>
                         <h5>Total Views</h5>
@@ -88,12 +92,23 @@ function PostAds() {
 
                 <div className={cx('figures-total', 'total-ads')}>
                     <div className={cx('header-figures')}>
-                        <h5>Total Ads</h5>
-                        <TotalAdsIcon width="32px" height="32px" />
+                        <h5>Total Interact</h5>
+                        <InteractAdminIcon width="32px" height="32px" />
                     </div>
                     <p className={cx('body-figures')}>73,123</p>
                     <p className={cx('footer-figures')}>
                         <ShrinkIcon /> 0.6% Down from yesterday
+                    </p>
+                </div>
+
+                <div className={cx('figures-total', 'total-price')}>
+                    <div className={cx('header-figures')}>
+                        <h5>Total Price Ads</h5>
+                        <SalesAdminIcon width="32px" height="32px" />
+                    </div>
+                    <p className={cx('body-figures')}>$730</p>
+                    <p className={cx('footer-figures')}>
+                        <GrowIcon /> 3.7% Up from yesterday
                     </p>
                 </div>
             </div>
@@ -102,27 +117,28 @@ function PostAds() {
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Title</th>
-                            <th>Package Name</th>
-                            <th>Price</th>
+                            <th>Type Post</th>
+                            <th>Language</th>
                             <th>Views</th>
-                            <th>Like</th>
+                            <th>Likes</th>
                             <th>Comments</th>
                             <th>Published</th>
+                            <th>Package Ads</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {adsList.map((ad, index) => {
+                        {postAds.map((ads, index) => {
                             return (
-                                <tr key={ad.id} onClick={() => handleDetailAds(ad.id)}>
-                                    <td>{index + 1}</td>
-                                    <td>{ad.title}</td>
-                                    <td>{ad.package}</td>
-                                    <td>${ad.price}</td>
-                                    <td>{ad.views.toLocaleString()}</td>
-                                    <td>{ad.like}</td>
-                                    <td>{ad.cmt}</td>
-                                    <td>{ad.publish}</td>
+                                <tr key={ads.id} onClick={() => handleDetailAds(ads.id)}>
+                                    {/* <td>{index + 1}</td>
+                                    <td>{ads.title}</td> */}
+                                    {/* <td>{ads.package}</td>
+                                    <td>${ads.price}</td>
+                                    <td>{ads.views}</td>
+                                    <td>{ads.like}</td>
+                                    <td>{ads.cmt}</td>
+                                    <td>{ads.publish}</td> */}
                                 </tr>
                             );
                         })}

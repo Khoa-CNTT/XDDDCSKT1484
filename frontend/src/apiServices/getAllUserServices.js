@@ -1,9 +1,10 @@
 import * as request from '~/utils/request'
 
-const getAllUser = async (page, size, token) => {
+const getAllUser = async (username, page, size, token) => {
     try {
         const config = {
             params: {
+                username,
                 page,
                 size,
             }

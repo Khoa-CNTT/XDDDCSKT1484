@@ -4,15 +4,12 @@ import styles from './History.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Header({ title, textBtn }) {
+function Header({ title }) {
 
 
     return (
         <header className={cx('header')}>
             <h4 className={cx('title')}>{title}</h4>
-            <button className={cx('read-btn')}>
-                {textBtn}
-            </button>
         </header>
     );
 }
