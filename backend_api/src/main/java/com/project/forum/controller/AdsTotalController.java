@@ -53,4 +53,33 @@ public class AdsTotalController {
                         .build()
         );
     }
+
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/count/user")
+    public ResponseEntity<ApiResponse<AdsTotalResponse>> getAdsStatsByUser(
+            @Parameter(
+                    description = "Ngày bắt đầu (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    in = ParameterIn.QUERY,
+                    required = false,
+                    schema = @Schema(type = "string", format = "date-time")
+            )
+            @RequestParam(required = false) String start,
+
+            @Parameter(
+                    description = "Ngày kết thúc (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    in = ParameterIn.QUERY,
+                    required = false,
+                    schema = @Schema(type = "string", format = "date-time")
+            )
+            @RequestParam(required = false) String end) {
+
+        LocalDateTime from = (start == null || start.isEmpty()) ? null : LocalDateTime.parse(start);
+        LocalDateTime to = (end == null || end.isEmpty()) ? null : LocalDateTime.parse(end);
+
+        return ResponseEntity.ok(
+                ApiResponse.<AdsTotalResponse>builder()
+                        .data(adsService.adsTotalByUser(from, to))
+                        .build()
+        );
+    }
 }

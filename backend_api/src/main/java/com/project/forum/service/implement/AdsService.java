@@ -56,4 +56,12 @@ public class AdsService implements IAdsService {
     public AdsTotalResponse adsTotal(LocalDateTime start, LocalDateTime end) {
         return advertisementRepository.getAdsStats(start, end);
     }
+
+    @Override
+    public AdsTotalResponse adsTotalByUser(LocalDateTime start, LocalDateTime end) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        return advertisementRepository.getAdsStatsByUser(user.getId(), start, end);
+    }
 }
