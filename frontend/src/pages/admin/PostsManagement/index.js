@@ -3,7 +3,7 @@ import styles from './PostsManagement.module.scss'
 import { EditIcon, LeftIcon, RightIcon, SearchIcon, TrashIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { deletedPostServices, editPostServices, searchPostsAdminServices } from "~/apiServices";
+import { deletedPostServices, patchStatusPostServices, searchPostsAdminServices } from "~/apiServices";
 import ModalEdit from "~/components/ModalEdit";
 import ModalDel from "~/components/ModalDel";
 
@@ -30,7 +30,7 @@ function PostsManagement() {
     }
 
     const handleEdit = async (data) => {
-        const res = await editPostServices(modalEdit.id, data, token);
+        const res = await patchStatusPostServices(modalEdit.id, data, token);
         if (res?.data) {
             fetchAllPost(pageCurrent, token);
             setModalEdit(null);
@@ -77,7 +77,7 @@ function PostsManagement() {
                                 <th>STT</th>
                                 <th>Full Name</th>
                                 <th>Type Post</th>
-                                <th>Date Post</th>
+                                <th>Published</th>
                                 <th>Language</th>
                                 <th>Advertisement</th>
                                 <th>Show</th>
@@ -125,13 +125,13 @@ function PostsManagement() {
             {modalEdit &&
                 <ModalEdit
                     text='Post'
-                    fields={[
-                        {
-                            name: 'show',
-                            value: modalEdit.show.toString(),
-                            type: 'text'
-                        }
+                    name='status'
+                    type="select"
+                    options={[
+                        'true',
+                        'false',
                     ]}
+                    defaultValue={modalEdit.show}
                     handleEdit={handleEdit}
                     handleCancel={() => setModalEdit(null)}
                 />

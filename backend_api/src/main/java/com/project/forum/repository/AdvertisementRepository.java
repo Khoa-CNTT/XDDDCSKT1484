@@ -1,6 +1,7 @@
 package com.project.forum.repository;
 
 import com.project.forum.dto.responses.ads.AdsResponse;
+import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import com.project.forum.enity.Advertisement;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,19 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
             "AND a.status = true " +
             "AND a.views != ads.max_impressions")
     Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
+
+    @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +
+            "COUNT(DISTINCT a.id), " +                    // Tổng số quảng cáo
+            "COALESCE(SUM(a.views), 0), " +               // Tổng số lượt xem
+            "COUNT(DISTINCT CASE WHEN a.status = true THEN a.id END), " +  // Số quảng cáo đang hoạt động
+            "COALESCE(SUM(SIZE(a.posts.likes)), 0), " +   // Tổng số lượt like
+            "COALESCE(SUM(SIZE(a.posts.comments)), 0), " + // Tổng số lượt comment
+            "MIN(a.created_at), " +                        // Ngày bắt đầu
+            "MAX(a.created_at)) " +                        // Ngày kết thúc
+            "FROM Advertisement a " +
+            "WHERE (:from IS NULL OR a.created_at >= :from) " +
+            "AND (:to IS NULL OR a.created_at <= :to)")
+    AdsTotalResponse getAdsStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 }
 
 

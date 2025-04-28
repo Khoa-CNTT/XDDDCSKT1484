@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '~/components/Button';
 import Comment from '~/components/Comment';
 import { useScroll } from '~/hooks';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles)
@@ -17,7 +17,9 @@ function PostDetail() {
     const [comments, setComments] = useState([]);
     const [valueContent, setValueContent] = useState('');
     const [pageCurrent, setPageCurrent] = useState(0);
+    const [showPost, setShowPost] = useState(false);
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const isFetching = useRef(false);
     const handleCancel = (e) => {
         e.preventDefault()
@@ -44,13 +46,20 @@ function PostDetail() {
 
     useEffect(() => {
         const fetchApiPost = async (id, token) => {
+
+            if (!token) return;
+
             const res = await getPostByIdPostServices(id, token)
             if (res?.data) {
+                setShowPost(res.data.show);
                 setPost(res.data);
+            } else {
+                navigate('/')
             }
         }
         const token = localStorage.getItem('authToken');
         fetchApiPost(idPost, token);
+        // eslint-disable-next-line
     }, [idPost]);
 
 
@@ -78,22 +87,24 @@ function PostDetail() {
             {Object.keys(post).length > 0 && (
                 <>
                     <Post data={post} />
-                    <div className={cx('cmt')}>
-                        <form className={cx('form')}>
-                            <textarea value={valueContent} onChange={e => setValueContent(e.target.value)} name="comment" className={cx('content')} placeholder={t('commentPlaceholder')} />
-                            <div className={cx('btn')}>
-                                <Button onClick={handleCancel} round normal className={cx('cancel-btn')}>{t('cancel')}</Button>
-                                <Button onClick={handleComment} round primary className={cx('submit-btn')}>{t('comment')}</Button>
+                    {showPost && (
+                        <div className={cx('cmt')}>
+                            <form className={cx('form')}>
+                                <textarea value={valueContent} onChange={e => setValueContent(e.target.value)} name="comment" className={cx('content')} placeholder={t('commentPlaceholder')} />
+                                <div className={cx('btn')}>
+                                    <Button onClick={handleCancel} round normal className={cx('cancel-btn')}>{t('cancel')}</Button>
+                                    <Button onClick={handleComment} round primary className={cx('submit-btn')}>{t('comment')}</Button>
+                                </div>
+                            </form>
+
+                            <div className={cx('body')}>
+                                {comments && comments.map((item) => (
+                                    <Comment key={item.id} data={item} onDeleteSuccess={handleDeleteSuccess} />
+                                ))}
                             </div>
-                        </form>
 
-                        <div className={cx('body')}>
-                            {comments && comments.map((item) => (
-                                <Comment key={item.id} data={item} onDeleteSuccess={handleDeleteSuccess} />
-                            ))}
                         </div>
-
-                    </div>
+                    )}
                 </>
             )}
         </div>

@@ -5,23 +5,25 @@ import Button from "~/components/Button";
 
 const cx = classNames.bind(styles);
 
-function ModalEdit({ text, fields, handleEdit, handleCancel }) {
+function ModalEdit({ text, type = 'input', options = [], defaultValue = '', name = '', fields = [], handleEdit, handleCancel }) {
     const [form, setForm] = useState({});
 
     useEffect(() => {
-        const result = fields.reduce((acc, field) => {
+        const initialForm = fields.reduce((acc, field) => {
             acc[field.name] = field.value || '';
             return acc;
         }, {});
-        setForm(result);
-    }, [fields]);
+        setForm(initialForm);
+        // eslint-disable-next-line
+    }, []);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
     };
 
     const onEdit = () => {
-        const hasEmpty = Object.values(form).some(value => value.trim() === '');
+        const hasEmpty = Object.values(form).some(value => value.toString().trim() === '');
         if (hasEmpty) {
             alert("Vui lòng nhập đầy đủ và hợp lệ thông tin.");
             return;
@@ -34,19 +36,44 @@ function ModalEdit({ text, fields, handleEdit, handleCancel }) {
         <div className={cx('modal')}>
             <div className={cx('modal-body')}>
                 <div className={cx('content')}>
-                    <h3 className={cx('heading')}> Edit {text}</h3>
-                    {fields.map((field, index) => (
-                        <Fragment key={index}>
-                            <label className={cx('label')}>{field.name.charAt(0).toUpperCase()}{field.name.slice(1)}</label>
-                            <input
-                                name={field.name}
-                                type={field.type}
-                                value={form[field.name] || ''}
+                    <h3 className={cx('heading')}>Edit {text}</h3>
+
+                    {type === 'input' ? (
+                        fields.map((field, index) => (
+                            <Fragment key={index}>
+                                <label htmlFor={field.name} className={cx('label')}>
+                                    {field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+                                </label>
+                                <input
+                                    id={field.name}
+                                    className={cx('input')}
+                                    name={field.name}
+                                    type={field.type}
+                                    value={form[field.name] || ''}
+                                    onChange={handleChange}
+                                />
+                            </Fragment>
+                        ))
+                    ) : (
+                        <label className={cx('label')} htmlFor={name}>
+                            {name.charAt(0).toUpperCase() + name.slice(1)}
+                            <select
+                                id={name}
+                                name={name}
+                                className={cx('select')}
+                                value={form[name] || defaultValue}
                                 onChange={handleChange}
-                            />
-                        </Fragment>
-                    ))}
+                            >
+                                {options.map((option, index) => (
+                                    <option key={index} value={option}>
+                                        {option.charAt(0).toUpperCase() + option.slice(1)}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                    )}
                 </div>
+
                 <div className={cx('actions')}>
                     <Button primary onClick={onEdit}>Save</Button>
                     <Button deleted onClick={handleCancel}>Cancel</Button>

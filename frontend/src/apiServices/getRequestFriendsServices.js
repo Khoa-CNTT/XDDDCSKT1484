@@ -1,6 +1,6 @@
 import * as request from '~/utils/request'
 
-const notify = async (page, size, token) => {
+const getRequestFriends = async (page, size, token) => {
     try {
         const configs = {
             params: {
@@ -10,15 +10,12 @@ const notify = async (page, size, token) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-
         }
-
-        const res = await request.get('notices', configs)
-
+        const res = await request.get('friend-ship/friendship-request', configs);
         return res;
     } catch (error) {
         return error;
     }
 }
 
-export default notify;
+export default getRequestFriends;

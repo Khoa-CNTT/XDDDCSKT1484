@@ -53,7 +53,7 @@ function Report() {
     }
 
     const handleEdit = async () => {
-        const res = await patchReportServices(modalEdit, token);
+        const res = await patchReportServices(modalEdit.postId, token);
         if (res?.data.result) {
             fetchAllReport(pageCurrent, token);
             setModalEdit(null);
@@ -105,7 +105,7 @@ function Report() {
                                             <td>{format(new Date(report.createdAt), 'dd/MM/yyyy HH:mm')}</td>
                                             <td>{report.status.toString()}</td>
                                             <td style={{ minWidth: 80 }}>
-                                                <EditIcon onClick={() => setModalEdit(report.id)} />
+                                                <EditIcon onClick={() => setModalEdit(report)} />
                                                 <TrashIcon onClick={() => setModalDel(report.id)} />
                                             </td>
                                         </tr>
@@ -134,13 +134,13 @@ function Report() {
             {modalEdit &&
                 <ModalEdit
                     text='Report'
-                    fields={[
-                        {
-                            name: 'status',
-                            value: modalEdit,
-                            type: 'text'
-                        },
+                    name='status'
+                    type="select"
+                    options={[
+                        'true',
+                        'false',
                     ]}
+                    defaultValue={modalEdit.status}
                     handleEdit={handleEdit}
                     handleCancel={() => setModalEdit(null)}
                 />

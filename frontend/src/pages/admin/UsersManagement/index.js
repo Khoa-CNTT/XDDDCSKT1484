@@ -1,60 +1,76 @@
 import classNames from "classnames/bind";
-import styles from './UsersManagement.module.scss'
-import { EditIcon, LeftIcon, RightIcon, SearchIcon, TrashIcon } from "~/components/Icons";
+import styles from './UsersManagement.module.scss';
+import { EditIcon, LeftIcon, RightIcon, SearchIcon } from "~/components/Icons";
 import Image from "~/components/Image";
 import images from "~/assets/images";
 import { useEffect, useState } from "react";
-import { deletedUserServices, getAllUserServices, patchStatusUserServices } from "~/apiServices";
+import { getAllUserServices, patchStatusUserServices } from "~/apiServices";
 import ModalEdit from "~/components/ModalEdit";
-import ModalDel from "~/components/ModalDel";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 function UsersManagement() {
     const [modalEdit, setModalEdit] = useState(null);
-    const [modalDel, setModalDel] = useState(null);
-    const [totalsPage, setTotalsPage] = useState(1)
+    const [totalsPage, setTotalsPage] = useState(1);
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listUser, setListUser] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const token = localStorage.getItem('authToken');
+    const params = new URLSearchParams(location.search);
+    const username = params.get('username');
+
+    useEffect(() => {
+        setSearchValue(username || '');
+    }, [username]);
+
+    useEffect(() => {
+        setPageCurrent(0);
+    }, [username]);
 
     useEffect(() => {
         fetchAllUser(pageCurrent, token);
-    }, [pageCurrent, token])
+        // eslint-disable-next-line
+    }, [pageCurrent, token, username]);
 
     const fetchAllUser = async (page, token) => {
-        const res = await getAllUserServices(page, 10, token);
+        const res = await getAllUserServices(username, page, 10, token);
         if (res?.data) {
             setListUser(res.data.content);
-            setTotalsPage(res.data?.totalPages);
+            setTotalsPage(res.data.totalPages);
         }
-    }
+    };
 
     const handleReducePage = () => {
         setPageCurrent(prev => Math.max(prev - 1, 0));
     };
 
     const handleIncreasePage = () => {
-        setPageCurrent(prev => Math.max(prev - 1, totalsPage - 1));
+        setPageCurrent(prev => Math.min(prev + 1, totalsPage - 1));
     };
-
-    const handleDelete = async () => {
-        const res = await deletedUserServices(modalDel, token);
-        if (res?.data) {
-            fetchAllUser(pageCurrent, token);
-            setModalDel(null);
-        }
-
-    }
 
     const handleEdit = async (data) => {
         const res = await patchStatusUserServices(modalEdit.id, data, token);
         if (res?.data) {
-            fetchAllUser(pageCurrent, token);
+            await fetchAllUser(pageCurrent, token);
             setModalEdit(null);
         }
 
-    }
+    };
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            const query = new URLSearchParams();
+            if (searchValue.trim()) {
+                query.set('username', searchValue.trim());
+            }
+            navigate(`?${query.toString()}`);
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -65,7 +81,14 @@ function UsersManagement() {
                     </div>
                     <div className={cx('user-search')}>
                         <SearchIcon className={cx('search-icon')} />
-                        <input className={cx('search-input')} type="text" placeholder="Search user name" />
+                        <input
+                            className={cx('search-input')}
+                            type="text"
+                            placeholder="Search user name"
+                            value={searchValue}
+                            onChange={e => setSearchValue(e.target.value)}
+                            onKeyDown={handleSearch}
+                        />
                     </div>
                 </div>
                 <div className={cx('user-details')}>
@@ -77,7 +100,7 @@ function UsersManagement() {
                                 <th>Full Name</th>
                                 <th>Email</th>
                                 <th>Language</th>
-                                {/* <th>Active</th> */}
+                                <th>Active</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -91,9 +114,9 @@ function UsersManagement() {
                                             <td>{user.name}</td>
                                             <td>{user.email}</td>
                                             <td>{user.language}</td>
+                                            <td>{user.active}</td>
                                             <td>
                                                 <EditIcon onClick={() => setModalEdit(user)} />
-                                                <TrashIcon onClick={() => setModalDel(user.id)} />
                                             </td>
                                         </tr>
                                     ))
@@ -120,22 +143,15 @@ function UsersManagement() {
             {modalEdit &&
                 <ModalEdit
                     text='User'
-                    fields={[
-                        {
-                            name: 'statusUser',
-                            value: modalEdit.name,
-                            type: 'text'
-                        },
+                    name='statusUser'
+                    type="select"
+                    options={[
+                        'ACTIVE',
+                        'INACTIVE',
                     ]}
+                    defaultValue={modalEdit.active}
                     handleEdit={handleEdit}
                     handleCancel={() => setModalEdit(null)}
-                />
-            }
-            {modalDel &&
-                <ModalDel
-                    text='user'
-                    handleDelete={handleDelete}
-                    handleCancel={() => setModalDel(null)}
                 />
             }
         </div>

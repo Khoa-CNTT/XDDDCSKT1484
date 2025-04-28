@@ -9,14 +9,17 @@ import { deletedPostServices, getPostContentServices, getPostPollServices, likeS
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { CloseIcon, CommentIcon, LikeActiveIcon, LikeIcon, ShareIcon, ReportIcon, SaveIcon, HiddenIcon, EditIcon, TrashIcon, MoreIcon, StarIcon, SpeakerIcon } from "~/components/Icons";
+import { CommentIcon, LikeActiveIcon, LikeIcon, ShareIcon, ReportIcon, SaveIcon, HiddenIcon, EditIcon, TrashIcon, MoreIcon, StarIcon, SpeakerIcon } from "~/components/Icons";
 import { UserContext } from "~/context/UserContext";
+import ModalDel from "../ModalDel";
 
 const cx = classNames.bind(styles)
 
 function Post({ data, profile = false, show = true }) {
     const [showLike, setShowLike] = useState(data.user_like || false);
-    const [showModal, setShowModal] = useState(false);
+    // eslint-disable-next-line
+    const [showPost, setShowPost] = useState(data.show);
+    const [modalDel, setModalDel] = useState(null);
     const [dataPost, setDataPost] = useState({});
     const [isTranslated, setIsTranslated] = useState(false);
     const [originalPost, setOriginalPost] = useState(dataPost);
@@ -44,12 +47,12 @@ function Post({ data, profile = false, show = true }) {
                 return [
                     { icon: <EditIcon />, title: t('edit'), onClick: handleDirectEdit },
                     ...commonItems,
-                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleToggleModal },
+                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleModalEdit },
                 ];
             } else {
                 return [
                     ...commonItems,
-                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleToggleModal },
+                    { icon: <TrashIcon />, title: t('deleted'), onClick: handleModalEdit },
                 ];
             }
         }
@@ -57,19 +60,19 @@ function Post({ data, profile = false, show = true }) {
         ];
     };
 
-    const handleToggleModal = () => setShowModal((prev) => !prev);
+    const handleModalEdit = () => setModalDel(data.id);
 
     const handleDirectEdit = () => {
         navigate(`/upload?id=${data.id}`)
     }
 
-    const handleDeletePost = async () => {
-        const res = await deletedPostServices(data.id, token)
+    const handleDelete = async () => {
+        const res = await deletedPostServices(modalDel, token)
         if (res?.data) {
             setDeleteState(true)
         }
 
-        setShowModal(false)
+        setModalDel(null)
     }
 
     const fetchApiTypePost = useCallback(async () => {
@@ -89,7 +92,7 @@ function Post({ data, profile = false, show = true }) {
             setDataPost(res.data);
         }
         // eslint-disable-next-line 
-    }, [data.id, token]);
+    }, [data.id]);
 
     useEffect(() => {
         fetchApiTypePost();
@@ -235,7 +238,7 @@ function Post({ data, profile = false, show = true }) {
     return (
         <Fragment>
 
-            <div className={cx('wrapper', { profile })}>
+            <div className={cx('wrapper', { profile, inactive: !show })}>
                 <div className={cx('header')}>
                     <div className={cx('user')}>
                         <Link to={`/user/${data.id_user}`} >
@@ -341,52 +344,44 @@ function Post({ data, profile = false, show = true }) {
                             </form>
                         </div>
                     )}
-                <div className={cx('interact', { inactive: !show })}>
-                    <div className={cx('like')}>
-                        <Button
-                            like={showLike}
-                            onClick={handleToggleLikes}
-                            className={cx('like-btn')}
-                            round
-                            normal
-                            rightIcon={showLike ? <LikeActiveIcon /> : <LikeIcon />}
-                        >
-                            {likesCount}
-                        </Button>
-                    </div>
-                    <div className={cx('comment')}>
-                        <Button
-                            to={`/post/${data.id}`}
-                            className={cx('comment-btn')}
-                            round
-                            normal
-                            rightIcon={<CommentIcon />}
-                        >
-                            {`${data.comment || 0}`}
-                        </Button>
-                    </div>
-                    <div className={cx('share')}>
-                        <Button onClick={handleShare} className={cx('share-btn')} round normal rightIcon={<ShareIcon />} />
-                    </div>
-                </div>
-            </div>
-            {
-                showModal && (
-                    <div className={cx('modal')}>
-                        <div className={cx('container')}>
-                            <div className={cx('modal-header')}>
-                                <h3 className={cx('modal-heading')}>{t('deletedHeading')}</h3>
-                                <Button onClick={handleToggleModal} iconCircle className={cx('modal-close')} leftIcon={<CloseIcon />} />
-                            </div>
-                            <div className={cx('modal-body')}>
-                                <p className={cx('modal-title')}>{t('deletedConfirm')}</p>
-                            </div>
-                            <div className={cx('modal-footer')}>
-                                <Button onClick={handleToggleModal} round normal className={cx('btn-cancel')}>{t('deletedBtnCancel')}</Button>
-                                <Button onClick={handleDeletePost} round deleted className={cx('btn-confirm')}>{t('deletedBtnYes')}</Button>
-                            </div>
+                {showPost && (
+                    <div className={cx('interact')}>
+                        <div className={cx('like')}>
+                            <Button
+                                like={showLike}
+                                onClick={handleToggleLikes}
+                                className={cx('like-btn')}
+                                round
+                                normal
+                                rightIcon={showLike ? <LikeActiveIcon /> : <LikeIcon />}
+                            >
+                                {likesCount}
+                            </Button>
+                        </div>
+                        <div className={cx('comment')}>
+                            <Button
+                                to={`/post/${data.id}`}
+                                className={cx('comment-btn')}
+                                round
+                                normal
+                                rightIcon={<CommentIcon />}
+                            >
+                                {`${data.comment || 0}`}
+                            </Button>
+                        </div>
+                        <div className={cx('share')}>
+                            <Button onClick={handleShare} className={cx('share-btn')} round normal rightIcon={<ShareIcon />} />
                         </div>
                     </div>
+                )}
+            </div>
+            {
+                modalDel && (
+                    <ModalDel
+                        text='Post'
+                        handleDelete={handleDelete}
+                        handleCancel={() => setModalDel(null)}
+                    />
                 )
             }
         </Fragment >

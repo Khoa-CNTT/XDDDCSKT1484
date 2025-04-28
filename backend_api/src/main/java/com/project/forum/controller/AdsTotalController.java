@@ -1,12 +1,9 @@
 package com.project.forum.controller;
 
-import com.project.forum.dto.responses.post.PostTotalResponse;
-import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
+import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import com.project.forum.exception.ApiResponse;
-import com.project.forum.service.IPostService;
-import com.project.forum.service.ITransactionService;
+import com.project.forum.service.IAdsService;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,16 +19,15 @@ import java.time.LocalDateTime;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/total")
-@Tag(name = "22. total")
-public class TotalController {
+@RequestMapping("/ads-total")
+@Tag(name = "23. Ads Total")
+public class AdsTotalController {
 
-    IPostService postService;
-    ITransactionService transactionService;
+    IAdsService adsService;
 
     @SecurityRequirement(name = "BearerAuth")
     @GetMapping("/count")
-    public ResponseEntity<ApiResponse<PostTotalResponse>> getAllPost(
+    public ResponseEntity<ApiResponse<AdsTotalResponse>> getAdsStats(
             @Parameter(
                     description = "Ngày bắt đầu (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
                     in = ParameterIn.QUERY,
@@ -52,18 +48,8 @@ public class TotalController {
         LocalDateTime to = (end == null || end.isEmpty()) ? null : LocalDateTime.parse(end);
 
         return ResponseEntity.ok(
-                ApiResponse.<PostTotalResponse>builder()
-                        .data(postService.postTotal(from, to))
-                        .build()
-        );
-    }
-
-    @SecurityRequirement(name = "BearerAuth")
-    @GetMapping("/revenue")
-    public ResponseEntity<ApiResponse<TransactionTotalResponse>> getTotalRevenue() {
-        return ResponseEntity.ok(
-                ApiResponse.<TransactionTotalResponse>builder()
-                        .data(transactionService.getTotalRevenue())
+                ApiResponse.<AdsTotalResponse>builder()
+                        .data(adsService.adsTotal(from, to))
                         .build()
         );
     }

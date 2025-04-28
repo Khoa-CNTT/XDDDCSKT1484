@@ -14,9 +14,9 @@ const like = async (postId, token) => {
             }
         )
 
-        return res
+        return res;
     } catch (error) {
-        return error
+        return error;
     }
 }
 

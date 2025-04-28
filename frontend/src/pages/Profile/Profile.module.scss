@@ -122,6 +122,59 @@
     cursor: pointer;
 }
 
+.title-no {
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+// List Request
+.list-request {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+.user-request {
+    flex: 1 1 calc(20% - 16px);
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #777;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.img-user {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.name-user {
+    padding: 12px 8px 6px;
+}
+
+.action-user {
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+    margin-bottom: 8px;
+
+    .action-reject {
+        margin: 8px 0 0;
+    }
+}
+
+.see-btn {
+    margin: 24px 0;
+    width: 50%;
+    padding: 10px 0;
+}
+
 // Mobile
 @media (max-width: 767px) {
     .wrapper {
