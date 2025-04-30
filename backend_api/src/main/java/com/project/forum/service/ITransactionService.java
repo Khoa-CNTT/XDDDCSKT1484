@@ -3,6 +3,7 @@ package com.project.forum.service;
 import com.project.forum.dto.requests.transaction.TransactionDto;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
+import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse;
 import org.springframework.data.domain.Page;
 
 public interface ITransactionService {
@@ -20,4 +21,6 @@ public interface ITransactionService {
     TransactionResponse getTransaction(String id);
 
     TransactionTotalResponse getTotalRevenue();
+
+    MonthlyRevenueResponse getMonthlyRevenue(Integer year);
 }

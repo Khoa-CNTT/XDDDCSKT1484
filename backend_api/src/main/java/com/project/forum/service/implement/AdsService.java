@@ -2,11 +2,13 @@ package com.project.forum.service.implement;
 
 import com.project.forum.dto.responses.ads.AdsResponse;
 import com.project.forum.dto.responses.ads.AdsTotalResponse;
+import com.project.forum.dto.responses.ads.TopSpenderResponse;
 import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.exception.WebException;
 import com.project.forum.repository.AdvertisementRepository;
+import com.project.forum.repository.TransactionRepository;
 import com.project.forum.repository.UsersRepository;
 import com.project.forum.service.IAdsService;
 import lombok.AccessLevel;
@@ -20,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +30,7 @@ import java.time.LocalDateTime;
 public class AdsService implements IAdsService {
 
     AdvertisementRepository advertisementRepository;
-
+    TransactionRepository transactionRepository;
     UsersRepository usersRepository;
 
     @Override
@@ -63,5 +66,10 @@ public class AdsService implements IAdsService {
         Users user = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         return advertisementRepository.getAdsStatsByUser(user.getId(), start, end);
+    }
+
+    @Override
+    public List<TopSpenderResponse> getTopSpenders() {
+        return transactionRepository.getTopSpenders();
     }
 }
