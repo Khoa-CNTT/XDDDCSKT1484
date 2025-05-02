@@ -1,6 +1,7 @@
 package com.project.forum.controller;
 
 import com.project.forum.dto.responses.ads.AdsTotalResponse;
+import com.project.forum.dto.responses.ads.TopSpenderResponse;
 import com.project.forum.exception.ApiResponse;
 import com.project.forum.service.IAdsService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -29,23 +33,25 @@ public class AdsTotalController {
     @GetMapping("/count")
     public ResponseEntity<ApiResponse<AdsTotalResponse>> getAdsStats(
             @Parameter(
-                    description = "Ngày bắt đầu (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    description = "Ngày bắt đầu (định dạng: yyyy-MM-dd)",
                     in = ParameterIn.QUERY,
                     required = false,
-                    schema = @Schema(type = "string", format = "date-time")
+                    schema = @Schema(type = "string", format = "date")
             )
             @RequestParam(required = false) String start,
 
             @Parameter(
-                    description = "Ngày kết thúc (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    description = "Ngày kết thúc (định dạng: yyyy-MM-dd)",
                     in = ParameterIn.QUERY,
                     required = false,
-                    schema = @Schema(type = "string", format = "date-time")
+                    schema = @Schema(type = "string", format = "date")
             )
             @RequestParam(required = false) String end) {
 
-        LocalDateTime from = (start == null || start.isEmpty()) ? null : LocalDateTime.parse(start);
-        LocalDateTime to = (end == null || end.isEmpty()) ? null : LocalDateTime.parse(end);
+        LocalDateTime from = (start == null || start.isEmpty()) ? null : 
+            LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime to = (end == null || end.isEmpty()) ? null : 
+            LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atTime(23, 59, 59);
 
         return ResponseEntity.ok(
                 ApiResponse.<AdsTotalResponse>builder()
@@ -58,27 +64,39 @@ public class AdsTotalController {
     @GetMapping("/count/user")
     public ResponseEntity<ApiResponse<AdsTotalResponse>> getAdsStatsByUser(
             @Parameter(
-                    description = "Ngày bắt đầu (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    description = "Ngày bắt đầu (định dạng: yyyy-MM-dd)",
                     in = ParameterIn.QUERY,
                     required = false,
-                    schema = @Schema(type = "string", format = "date-time")
+                    schema = @Schema(type = "string", format = "date")
             )
             @RequestParam(required = false) String start,
 
             @Parameter(
-                    description = "Ngày kết thúc (định dạng: yyyy-MM-dd'T'HH:mm:ss)",
+                    description = "Ngày kết thúc (định dạng: yyyy-MM-dd)",
                     in = ParameterIn.QUERY,
                     required = false,
-                    schema = @Schema(type = "string", format = "date-time")
+                    schema = @Schema(type = "string", format = "date")
             )
             @RequestParam(required = false) String end) {
 
-        LocalDateTime from = (start == null || start.isEmpty()) ? null : LocalDateTime.parse(start);
-        LocalDateTime to = (end == null || end.isEmpty()) ? null : LocalDateTime.parse(end);
+        LocalDateTime from = (start == null || start.isEmpty()) ? null : 
+            LocalDate.parse(start, DateTimeFormatter.ISO_DATE).atStartOfDay();
+        LocalDateTime to = (end == null || end.isEmpty()) ? null : 
+            LocalDate.parse(end, DateTimeFormatter.ISO_DATE).atTime(23, 59, 59);
 
         return ResponseEntity.ok(
                 ApiResponse.<AdsTotalResponse>builder()
                         .data(adsService.adsTotalByUser(from, to))
+                        .build()
+        );
+    }
+
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/top-spenders")
+    public ResponseEntity<ApiResponse<List<TopSpenderResponse>>> getTopSpenders() {
+        return ResponseEntity.ok(
+                ApiResponse.<List<TopSpenderResponse>>builder()
+                        .data(adsService.getTopSpenders())
                         .build()
         );
     }

@@ -3,6 +3,8 @@ package com.project.forum.service.implement;
 import com.project.forum.dto.requests.transaction.TransactionDto;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
+import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse;
+import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse.MonthlyData;
 import com.project.forum.enity.Transaction;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
@@ -20,6 +22,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
@@ -84,5 +93,36 @@ public class TransactionService implements ITransactionService {
     @Override
     public TransactionTotalResponse getTotalRevenue() {
         return transactionRepository.getTotalRevenue();
+    }
+
+    @Override
+    public MonthlyRevenueResponse getMonthlyRevenue(Integer year) {
+        // Nếu không có năm được cung cấp, sử dụng năm hiện tại
+        if (year == null) {
+            year = Year.now().getValue();
+        }
+
+        // Lấy dữ liệu từ repository
+        List<MonthlyData> monthlyData = transactionRepository.getMonthlyRevenue(year);
+
+        // Tạo danh sách đầy đủ 12 tháng
+        List<MonthlyData> fullYearData = new ArrayList<>();
+        IntStream.rangeClosed(1, 12).forEach(month -> {
+            // Tìm dữ liệu cho tháng hiện tại
+            MonthlyData existingData = monthlyData.stream()
+                    .filter(data -> data.getMonth() == month)
+                    .findFirst()
+                    .orElse(MonthlyData.builder()
+                            .month(month)
+                            .amount(BigDecimal.ZERO)
+                            .currency("VND") // Mặc định là VND nếu không có dữ liệu
+                            .build());
+            fullYearData.add(existingData);
+        });
+
+        return MonthlyRevenueResponse.builder()
+                .year(year)
+                .monthlyData(fullYearData)
+                .build();
     }
 }
