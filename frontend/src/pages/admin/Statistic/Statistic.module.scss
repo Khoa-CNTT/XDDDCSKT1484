@@ -1,33 +1,120 @@
 .wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
     height: 100vh;
     background-color: #f4f4f4;
     width: 100%;
 }
 
 .statistic {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 70%;
-    max-width: 800px;
-    text-align: center;
+    margin-top: 24px;
+    width: 80%;
+    background-color: transparent;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+.statistic-heading {
+    font-size: 2.8rem;
+    font-weight: 600;
+    padding: 12px 0;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
-.statistic-heading {
-    margin-bottom: 20px;
+// date
+.datepicker-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    color: black;
+
+    &:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+}
+
+.apply-btn {
+background-color: var(--primary);
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 4px;
+font-size: 14px;
+margin: 20px 0px;
+cursor: pointer;
+
+&:hover {
+    background-color: #8ae4db;
+}
+}
+
+
+
+.statistic-figures {
+    display: flex;
+    justify-content: space-between;
+}
+
+.figures-total {
+    width: 23%;
+    background-color: var(--white);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+}
+
+.header-figures {
+    width: 100%;
+    font-size: 2rem;
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.body-figures {
+    padding: 6px 0;
+    font-size: 2.4rem;
+    color: var(--black);
+}
+
+.footer-figures {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    color: #777;
+    font-size: 1.4rem;
+    svg {
+        margin-right: 6px;
+    }
+}
+
+.statistic-heading-chart {
+    margin: 30px auto;
     font-size: 20px;
     font-weight: bold;
+    
 }
 
 .chart-container {
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
-    height: 250px;
+    height: 420px;
     padding: 20px;
     background: #e0e0e0;
     border-radius: 8px;
@@ -88,4 +175,35 @@
 
 .legend-profit {
     background: #f39c12;
+}
+
+// top 5 user ads
+.top-users {
+    margin-top: 40px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    &-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f9f9f9;
+            font-weight: 500;
+        }
+    }
 }

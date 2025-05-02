@@ -3,40 +3,18 @@ import styles from './PostAds.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { LeftIcon, RightIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon, InteractAdminIcon } from '~/components/Icons';
-import { getPostAdsUserServices } from '~/apiServices';
+import { getAdsTotalCountUserService, getPostAdsUserServices } from '~/apiServices';
 
 const cx = classNames.bind(styles);
 
-const adsList = [
-    {
-        id: 1,
-        title: 'How to use verb?',
-        content: 'Tạo người dùng để sài',
-        publish: '13/02/2025',
-        like: 1231,
-        cmt: 232,
-        views: 97462,
-        package: 'Basic Package',
-        price: 200,
-    },
-    {
-        id: 2,
-        title: 'Learn English Fast',
-        content: 'Khóa học siêu tốc',
-        publish: '11/02/2025',
-        like: 520,
-        cmt: 89,
-        views: 47462,
-        package: 'Pro Package',
-        price: 100,
-    },
-];
+
 
 function PostAds() {
     const navigate = useNavigate();
     const [totalsPage, setTotalsPage] = useState(1);
     const [pageCurrent, setPageCurrent] = useState(0);
     const [postAds, setPostAds] = useState([]);
+    const [counts, setCounts] = useState(0);
 
     const handleDetailAds = (id) => {
         navigate(`/postAds/${id}`)
@@ -47,22 +25,29 @@ function PostAds() {
     };
 
     const handleIncreasePage = () => {
-        console.log('tang');
-
         setPageCurrent((prev) => Math.max(prev + 1, totalsPage - 1));
     };
 
     useEffect(() => {
         fetchPostAds(pageCurrent);
+        fetchTotal();
     }, [pageCurrent])
 
+    const fetchTotal = async () =>{
+        const token = localStorage.getItem('authToken');
+        const res = await getAdsTotalCountUserService(token);
+        if(res?.data){
+            setCounts(res.data);
+        }
+    }
     const fetchPostAds = async (page) => {
         const token = localStorage.getItem('authToken')
         const res = await getPostAdsUserServices(page, 10, token);
-        if (res?.data?.content.length > 0) {
+        if (res?.data) {
             setPostAds(res.data.content);
         }
     }
+
 
     return (
         <div className={cx('wrapper')}>
@@ -73,7 +58,7 @@ function PostAds() {
                         <h5>Total Post Ads</h5>
                         <PostAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>4</p>
+                    <p className={cx('body-figures')}>{counts.totalAds}</p>
                     <p className={cx('footer-figures')}>
                         <GrowIcon /> 5.2% Up from yesterday
                     </p>
@@ -84,7 +69,7 @@ function PostAds() {
                         <h5>Total Views</h5>
                         <TotalViewsIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>73,123</p>
+                    <p className={cx('body-figures')}>{counts.totalViews}</p>
                     <p className={cx('footer-figures')}>
                         <GrowIcon /> 1.2% Up from yesterday
                     </p>
@@ -95,7 +80,7 @@ function PostAds() {
                         <h5>Total Interact</h5>
                         <InteractAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>73,123</p>
+                    <p className={cx('body-figures')}>{counts.totalLikes + counts.totalComments}</p>
                     <p className={cx('footer-figures')}>
                         <ShrinkIcon /> 0.6% Down from yesterday
                     </p>
@@ -103,10 +88,10 @@ function PostAds() {
 
                 <div className={cx('figures-total', 'total-price')}>
                     <div className={cx('header-figures')}>
-                        <h5>Total Price Ads</h5>
+                        <h5>Total Actives </h5>
                         <SalesAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>$730</p>
+                    <p className={cx('body-figures')}>{counts.totalActiveAds}</p>
                     <p className={cx('footer-figures')}>
                         <GrowIcon /> 3.7% Up from yesterday
                     </p>
@@ -122,7 +107,7 @@ function PostAds() {
                             <th>Views</th>
                             <th>Likes</th>
                             <th>Comments</th>
-                            <th>Published</th>
+                            <th>Actives</th>
                             <th>Package Ads</th>
                             <th>Price</th>
                         </tr>

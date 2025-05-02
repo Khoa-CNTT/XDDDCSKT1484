@@ -42,7 +42,7 @@ function PostAdsDetail() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('back')}>
-                <Button leftIcon={<LeftIcon />}>Back</Button>
+                <Button onClick={() => navigate(-1)} leftIcon={<LeftIcon />}>Back</Button>
             </div>
 
             <h2 className={cx('title')}>{ad.title}</h2>
