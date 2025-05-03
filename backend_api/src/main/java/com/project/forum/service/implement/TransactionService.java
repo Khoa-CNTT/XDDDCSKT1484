@@ -125,4 +125,14 @@ public class TransactionService implements ITransactionService {
                 .monthlyData(fullYearData)
                 .build();
     }
+
+    @Override
+    public TransactionResponse getTransactionByPayable_Id(String id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+        TransactionResponse transactionResponse = transactionRepository.getTransactionByPayable_id(id,users.getId()).orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
+
+        return transactionResponse;
+
+    }
 }

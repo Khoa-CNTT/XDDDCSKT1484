@@ -76,4 +76,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "GROUP BY t.users.id, t.users.username, t.users.name, t.users.email, t.currency " +
             "ORDER BY SUM(t.amount) DESC")
     List<TopSpenderResponse> getTopSpenders();
+
+    @Query("SELECT new com.project.forum.dto.responses.transaction.TransactionResponse(" +
+            "t.id, t.amount, t.currency, t.message, t.created_at, t.status, t.payment_method, " +
+            "t.transaction_id, t.payable_id, t.payable_type, t.url_payment ,t.users.id, t.users.name ) " +
+            "FROM Transaction t " +
+            "WHERE t.payable_id = :id " +
+            "AND t.users.id = :userId")
+    Optional<TransactionResponse> getTransactionByPayable_id(@Param("id") String id,@Param("userId") String userId);
 }

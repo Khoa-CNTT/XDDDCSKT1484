@@ -31,7 +31,7 @@ public class TransactionController {
     ResponseEntity<ApiResponse<Page<TransactionResponse>>> getAllByUser(@RequestParam(defaultValue = "0") Integer page,
                                                                         @RequestParam(defaultValue = "0") Integer size) {
         return ResponseEntity.ok(ApiResponse.<Page<TransactionResponse>>builder()
-                .data(transactionService.getAllTransactions(page, size))
+                .data(transactionService.getTransactionUser(page, size))
                 .build());
     }
 
@@ -42,4 +42,15 @@ public class TransactionController {
                 .data(transactionService.getTransaction(id))
                 .build());
     }
+
+
+    @SecurityRequirement(name = "BearerAuth")
+    @GetMapping("/{id}/ads")
+    ResponseEntity<ApiResponse<TransactionResponse>> getByAdsId(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.<TransactionResponse>builder()
+                .data(transactionService.getTransactionByPayable_Id(id))
+                .build());
+    }
+
+
 }

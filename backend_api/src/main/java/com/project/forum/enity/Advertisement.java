@@ -30,7 +30,6 @@ import java.time.LocalDateTime;
 public class Advertisement {
 
     @Id
-
     String id;
 
     int views;

@@ -23,4 +23,6 @@ public interface ITransactionService {
     TransactionTotalResponse getTotalRevenue();
 
     MonthlyRevenueResponse getMonthlyRevenue(Integer year);
+
+    TransactionResponse getTransactionByPayable_Id(String id);
 }
