@@ -3,6 +3,7 @@ package com.project.forum.service.implement;
 import com.project.forum.dto.responses.ads.AdsResponse;
 import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import com.project.forum.dto.responses.ads.TopSpenderResponse;
+import com.project.forum.dto.responses.ads.RecentAdsPostResponse;
 import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -69,7 +71,14 @@ public class AdsService implements IAdsService {
     }
 
     @Override
-    public List<TopSpenderResponse> getTopSpenders() {
-        return transactionRepository.getTopSpenders();
+    public List<TopSpenderResponse> getTopSpenders(LocalDateTime start, LocalDateTime end, Integer limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return transactionRepository.getTopSpenders(start, end, pageable);
+    }
+
+    @Override
+    public List<RecentAdsPostResponse> getRecentAdsPosts(LocalDateTime from, LocalDateTime to, Integer limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return advertisementRepository.getRecentAdsPosts(from, to, pageable);
     }
 }

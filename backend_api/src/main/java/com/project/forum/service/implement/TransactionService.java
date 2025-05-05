@@ -5,6 +5,7 @@ import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse;
 import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse.MonthlyData;
+import com.project.forum.dto.responses.transaction.TopAmountPostResponse;
 import com.project.forum.enity.Transaction;
 import com.project.forum.enity.Users;
 import com.project.forum.enums.ErrorCode;
@@ -133,6 +134,11 @@ public class TransactionService implements ITransactionService {
         TransactionResponse transactionResponse = transactionRepository.getTransactionByPayable_id(id,users.getId()).orElseThrow(() -> new WebException(ErrorCode.E_TRANSACTION_NOT_FOUND));
 
         return transactionResponse;
+    }
 
+    @Override
+    public List<TopAmountPostResponse> getTopPostsByAmount(LocalDateTime from, LocalDateTime to, Integer limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return transactionRepository.getTopPostsByAmount(from, to, pageable);
     }
 }

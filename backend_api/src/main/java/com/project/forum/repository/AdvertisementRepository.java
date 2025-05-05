@@ -2,6 +2,7 @@ package com.project.forum.repository;
 
 import com.project.forum.dto.responses.ads.AdsResponse;
 import com.project.forum.dto.responses.ads.AdsTotalResponse;
+import com.project.forum.dto.responses.ads.RecentAdsPostResponse;
 import com.project.forum.enity.Advertisement;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +82,22 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
             "AND (:from IS NULL OR a.created_at >= :from) " +
             "AND (:to IS NULL OR a.created_at <= :to)")
     AdsTotalResponse getAdsStatsByUser(@Param("userId") String userId, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+    @Query("SELECT new com.project.forum.dto.responses.ads.RecentAdsPostResponse(" +
+            "p.type_post, " +
+            "lg.name, " +
+            "p.created_at, " +
+            "pc.title, " +
+            "a.created_at) " +
+            "FROM Advertisement a " +
+            "JOIN a.posts p " +
+            "JOIN PostContent pc ON p.id = pc.posts.id " +
+            "JOIN p.language lg " +
+            "WHERE a.status = true " +
+            "AND (:from IS NULL OR a.created_at >= :from) " +
+            "AND (:to IS NULL OR a.created_at <= :to) " +
+            "ORDER BY a.created_at DESC")
+    List<RecentAdsPostResponse> getRecentAdsPosts(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, Pageable pageable);
 }
 
 

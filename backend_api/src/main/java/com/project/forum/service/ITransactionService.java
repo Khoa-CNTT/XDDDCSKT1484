@@ -4,7 +4,11 @@ import com.project.forum.dto.requests.transaction.TransactionDto;
 import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse;
+import com.project.forum.dto.responses.transaction.TopAmountPostResponse;
 import org.springframework.data.domain.Page;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ITransactionService {
 
@@ -25,4 +29,6 @@ public interface ITransactionService {
     MonthlyRevenueResponse getMonthlyRevenue(Integer year);
 
     TransactionResponse getTransactionByPayable_Id(String id);
+
+    List<TopAmountPostResponse> getTopPostsByAmount(LocalDateTime from, LocalDateTime to, Integer limit);
 }

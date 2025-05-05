@@ -3,6 +3,7 @@ package com.project.forum.service;
 import com.project.forum.dto.responses.ads.AdsResponse;
 import com.project.forum.dto.responses.ads.AdsTotalResponse;
 import com.project.forum.dto.responses.ads.TopSpenderResponse;
+import com.project.forum.dto.responses.ads.RecentAdsPostResponse;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -20,5 +21,7 @@ public interface IAdsService {
 
     AdsTotalResponse adsTotalByUser(LocalDateTime start, LocalDateTime end);
 
-    List<TopSpenderResponse> getTopSpenders();
+    List<TopSpenderResponse> getTopSpenders(LocalDateTime start, LocalDateTime end, Integer limit);
+
+    List<RecentAdsPostResponse> getRecentAdsPosts(LocalDateTime from, LocalDateTime to, Integer limit);
 }

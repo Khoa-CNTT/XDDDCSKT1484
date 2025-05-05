@@ -4,6 +4,7 @@ import com.project.forum.dto.responses.transaction.TransactionResponse;
 import com.project.forum.dto.responses.transaction.TransactionTotalResponse;
 import com.project.forum.dto.responses.transaction.MonthlyRevenueResponse.MonthlyData;
 import com.project.forum.dto.responses.ads.TopSpenderResponse;
+import com.project.forum.dto.responses.transaction.TopAmountPostResponse;
 import com.project.forum.enity.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,9 +74,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "FROM Transaction t " +
             "WHERE t.status = 'completed' " +
             "AND t.payable_type = 'ADVERTISEMENT' " +
+            "AND (:from IS NULL OR t.created_at >= :from) " +
+            "AND (:to IS NULL OR t.created_at <= :to) " +
             "GROUP BY t.users.id, t.users.username, t.users.name, t.users.email, t.currency " +
             "ORDER BY SUM(t.amount) DESC")
-    List<TopSpenderResponse> getTopSpenders();
+    List<TopSpenderResponse> getTopSpenders(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, Pageable pageable);
 
     @Query("SELECT new com.project.forum.dto.responses.transaction.TransactionResponse(" +
             "t.id, t.amount, t.currency, t.message, t.created_at, t.status, t.payment_method, " +
@@ -84,4 +87,23 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "WHERE t.payable_id = :id " +
             "AND t.users.id = :userId")
     Optional<TransactionResponse> getTransactionByPayable_id(@Param("id") String id,@Param("userId") String userId);
+
+    @Query("SELECT new com.project.forum.dto.responses.transaction.TopAmountPostResponse(" +
+            "p.type_post, " +
+            "lg.name, " +
+            "p.created_at, " +
+            "pc.title, " +
+            "SUM(t.amount)) " +
+            "FROM Transaction t " +
+            "JOIN Advertisement a ON t.payable_id = a.id " +
+            "JOIN Posts p ON a.posts.id = p.id " +
+            "JOIN PostContent pc ON p.id = pc.posts.id " +
+            "JOIN p.language lg " +
+            "WHERE t.status = 'completed' " +
+            "AND t.payable_type = 'ADVERTISEMENT' " +
+            "AND (:from IS NULL OR t.created_at >= :from) " +
+            "AND (:to IS NULL OR t.created_at <= :to) " +
+            "GROUP BY p.id, p.type_post, lg.name, p.created_at, pc.title " +
+            "ORDER BY SUM(t.amount) DESC")
+    List<TopAmountPostResponse> getTopPostsByAmount(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, Pageable pageable);
 }
