@@ -10,7 +10,6 @@ import { useValidator } from '~/hooks';
 import FormGroup from '~/components/FormGroup';
 import { loginServices, checkActiveServices, infoUserCurrentServices, logoutServices } from '~/apiServices'
 import routesConfig from '~/config/routes'
-import { ChatContext } from '~/context/ChatContext';
 import { useTranslation } from 'react-i18next';
 import { UserContext } from '~/context/UserContext';
 
@@ -18,7 +17,6 @@ const cx = classNames.bind(styles)
 
 function Login() {
     const { t, i18n } = useTranslation();
-    const { setIsOpenChat } = useContext(ChatContext);
     const { setUser } = useContext(UserContext);
     const navigate = useNavigate()
     const [messageError, setMessageError] = useState({});
@@ -30,7 +28,6 @@ function Login() {
     const [selected, setSelected] = useState(0);
 
     const handleLogout = async () => {
-        setIsOpenChat(false);
         const token = localStorage.getItem('authToken');
         if (token) {
             await logoutServices(token);

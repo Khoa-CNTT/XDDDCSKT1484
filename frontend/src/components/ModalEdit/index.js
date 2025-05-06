@@ -2,11 +2,13 @@ import classNames from "classnames/bind";
 import styles from './Modal.module.scss';
 import { useState, useEffect, Fragment } from "react";
 import Button from "~/components/Button";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
 function ModalEdit({ text, type = 'input', options = [], defaultValue = '', name = '', fields = [], handleEdit, handleCancel }) {
     const [form, setForm] = useState({});
+    const { t } = useTranslation();
 
     useEffect(() => {
         const initialForm = fields.reduce((acc, field) => {
@@ -36,7 +38,7 @@ function ModalEdit({ text, type = 'input', options = [], defaultValue = '', name
         <div className={cx('modal')}>
             <div className={cx('modal-body')}>
                 <div className={cx('content')}>
-                    <h3 className={cx('heading')}>Edit {text}</h3>
+                    <h3 className={cx('heading')}>{t('edit')} {text}</h3>
 
                     {type === 'input' ? (
                         fields.map((field, index) => (
@@ -75,8 +77,8 @@ function ModalEdit({ text, type = 'input', options = [], defaultValue = '', name
                 </div>
 
                 <div className={cx('actions')}>
-                    <Button primary onClick={onEdit}>Save</Button>
-                    <Button deleted onClick={handleCancel}>Cancel</Button>
+                    <Button primary onClick={onEdit}>{t('saveBtn')}</Button>
+                    <Button deleted onClick={handleCancel}>{t('cancel')}</Button>
                 </div>
             </div>
         </div>

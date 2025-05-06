@@ -93,8 +93,7 @@
 
 .email-content,
 .gender-content,
-.language-content,
-.delete-content {
+.language-content {
     font-size: 1.8rem;
     color: #a1a1a1;
     font-weight: 500;
@@ -102,8 +101,7 @@
 }
 
 .gender,
-.language,
-.delete {
+.language {
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -119,17 +117,6 @@
     margin-right: 32px;
     font-size: 1.6rem;
     text-align: center;
-}
-
-.delete-btn {
-    padding: 12px 24px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-right: 32px;
-
-    &:hover {
-        opacity: 0.7;
-    }
 }
 
 .save {
@@ -170,15 +157,13 @@
 
     .email-heading,
     .gender-heading,
-    .language-heading,
-    .delete-heading {
+    .language-heading {
         font-size: 1.5rem;
     }
 
     .email-content,
     .gender-content,
-    .language-content,
-    .delete-content {
+    .language-content {
         font-size: 1.4rem;
     }
 
@@ -188,12 +173,6 @@
         font-size: 1.4rem;
         margin-left: 12px;
         margin-right: 0;
-    }
-
-    .delete-btn {
-        margin-right: 0;
-        padding: 6px;
-        font-size: 1.4rem;
     }
 
     .save {

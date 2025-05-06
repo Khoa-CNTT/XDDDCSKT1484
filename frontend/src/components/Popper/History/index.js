@@ -6,11 +6,12 @@ import { useMemo } from 'react';
 import HistoryItem from './HistoryItem';
 import Header from './Header';
 import Button from '~/components/Button';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 function History({ children, items = [], title, avatar, handleLoadMore, showLoadMore }) {
-
+    const { t } = useTranslation();
     const renderItems = useMemo(
         () =>
             items.map((item, index) => (
@@ -36,7 +37,7 @@ function History({ children, items = [], title, avatar, handleLoadMore, showLoad
                             <Header title={title} />
                             <div className={cx('history-body')}>
                                 {renderItems}
-                                {!showLoadMore && <Button onClick={handleLoadMore} className={cx('btn-load')} normal>Load more</Button>}
+                                {!showLoadMore && <Button onClick={handleLoadMore} className={cx('btn-load')} normal>{t('btnLoadMore')}</Button>}
                             </div>
                         </PopperWrapper>
                     </ul>

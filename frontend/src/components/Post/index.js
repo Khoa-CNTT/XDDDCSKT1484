@@ -251,7 +251,7 @@ function Post({ data, profile = false, show = true }) {
                             (
                                 <div className={cx('icon-ads')}>
                                     <StarIcon />
-                                    <span className={cx('title-ads')}>Advertised</span>
+                                    <span className={cx('title-ads')}>{t('advertised')}</span>
                                 </div>
                             )
                         }
@@ -330,7 +330,7 @@ function Post({ data, profile = false, show = true }) {
                                                     {item.optionText}
                                                 </div>
                                                 <div className={cx('option-progress')}>
-                                                    {item.voteCount} votes - {percentage}%
+                                                    {item.voteCount} {t('votes')} - {percentage}%
                                                 </div>
 
                                             </label>
@@ -338,8 +338,8 @@ function Post({ data, profile = false, show = true }) {
                                     })
                                 }
                                 <div className={cx('vote')}>
-                                    <span className={cx('total-vote')}>{totalVote} votes</span>
-                                    <Button className={cx('vote-btn')} primary>Vote</Button>
+                                    <span className={cx('total-vote')}>{totalVote} {t('votes')}</span>
+                                    <Button className={cx('vote-btn')} primary>{t('vote')}</Button>
                                 </div>
                             </form>
                         </div>

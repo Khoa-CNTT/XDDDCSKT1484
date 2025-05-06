@@ -64,7 +64,7 @@ function ConfirmEmail() {
                 <div className={cx('body')}>
                     <div className={cx('heading')}>{status.heading}</div>
                     <div className={cx('title')}>{status.title}</div>
-                    {status.showLink && <Link to={routesConfig.login} className={cx('link')}>Go to the login page!</Link>}
+                    {status.showLink && <Link to={routesConfig.login} className={cx('link')}>{t('goLogin')}</Link>}
                 </div>
             </div>
         </div>

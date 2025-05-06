@@ -2,8 +2,10 @@ import classNames from 'classnames/bind';
 import styles from './PostAds.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { LeftIcon, RightIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, GrowIcon, ShrinkIcon, InteractAdminIcon } from '~/components/Icons';
-import { getAdsTotalCountUserService, getPostAdsUserServices } from '~/apiServices';
+import { LeftIcon, RightIcon, PostAdminIcon, TotalViewsIcon, SalesAdminIcon, InteractAdminIcon } from '~/components/Icons';
+import { getAdsTotalCountUserService, getPackageAdsByIdServices, getPostAdsUserServices } from '~/apiServices';
+import getPostByIdPost from '~/apiServices/getPostByIdPostServices';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -11,13 +13,14 @@ const cx = classNames.bind(styles);
 
 function PostAds() {
     const navigate = useNavigate();
+    const [adsTableData, setAdsTableData] = useState([]);
     const [totalsPage, setTotalsPage] = useState(1);
     const [pageCurrent, setPageCurrent] = useState(0);
-    const [postAds, setPostAds] = useState([]);
-    const [counts, setCounts] = useState(0);
-
-    const handleDetailAds = (id) => {
-        navigate(`/postAds/${id}`)
+    const [counts, setCounts] = useState({});
+    const token = localStorage.getItem('authToken');
+    const { t } = useTranslation();
+    const handleDetailAds = (item) => {
+        navigate(`/postAds/${item.id}`, { state: { ads: item } });
     }
 
     const handleReducePage = () => {
@@ -29,104 +32,119 @@ function PostAds() {
     };
 
     useEffect(() => {
-        fetchPostAds(pageCurrent);
-        fetchTotal();
-    }, [pageCurrent])
+        if (!token) return;
+        const prepareTableData = async () => {
+            const res = await getPostAdsUserServices(pageCurrent, 5, token);
+            if (res?.data) {
 
-    const fetchTotal = async () =>{
-        const token = localStorage.getItem('authToken');
+                setTotalsPage(res.data.totalPages);
+                const adsList = res.data.content;
+
+                const enrichedData = await Promise.all(
+                    adsList.map(async (ads) => {
+                        const post = await fetchPostByIdAds(ads.post_id);
+                        const packageAds = await fetchPackageAdsById(ads.adsPackage_id);
+                        return { ...ads, type_post: post.type_post, language: post.language, like: post.like, comment: post.comment, namePackage: packageAds.name, price: packageAds.price };
+                    })
+                );
+
+                setAdsTableData(enrichedData);
+            }
+        };
+
+        prepareTableData();
+        fetchTotal()
+        // eslint-disable-next-line
+    }, [pageCurrent]);
+
+    const fetchTotal = async () => {
         const res = await getAdsTotalCountUserService(token);
-        if(res?.data){
+        if (res?.data) {
             setCounts(res.data);
         }
     }
-    const fetchPostAds = async (page) => {
-        const token = localStorage.getItem('authToken')
-        const res = await getPostAdsUserServices(page, 10, token);
+
+    const fetchPostByIdAds = async (id) => {
+        const res = await getPostByIdPost(id, token);
         if (res?.data) {
-            setPostAds(res.data.content);
+            return res.data;
         }
+        return;
     }
 
+    const fetchPackageAdsById = async (id) => {
+        const res = await getPackageAdsByIdServices(id, token);
+        if (res?.data) {
+            return res.data;
+        }
+        return;
+    }
 
     return (
         <div className={cx('wrapper')}>
-            <h2 className={cx('title')}>Advertisement</h2>
+            <h2 className={cx('title')}>{t('advertisement')}</h2>
             <div className={cx('header')}>
                 <div className={cx('figures-total', 'total-post')}>
                     <div className={cx('header-figures')}>
                         <h5>Total Post Ads</h5>
                         <PostAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>{counts.totalAds}</p>
-                    <p className={cx('footer-figures')}>
-                        <GrowIcon /> 5.2% Up from yesterday
-                    </p>
+                    <p className={cx('body-figures')}>{counts.totalAds} {t('postBtn')}</p>
                 </div>
 
                 <div className={cx('figures-total', 'total-views')}>
                     <div className={cx('header-figures')}>
-                        <h5>Total Views</h5>
+                        <h5>{t('totalViews')}</h5>
                         <TotalViewsIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>{counts.totalViews}</p>
-                    <p className={cx('footer-figures')}>
-                        <GrowIcon /> 1.2% Up from yesterday
-                    </p>
+                    <p className={cx('body-figures')}>{counts.totalViews} {t('views')}</p>
                 </div>
 
                 <div className={cx('figures-total', 'total-ads')}>
                     <div className={cx('header-figures')}>
-                        <h5>Total Interact</h5>
+                        <h5>{t('totalInteract')}</h5>
                         <InteractAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>{counts.totalLikes + counts.totalComments}</p>
-                    <p className={cx('footer-figures')}>
-                        <ShrinkIcon /> 0.6% Down from yesterday
-                    </p>
+                    <p className={cx('body-figures')}> {(counts.totalLikes ?? 0) + (counts.totalComments ?? 0)} {t('interact')}</p>
                 </div>
 
                 <div className={cx('figures-total', 'total-price')}>
                     <div className={cx('header-figures')}>
-                        <h5>Total Actives </h5>
+                        <h5>{t('totalActives')}</h5>
                         <SalesAdminIcon width="32px" height="32px" />
                     </div>
-                    <p className={cx('body-figures')}>{counts.totalActiveAds}</p>
-                    <p className={cx('footer-figures')}>
-                        <GrowIcon /> 3.7% Up from yesterday
-                    </p>
+                    <p className={cx('body-figures')}>{counts.totalActiveAds} {t('active')}</p>
                 </div>
             </div>
             <div className={cx('body')}>
                 <table className={cx('table')}>
                     <thead>
                         <tr>
-                            <th>STT</th>
-                            <th>Type Post</th>
-                            <th>Language</th>
-                            <th>Views</th>
-                            <th>Likes</th>
-                            <th>Comments</th>
-                            <th>Actives</th>
-                            <th>Package Ads</th>
-                            <th>Price</th>
+                            <th>{t('stt')}</th>
+                            <th>{t('typePost')}</th>
+                            <th>{t('language')}</th>
+                            <th>{t('views')}</th>
+                            <th>{t('like')}</th>
+                            <th>{t('comment')}</th>
+                            <th>{t('packageAds')}</th>
+                            <th>{t('price')}</th>
+                            <th>{t('active')}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {postAds.map((ads, index) => {
-                            return (
-                                <tr key={ads.id} onClick={() => handleDetailAds(ads.id)}>
-                                    {/* <td>{index + 1}</td>
-                                    <td>{ads.title}</td> */}
-                                    {/* <td>{ads.package}</td>
-                                    <td>${ads.price}</td>
-                                    <td>{ads.views}</td>
-                                    <td>{ads.like}</td>
-                                    <td>{ads.cmt}</td>
-                                    <td>{ads.publish}</td> */}
-                                </tr>
-                            );
-                        })}
+                        {adsTableData.map((item, index) => (
+                            <tr key={item.id} onClick={() => handleDetailAds(item)}>
+                                <td>{index + 1}</td>
+                                <td>{item.type_post}</td>
+                                <td>{item.language}</td>
+                                <td>{item.views}</td>
+                                <td>{item.like}</td>
+                                <td>{item.comment}</td>
+                                <td>{item.namePackage}</td>
+                                <td>${item.price}</td>
+                                <td>{item.status ? t('active') : t('inActive')}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

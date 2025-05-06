@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { deletedPostServices, patchStatusPostServices, searchPostsAdminServices } from "~/apiServices";
 import ModalEdit from "~/components/ModalEdit";
 import ModalDel from "~/components/ModalDel";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles)
 
@@ -16,7 +17,7 @@ function PostsManagement() {
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listPost, setListPost] = useState([]);
     const token = localStorage.getItem('authToken');
-
+    const { t } = useTranslation();
     useEffect(() => {
         fetchAllPost(pageCurrent, token);
     }, [pageCurrent, token])
@@ -63,25 +64,25 @@ function PostsManagement() {
             <div className={cx('post')}>
                 <div className={cx('post-header')}>
                     <div className={cx('post-heading')}>
-                        Management Post
+                        {t('managementPost')}
                     </div>
                     <div className={cx('post-search')}>
                         <SearchIcon className={cx('search-icon')} />
-                        <input className={cx('search-input')} type="text" placeholder="Search post name" />
+                        <input className={cx('search-input')} type="text" placeholder={t('searchPostName')} />
                     </div>
                 </div>
                 <div className={cx('post-details')}>
                     <table className={cx('table-post')}>
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Full Name</th>
-                                <th>Type Post</th>
-                                <th>Published</th>
-                                <th>Language</th>
-                                <th>Advertisement</th>
-                                <th>Show</th>
-                                <th>Action</th>
+                                <th>{t('stt')}</th>
+                                <th>{t('fullname')}</th>
+                                <th>{t('typePost')}</th>
+                                <th>{t('published')}</th>
+                                <th>{t('language')}</th>
+                                <th>{t('advertisement')}</th>
+                                <th>{t('show')}</th>
+                                <th>{t('action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,7 +106,7 @@ function PostsManagement() {
                                 )
                                 :
                                 (
-                                    <tr><td colSpan="6">Không có post nào</td></tr>
+                                    <tr><td colSpan="6">{t('noAdsFound')}</td></tr>
                                 )
                             }
                         </tbody>
@@ -113,7 +114,7 @@ function PostsManagement() {
                 </div>
                 <div className={cx('post-footer')}>
                     <div className={cx('page-current')}>
-                        {`${pageCurrent + 1} of ${totalsPage} Page`}
+                        {`${pageCurrent + 1} ${t('of')} ${totalsPage} ${t('page')}`}
                     </div>
 
                     <div className={cx('pagination')}>

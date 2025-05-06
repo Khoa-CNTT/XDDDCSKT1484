@@ -11,7 +11,7 @@ const cx = classNames.bind(styles);
 function Home() {
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const isInitialized = useRef(false); // dùng ref để không trigger re-render
+    const isInitialized = useRef(false); 
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -40,11 +40,11 @@ function Home() {
             size: 5,
             token,
         });
-        isInitialized.current = true; // đánh dấu đã load xong lần đầu
+        isInitialized.current = true; 
     };
 
     useScroll(() => {
-        if (!isInitialized.current) return; // nếu chưa load xong lần đầu thì không fetch
+        if (!isInitialized.current) return; 
 
         const token = localStorage.getItem('authToken');
         const nextPage = currentPage + 1;

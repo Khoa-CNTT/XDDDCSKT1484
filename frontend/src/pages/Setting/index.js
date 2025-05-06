@@ -72,7 +72,7 @@ function Setting() {
 
             <div className={cx('fullname')}>
                 <span className={cx('fullname-heading')}>
-                    Fullname
+                    {t('fullname')}
                 </span>
                 <div className={cx('fullname-body')}>
                     <input
@@ -81,7 +81,7 @@ function Setting() {
                         onChange={(e) => setCurrentUser(prev => ({ ...prev, name: e.target.value.trim() }))}
                         className={cx('fullname-input')}
                     />
-                    <Button className={cx('btn-change')} normal onClick={handleFullname}>Change</Button>
+                    <Button className={cx('btn-change')} normal onClick={handleFullname}>{t('change')}</Button>
                 </div>
             </div>
 
@@ -134,18 +134,6 @@ function Setting() {
                     <option value='China'>{t('langChinese')}</option>
                     <option value='Japan'>{t('langJapanese')}</option>
                 </select>
-            </div>
-
-            <div className={cx('delete')}>
-                <div className={cx('delete-title')}>
-                    <span className={cx('delete-heading')}>
-                        {t('deletedAccount')}
-                    </span>
-                    <span className={cx('delete-content')}>
-                        {t('deleteWarning')}
-                    </span>
-                </div>
-                <Button deleted round className={cx('delete-btn')}>{t('deletedAccount')}</Button>
             </div>
 
             <div className={cx('save')}>

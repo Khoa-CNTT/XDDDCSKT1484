@@ -5,6 +5,7 @@ import { CancelIcon, FailedIcon, HoldOnIcon, PendingIcon, TickIcon, UnknownIcon 
 import Button from "~/components/Button";
 import { returnOrderServices } from "~/apiServices";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,7 @@ function ResultPayment() {
         background: '',
         color: ''
     });
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const params = Object.fromEntries(new URLSearchParams(location.search).entries());
@@ -31,7 +33,7 @@ function ResultPayment() {
                 case 'completed':
                     setInfoPayment({
                         icon: TickIcon,
-                        status: 'Success',
+                        status: t('success'),
                     });
                     setThemeColor({
                         background: 'rgba(35, 162, 109, 0.12)',
@@ -41,7 +43,7 @@ function ResultPayment() {
                 case 'failed':
                     setInfoPayment({
                         icon: FailedIcon,
-                        status: 'Failed',
+                        status: t('failed'),
                     });
                     setThemeColor({
                         background: 'rgba(255, 98, 61, 0.12)',
@@ -51,7 +53,7 @@ function ResultPayment() {
                 case 'cancelled':
                     setInfoPayment({
                         icon: CancelIcon,
-                        status: 'Cancelled',
+                        status: t('cancelled'),
                     });
                     setThemeColor({
                         background: 'rgba(255, 98, 61, 0.12)',
@@ -61,7 +63,7 @@ function ResultPayment() {
                 case 'pending':
                     setInfoPayment({
                         icon: PendingIcon,
-                        status: 'Pending',
+                        status: t('pending'),
                     });
                     setThemeColor({
                         background: 'rgba(81, 128, 214, 0.12)',
@@ -71,7 +73,7 @@ function ResultPayment() {
                 case 'on_hold':
                     setInfoPayment({
                         icon: HoldOnIcon,
-                        status: 'Hold On',
+                        status: t('holdOn'),
                     });
                     setThemeColor({
                         background: 'rgba(47, 134, 235, 0.12)',
@@ -81,7 +83,7 @@ function ResultPayment() {
                 default:
                     setInfoPayment({
                         icon: UnknownIcon,
-                        status: 'Unknown',
+                        status: t('unknown'),
                     });
                     setThemeColor({
                         background: 'rgba(255, 192, 33, 0.12)',
@@ -94,6 +96,7 @@ function ResultPayment() {
 
     useEffect(() => {
         fetchResultPayment(params);
+        // eslint-disable-next-line
     }, [params])
 
     const formatMoney = (amount) => {
@@ -121,47 +124,47 @@ function ResultPayment() {
                     <div className={cx('icon')} style={{ backgroundColor: themeColor.background }}>
                         {infoPayment.icon && <infoPayment.icon />}
                     </div>
-                    <p className={cx('status-payment')} style={{ color: themeColor.color }}>{`Payment ${infoPayment.status}!`}</p>
+                    <p className={cx('status-payment')} style={{ color: themeColor.color }}>{t('payment')} {infoPayment.status}</p>
                     <p className={cx('amount-payment')}>{formatMoney(params.vnp_Amount)}</p>
                 </div>
                 <div className={cx('body')}>
                     <div className={cx('detail')}>
-                        Payment Details
+                        {t('paymentDetails')}
                     </div>
                     <div className={cx('info')}>
                         <div className={cx('code')}>
-                            <p className={cx('code-title')}>Transaction code</p>
+                            <p className={cx('code-title')}>{t('transactionCode')}</p>
                             <p className={cx('code-content')}>{params.vnp_TransactionNo}</p>
                         </div>
                         <div className={cx('time')}>
-                            <p className={cx('time-title')}>Payment Time</p>
+                            <p className={cx('time-title')}>{t('paymentTime')}</p>
                             <p className={cx('time-content')}>{formatDate(params.vnp_PayDate)}</p>
                         </div>
                         <div className={cx('method')}>
-                            <p className={cx('method-title')}>Payment Method</p>
+                            <p className={cx('method-title')}>{t('paymentMethod')}</p>
                             <p className={cx('method-content')}>{params.vnp_BankCode}</p>
                         </div>
                         <div className={cx('amount')}>
-                            <p className={cx('amount-title')}>Amount</p>
+                            <p className={cx('amount-title')}>{t('amount')}</p>
                             <p className={cx('amount-content')}>{formatMoney(params.vnp_Amount)}</p>
                         </div>
                         <div className={cx('substance')}>
-                            <p className={cx('substance-title')}>Payment Content</p>
+                            <p className={cx('substance-title')}>{t('paymentContent')}</p>
                             <p className={cx('substance-content')}>{params.vnp_OrderInfo}</p>
                         </div>
                         <div className={cx('fee')}>
-                            <p className={cx('fee-title')}>Fee</p>
-                            <p className={cx('fee-content')}>Free</p>
+                            <p className={cx('fee-title')}>{t('fee')}</p>
+                            <p className={cx('fee-content')}>{t('free')}</p>
                         </div>
                         <div className={cx('status')}>
-                            <p className={cx('status-title')}>Payment Status</p>
+                            <p className={cx('status-title')}>{t('paymentStatus')}</p>
                             <p className={cx('status-content')} style={{ backgroundColor: themeColor.background, color: themeColor.color }}>{infoPayment.status}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <Button className={cx('back-btn')} primary round onClick={() => navigate('/')}>Back to Post</Button>
+            <Button className={cx('back-btn')} primary round onClick={() => navigate('/')}>{t('backPost')}</Button>
         </div>
     );
 }

@@ -53,18 +53,6 @@
         color: #333;
     }
 
-    .footer-figures {
-        display: flex;
-        align-items: center;
-        font-size: 1.4rem;
-        color: #888;
-
-        svg {
-            margin-right: 6px;
-            color: #22c55e;
-        }
-    }
-
     &.total-ads .footer-figures svg {
         color: #ef4444;
     }

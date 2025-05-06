@@ -1,6 +1,6 @@
 import * as request from '~/utils/request'
 
-const getPackageAdsByUser = async (id, token) => {
+const getPackageAdsByIdServices = async (id, token) => {
     try {
         const config = {
             headers: {
@@ -15,4 +15,4 @@ const getPackageAdsByUser = async (id, token) => {
     }
 }
 
-export default getPackageAdsByUser;
+export default getPackageAdsByIdServices;

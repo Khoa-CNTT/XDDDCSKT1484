@@ -2,9 +2,10 @@ import classNames from 'classnames/bind';
 import styles from './AdsManagement.module.scss';
 import { useEffect, useState } from 'react';
 import { LeftIcon, RightIcon, EditIcon, TrashIcon } from '~/components/Icons';
-import { deletedPackageAdsServices, getPackageAdsServices, postPackageAdsServices } from '~/apiServices';
+import { deletedPackageAdsServices, getPackageAdsServices, postPackageAdsServices, putPackageAdsServices } from '~/apiServices';
 import ModalDel from '~/components/ModalDel';
 import ModalEdit from '~/components/ModalEdit';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +17,7 @@ function AdsManagement() {
     const [form, setForm] = useState({ name: '', description: '', price: '', max_impressions: '' });
     const [packageAds, setPackageAds] = useState([]);
     const token = localStorage.getItem('authToken');
-
+    const { t } = useTranslation();
     const fetchAdsPackage = async () => {
         const res = await getPackageAdsServices(pageCurrent, 5, token);
         if (res?.data && res.data?.content.length > 0) {
@@ -61,6 +62,15 @@ function AdsManagement() {
         setModalDel(id);
     }
 
+    const handleEdit = async (data) => {
+        const res = await putPackageAdsServices(modalEdit.id, data, token);
+        if (res?.data) {
+            fetchAdsPackage();
+            setModalEdit(null);
+        }
+
+    }
+
     const handleReducePage = () => {
         setPageCurrent(prev => Math.max(prev - 1, 0));
     };
@@ -73,27 +83,27 @@ function AdsManagement() {
         <div className={cx('wrapper')}>
             <div className={cx('ads')}>
                 <div className={cx('ads-header')}>
-                    <div className={cx('ads-heading')}>Management Ads</div>
+                    <div className={cx('ads-heading')}>{t('managementAds')}</div>
                 </div>
 
                 <div className={cx('add-form')}>
-                    <input name="name" value={form.name} onChange={handleChange} placeholder="Package Name" />
-                    <input name="description" value={form.description} onChange={handleChange} placeholder="Package Description" />
-                    <input name="price" type="number" value={form.price} onChange={handleChange} placeholder="Price" />
-                    <input name="max_impressions" type="number" value={form.max_impressions} onChange={handleChange} placeholder="Max Impressions" />
-                    <button onClick={handleSubmit}>Add</button>
+                    <input name="name" value={form.name} onChange={handleChange} placeholder={t('packageName')} />
+                    <input name="description" value={form.description} onChange={handleChange} placeholder={t('packageDescription')} />
+                    <input name="price" type="number" value={form.price} onChange={handleChange} placeholder={t('price')} />
+                    <input name="max_impressions" type="number" value={form.max_impressions} onChange={handleChange} placeholder={t('maxImpressions')} />
+                    <button onClick={handleSubmit}>{t('btnAdd')}</button>
                 </div>
 
                 <div className={cx('ads-details')}>
                     <table className={cx('table-ads')}>
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Package Name</th>
-                                <th>Description</th>
-                                <th>Price</th>
-                                <th>Max Impressions</th>
-                                <th>Action</th>
+                                <th>{t('stt')}</th>
+                                <th>{t('packageName')}</th>
+                                <th>{t('description')}</th>
+                                <th>{t('price')}</th>
+                                <th>{t('maxImpressions')}</th>
+                                <th>{t('action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,7 +122,7 @@ function AdsManagement() {
                                     </tr>
                                 ))
                             ) : (
-                                <tr><td colSpan="6">No ads found</td></tr>
+                                <tr><td colSpan="6">{t('noAdsFound')}</td></tr>
                             )}
                         </tbody>
                     </table>
@@ -120,7 +130,7 @@ function AdsManagement() {
 
                 <div className={cx('ads-footer')}>
                     <div className={cx('page-current')}>
-                        {`${pageCurrent + 1} of ${totalsPage} Page`}
+                        {`${pageCurrent + 1} ${t('of')} ${totalsPage} ${t('page')}`}
                     </div>
 
                     <div className={cx('pagination')}>
@@ -155,14 +165,14 @@ function AdsManagement() {
                             },
                         ]}
                         handleCancel={() => setModalEdit(null)}
-                        handleEdit=''
+                        handleEdit={handleEdit}
                     />
                 )}
                 {modalDel && (
                     <ModalDel
                         text='package'
                         handleDelete={handleDelete}
-                        onCancel={() => setModalDel(null)}
+                        handleCancel={() => setModalDel(null)}
                     />
                 )}
             </div>

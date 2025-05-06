@@ -14,10 +14,9 @@ import routesConfig from '~/config/routes';
 import { infoUserCurrentServices, notifyServices, putNotifyServices } from '~/apiServices';
 import Notifications from '~/components/Notifications';
 import { UserContext } from '~/context/UserContext';
-import { ChatContext } from '~/context/ChatContext';
 import { NavBarsContext } from '~/context/NavBarsContext';
 import { useTranslation } from 'react-i18next';
-import { AdvertiseIcon, BarsIcon, ClearSearchIcon, DashboardIcon, HelpIcon, LanguagesIcon, LogoutIcon, MessageIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
+import { AdvertiseIcon, BarsIcon, ClearSearchIcon, DashboardIcon, HelpIcon, LanguagesIcon, LogoutIcon, NotifyIcon, SearchIcon, SettingIcon, UploadIcon, UserIcon } from '~/components/Icons';
 import { useWebSocket } from '~/hooks';
 
 const cx = classNames.bind(styles);
@@ -33,7 +32,6 @@ function Header() {
     const inputRef = useRef();
     const { user, setUser } = useContext(UserContext);
     const { setShowNav } = useContext(NavBarsContext);
-    const { toggleChat } = useContext(ChatContext);
     const { notification } = useWebSocket();
     const token = localStorage.getItem('authToken');
 
@@ -47,7 +45,7 @@ function Header() {
             },
             {
                 icon: <AdvertiseIcon />,
-                title: 'Post Ads',
+                title: t('postAds'),
                 to: routesConfig.postAds,
             },
             {
@@ -80,7 +78,7 @@ function Header() {
             if (userRole === 'ADMIN') {
                 items.push({
                     icon: <DashboardIcon width='24px' height='24px' />,
-                    title: 'Admin Management',
+                    title: t('adminManagement'),
                     to: routesConfig.dashboard,
                 });
             }
@@ -244,7 +242,6 @@ function Header() {
                                     {t('create')}
                                 </Button>
                             </Tippy>
-                            <Button className={cx('chat')} onClick={toggleChat} iconText leftIcon={<MessageIcon />} />
                             <History
                                 items={notifications}
                                 avatar={user.img}
@@ -267,10 +264,10 @@ function Header() {
                     ) : (
                         <>
                             <Button className={cx('btn-login')} to={routesConfig.login} normal round>
-                                Login
+                                {t('login')}
                             </Button>
                             <Button className={cx('btn-register')} to={routesConfig.register} normal round>
-                                Register
+                                {t('register')}
                             </Button>
                         </>
                     )}

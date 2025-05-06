@@ -17,11 +17,11 @@ import {
 import Post from "~/components/Post";
 import { useScroll } from "~/hooks";
 import Button from "~/components/Button";
-import { ChatContext } from "~/context/ChatContext";
 import { useLocation } from "react-router-dom";
 import images from "~/assets/images";
-import { CameraIcon, DownIcon } from "~/components/Icons";
+import { CameraIcon } from "~/components/Icons";
 import { UserContext } from "~/context/UserContext";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -37,10 +37,9 @@ function Profile() {
     const [statusFriend, setStatusFriend] = useState('');
     const [showRespond, setShowRespond] = useState(false);
     const fileInputRef = useRef(null);
-    const { toggleChat } = useContext(ChatContext);
     const location = useLocation();
     const { user, setUser } = useContext(UserContext);
-
+    const { t } = useTranslation();
     const token = localStorage.getItem("authToken");
     const userId = location.pathname.split("/").pop();
 
@@ -136,6 +135,7 @@ function Profile() {
         } else {
             fetchRequests(currentPage);
         }
+
     }, [option, userId, currentPage, fetchPosts, fetchFriends, fetchRequests]);
 
 
@@ -223,16 +223,16 @@ function Profile() {
                         <h3 className={cx("name-friends")}>{friend.name}</h3>
                     </div>
                     <div className={cx("box-right")}>
-                        <Button className={cx("chat-friends")} normal>Chat</Button>
-                        <DownIcon className={cx("btn-more")} />
+                        <Button className={cx("chat-friends")} normal>UnFriend</Button>
                     </div>
                 </div>
             ));
         } else {
-            return <div className={cx('title-no')}>No friends</div>;
+            return <div className={cx('title-no')}>{t('noFriends')}</div>;
         }
+        // eslint-disable-next-line
     }, [friends]);
-    
+
 
     return (
         <div className={cx("wrapper")}>
@@ -260,20 +260,25 @@ function Profile() {
                 <div className={cx("action")}>
                     {userPrimary ? (
                         <div className={cx('friend-nav')}>
-                            <Button onClick={() => handleOptionChange("Post")} primary={option === "Post"}>Post</Button>
-                            <Button onClick={() => handleOptionChange("Friends")} primary={option === "Friends"}>Friends</Button>
-                            <Button onClick={() => handleOptionChange("Request")} primary={option === "Request"}>Request</Button>
+                            <Button onClick={() => handleOptionChange("Post")} primary={option === "Post"}>{t('postBtn')}</Button>
+                            <Button onClick={() => handleOptionChange("Friends")} primary={option === "Friends"}>{t('friends')}</Button>
+                            <Button onClick={() => handleOptionChange("Request")} primary={option === "Request"}>{t('request')}</Button>
                         </div>
                     ) : (
                         <div className={cx('friend')}>
                             <div className={cx('friend-nav')}>
-                                <Button onClick={handleAddFriend} primary>{statusFriend}</Button>
-                                <Button onClick={toggleChat} normal>Chat</Button>
+                                <Button onClick={handleAddFriend} primary>{
+                                    statusFriend === 'Send'
+                                        ? t.statusSent
+                                        : statusFriend === 'Accept invitation'
+                                            ? t.statusAccept
+                                            : statusFriend === 'Friend' ? t.statusFriend : t.addFriend
+                                }</Button>
                             </div>
                             {showRespond && (
                                 <div className={cx('friend-res')}>
-                                    <Button onClick={() => handleAccept(userId)} primary>Accept</Button>
-                                    <Button onClick={() => handleReject(userId)} normal>Reject</Button>
+                                    <Button onClick={() => handleAccept(userId)} primary>{t('accept')}</Button>
+                                    <Button onClick={() => handleReject(userId)} normal>{t('reject')}</Button>
                                 </div>
                             )}
                         </div>
@@ -295,17 +300,17 @@ function Profile() {
                                         <img className={cx('img-user')} alt={request.name} src={request.img || images.avatar} />
                                         <h3 className={cx('name-user')}>{request.name}</h3>
                                         <div className={cx('action-user')}>
-                                            <Button className={cx('action-accept')} primary onClick={() => handleAccept(request.userSend_id)}>Accept</Button>
-                                            <Button className={cx('action-reject')} normal onClick={() => handleReject(request.userSend_id)}>Reject</Button>
+                                            <Button className={cx('action-accept')} primary onClick={() => handleAccept(request.userSend_id)}>{t('accept')}</Button>
+                                            <Button className={cx('action-reject')} normal onClick={() => handleReject(request.userSend_id)}>{t('reject')}</Button>
                                         </div>
                                     </div>
                                 ))
                             }
                         </div>
                         {totalsPage !== (currentPage + 1) ?
-                            <Button normal className={cx('see-btn')} onClick={handleSeeAllRequest}>See All</Button>
+                            <Button normal className={cx('see-btn')} onClick={handleSeeAllRequest}>{t('btnSeeAll')}</Button>
                             :
-                            <div className={cx('title-no')}>No friend requests</div>
+                            <div className={cx('title-no')}>{t('noRequests')}</div>
                         }
                     </>
                 ) : (

@@ -2,7 +2,7 @@ import classNames from "classnames/bind";
 import styles from './Search.module.scss';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { searchPostsServices, searchUsersServices } from "~/apiServices";
 import Post from "~/components/Post";
 import { useScroll } from "~/hooks";
@@ -21,7 +21,7 @@ function Search() {
     const [currentPage, setCurrentPage] = useState(0);
     const location = useLocation();
 
-    // const { t } = useTranslation();
+    const { t } = useTranslation();
 
     const token = localStorage.getItem('authToken');
 
@@ -106,14 +106,14 @@ function Search() {
             {typeSearch !== 'Post' &&
                 (
                     <div className={cx('users')}>
-                        {users.length > 0 && <h3 className={cx('users-title')}>Everybody</h3>}
+                        {users.length > 0 && <h3 className={cx('users-title')}>{t('everybody')}</h3>}
                         {users.map(user => (
                             <User key={user.id} data={user} />
                         ))}
                         {totalUser > 5 && typeSearch === 'All' &&
                             (
                                 <div className={cx('see-all')}>
-                                    <Button className={cx('see-btn')} normal onClick={handleSeeUser}>See All</Button>
+                                    <Button className={cx('see-btn')} normal onClick={handleSeeUser}>{t('btnSeeAll')}</Button>
                                 </div>
                             )
                         }
@@ -123,14 +123,14 @@ function Search() {
             {typeSearch !== 'User' &&
                 (
                     <div className={cx('posts')}>
-                        {posts.length > 0 && <h3 className={cx('posts-title')}>Posts</h3>}
+                        {posts.length > 0 && <h3 className={cx('posts-title')}>{t('posts')}</h3>}
                         {posts.map(post => (
                             <Post key={post.id} data={post} show={post.show} />
                         ))}
                         {totalPost > 5 && typeSearch === 'All' &&
                             (
                                 <div className={cx('see-all')}>
-                                    <Button className={cx('see-btn')} normal onClick={handleSeePost}>See All</Button>
+                                    <Button className={cx('see-btn')} normal onClick={handleSeePost}>{t('btnSeeAll')}</Button>
                                 </div>
                             )
                         }

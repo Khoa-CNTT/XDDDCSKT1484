@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "~/context/UserContext";
 import { acceptFriendServices, addFriendServices, getStatusFriendServices } from "~/apiServices";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -13,7 +14,7 @@ function User({ data }) {
     const [statusFriend, setStatusFriend] = useState('')
     const { user } = useContext(UserContext);
     const token = localStorage.getItem('authToken');
-
+    const  {t} = useTranslation();
     const fetchStatusFriend = async () => {
         if (token) {
             if (data.id === user.id) {
@@ -71,7 +72,13 @@ function User({ data }) {
                 <h4 className={cx('username')}>@{data.username}</h4>
             </Link>
             <div className={cx('friend')}>
-                <Button normal onClick={handleFriend}>{statusFriend}</Button>
+                <Button normal onClick={handleFriend}>{
+                    statusFriend === 'Send'
+                        ? t.statusSent
+                        : statusFriend === 'Accept invitation'
+                            ? t.statusAccept
+                            : statusFriend === 'Friend' ? t.statusFriend : t.addFriend
+                }</Button>
             </div>
         </div>
     );

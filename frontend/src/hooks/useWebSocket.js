@@ -22,7 +22,6 @@ const useWebSocket = () => {
     stompClient.connect({}, () => {
 
       stompClient.subscribe("/user/queue/notifications", (message) => {
-        console.log(message.body);
 
         const notify = JSON.parse(message.body)
 
