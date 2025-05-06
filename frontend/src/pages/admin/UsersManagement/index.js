@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getAllUserServices, patchStatusUserServices } from "~/apiServices";
 import ModalEdit from "~/components/ModalEdit";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +17,7 @@ function UsersManagement() {
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listUser, setListUser] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -77,14 +78,14 @@ function UsersManagement() {
             <div className={cx('user')}>
                 <div className={cx('user-header')}>
                     <div className={cx('user-heading')}>
-                        Management User
+                        {t('managementUser')}
                     </div>
                     <div className={cx('user-search')}>
                         <SearchIcon className={cx('search-icon')} />
                         <input
                             className={cx('search-input')}
                             type="text"
-                            placeholder="Search user name"
+                            placeholder={t('searchUserName')}
                             value={searchValue}
                             onChange={e => setSearchValue(e.target.value)}
                             onKeyDown={handleSearch}
@@ -95,13 +96,13 @@ function UsersManagement() {
                     <table className={cx('table-user')}>
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Avatar</th>
-                                <th>Full Name</th>
-                                <th>Email</th>
-                                <th>Language</th>
-                                <th>Active</th>
-                                <th>Action</th>
+                                <th>{t('stt')}</th>
+                                <th>{t('avatar')}</th>
+                                <th>{t('fullname')}</th>
+                                <th>{t('email')}</th>
+                                <th>{t('language')}</th>
+                                <th>{t('active')}</th>
+                                <th>{t('action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,7 +124,7 @@ function UsersManagement() {
                                 )
                                 :
                                 (
-                                    <tr><td colSpan="6">Không có user nào</td></tr>
+                                    <tr><td colSpan="6">{t('noUserFound')}</td></tr>
                                 )
                             }
                         </tbody>
@@ -131,7 +132,7 @@ function UsersManagement() {
                 </div>
                 <div className={cx('user-footer')}>
                     <div className={cx('page-current')}>
-                        {`${pageCurrent + 1} of ${totalsPage} Page`}
+                        {`${pageCurrent + 1} ${t('of')} ${totalsPage} ${t('page')}`}
                     </div>
 
                     <div className={cx('pagination')}>

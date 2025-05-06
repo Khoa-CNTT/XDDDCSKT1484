@@ -1,230 +1,220 @@
 import classNames from 'classnames/bind';
 import styles from './Statistic.module.scss';
 import {
-    GrowIcon,
-    InteractAdminIcon,
-    PostAdminIcon,
-    SalesAdminIcon,
-    ShrinkIcon,
-    UserAdminIcon,
-} from '~/components/Icons';
-import {
-    getAdsTotalCountServices,
-    getAdsTotalTopSpendersServices,
+    getAdsTotalTopSpendersServices, getAdsTotalRecentPostsServices, getAdsTotalTopPostsServices, getAdsTotalTopInteractsServices
 } from '~/apiServices';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 
 const cx = classNames.bind(styles);
 
-const data = [
-    { month: 'Jan', revenue: 80, profit: 50 },
-    { month: 'Feb', revenue: 120, profit: 70 },
-    { month: 'Mar', revenue: 90, profit: 60 },
-    { month: 'Apr', revenue: 150, profit: 90 },
-    { month: 'May', revenue: 130, profit: 75 },
-    { month: 'Jun', revenue: 170, profit: 100 },
-    { month: 'Jul', revenue: 140, profit: 85 },
-    { month: 'Aug', revenue: 160, profit: 95 },
-    { month: 'Sep', revenue: 100, profit: 65 },
-    { month: 'Oct', revenue: 180, profit: 110 },
-    { month: 'Nov', revenue: 120, profit: 80 },
-    { month: 'Dec', revenue: 190, profit: 120 },
-];
-
 const formatDateOnly = (date) => {
-    return date.toISOString().split('T')[0]; 
+    return date.toISOString().split('T')[0];
 };
 
 function Statistic() {
-    const [endDate, setEndDate] = useState(formatDateOnly(new Date())); 
-    const [startDate, setStartDate] = useState(formatDateOnly(new Date())); 
-    const [counts, setCount] = useState({
-        totalAds: 0,
-        totalViews: 0,
-        totalLikes: 0,
-        totalComments: 0,
-        totalActiveAds: 0,
-    });
-    const [listSpenders, setListSpender] = useState([]);
+    const [endDate, setEndDate] = useState(formatDateOnly(new Date()));
+    const [startDate, setStartDate] = useState(formatDateOnly(new Date()));
+    const [typeStatic, setTypeStatic] = useState('mostMoneyUser');
+    const [listTop, setListTop] = useState([]);
     const token = localStorage.getItem('authToken');
 
-    useEffect(() => {
-        if (token) {
-            fetchTopSpender(token);
-        }
-    }, [token]);
+    const { t } = useTranslation();
 
-    const fetchTotal = async (token, start, end) => {
-        try {
-            const res = await getAdsTotalCountServices(token, {
-                startDate: start,
-                endDate: end,
-            });
-            if (res?.data) {
-                setCount(res.data);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+
+    const handleChangeType = (e) => {
+        setTypeStatic(e.target.value);
+        setListTop([]);
     };
 
-    const fetchTopSpender = async (token) => {
-        try {
-            const res = await getAdsTotalTopSpendersServices(token);
-            if (res?.data) {
-                setListSpender(res.data);
-            }
-        } catch (error) {
-            console.log(error);
+    const handleApply = async () => {
+        if (!token) return;
+        switch (typeStatic) {
+            case 'mostInteraction':
+                const resTopPosts = await getAdsTotalTopInteractsServices(startDate, endDate, token);
+                setListTop(resTopPosts?.data);
+                break;
+            case 'mostAdsSpend':
+                const resTopSpenders = await getAdsTotalTopPostsServices(startDate, endDate, token);
+                setListTop(resTopSpenders?.data);
+                break;
+            case 'mostMoneyUser':
+                const resMoneyUsers = await getAdsTotalTopSpendersServices(startDate, endDate, token);
+                setListTop(resMoneyUsers?.data);
+                break;
+            case 'mostPostAdsRecent':
+                const resRecentPosts = await getAdsTotalRecentPostsServices(startDate, endDate, token);
+                setListTop(resRecentPosts?.data);
+                break;
+            default:
+                console.log('Unknown typeStatic');
+        }
+
+    };
+
+    const renderTable = () => {
+        switch (typeStatic) {
+            case 'mostInteraction':
+                return (
+                    <table className={cx('table')}>
+                        <thead>
+                            <tr>
+                                <th>{t('stt')}</th>
+                                <th>{t('typePost')}</th>
+                                <th>{t('language')}</th>
+                                <th>{t('published')}</th>
+                                <th>{t('like')}</th>
+                                <th>{t('comment')}</th>
+                                <th>{t('totalInteract')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listTop.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.type_post}</td>
+                                    <td>{item.language}</td>
+                                    <td>{format(new Date(item.created_at), 'dd/MM/yyyy HH:mm')}</td>
+                                    <td>{item.total_likes}</td>
+                                    <td>{item.total_comments}</td>
+                                    <td>{item.total_interactions}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )
+            case 'mostAdsSpend':
+                return (
+                    <table className={cx('table')}>
+                        <thead>
+                            <tr>
+                                <th>{t('stt')}</th>
+                                <th>{t('typePost')}</th>
+                                <th>{t('language')}</th>
+                                <th>{t('published')}</th>
+                                <th>{t('price')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listTop.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.type_post}</td>
+                                    <td>{item.language}</td>
+                                    <td>{format(new Date(item.created_at), 'dd/MM/yyyy HH:mm')}</td>
+                                    <td>{item.totalAmount}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                );
+            case 'mostMoneyUser':
+                return (
+                    <table className={cx('table')}>
+                        <thead>
+                            <tr>
+                                <th>{t('stt')}</th>
+                                <th>{t('name')}</th>
+                                <th>{t('email')}</th>
+                                <th>{t('totalSpent')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listTop.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.email}</td>
+                                    <td>{item.totalSpent}$</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                );
+            case 'mostPostAdsRecent':
+                return (
+                    <table className={cx('table')}>
+                        <thead>
+                            <tr>
+                                <th>{t('stt')}</th>
+                                <th>{t('typePost')}</th>
+                                <th>{t('language')}</th>
+                                <th>{t('published')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listTop.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.type_post}</td>
+                                    <td>{item.language}</td>
+                                    <td>{format(new Date(item.created_at), 'dd/MM/yyyy HH:mm')}</td>
+                                    <td>{item.totalAmount}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                );
+            default:
+                return <p>{t('noData')}</p>;
         }
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('statistic')}>
-                <h3 className={cx('statistic-heading')}>Statistic</h3>
+                <h3 className={cx('statistic-heading')}>{t('statistic')}</h3>
 
                 {/* Date Filter */}
                 <div className={cx('filter-container')}>
                     <div className={cx('filter-item')}>
-                        <label htmlFor="start-date">Start Date</label>
+                        <label htmlFor="start-date">{t('startDate')}</label>
                         <input
                             id="start-date"
                             type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)} // Lưu giá trị trực tiếp là chuỗi
+                            onChange={(e) => setStartDate(e.target.value)}
                             className={cx('datepicker-input')}
                         />
                     </div>
                     <div className={cx('filter-item')}>
-                        <label htmlFor="end-date">End Date</label>
+                        <label htmlFor="end-date">{t('endDate')}</label>
                         <input
                             id="end-date"
                             type="date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)} // Lưu giá trị trực tiếp là chuỗi
+                            onChange={(e) => setEndDate(e.target.value)}
                             className={cx('datepicker-input')}
                         />
                     </div>
+                    <div className={cx('filter-item')}>
+                        <label htmlFor="type">{t('typeStatic')}</label>
+                        <select
+                            id="type"
+                            className={cx('select-type')}
+                            value={typeStatic}
+                            onChange={handleChangeType}
+                        >
+                            <option value="mostMoneyUser">{t('userMostMoney')}</option>
+                            <option value="mostInteraction">{t('highestInteraction')}</option>
+                            <option value="mostAdsSpend">{t('mostAdsSpend')}</option>
+                            <option value="mostPostAdsRecent">{t('recentAdsPosts')}</option>
+                        </select>
+                    </div>
                     <button
                         className={cx('apply-btn')}
-                        onClick={() => fetchTotal(token, startDate, endDate)} // Gửi chuỗi ngày
+                        onClick={handleApply}
                     >
-                        Apply
+                        {t('apply')}
                     </button>
                 </div>
-
-                {/* Figures */}
-                <div className={cx('statistic-figures')}>
-                    <div className={cx('figures-total', 'total-post')}>
-                        <div className={cx('header-figures')}>
-                            <h5>Total Ads</h5>
-                            <PostAdminIcon width="36px" height="36px" />
-                        </div>
-                        <p className={cx('body-figures')}>{counts.totalAds}</p>
-                        <p className={cx('footer-figures')}>
-                            <GrowIcon /> 8.3% Up from yesterday
-                        </p>
-                    </div>
-                    <div className={cx('figures-total', 'total-user')}>
-                        <div className={cx('header-figures')}>
-                            <h5>Total View</h5>
-                            <UserAdminIcon width="36px" height="36px" />
-                        </div>
-                        <p className={cx('body-figures')}>
-                            {counts.totalViews}
-                        </p>
-                        <p className={cx('footer-figures')}>
-                            <GrowIcon /> 8.3% Up from yesterday
-                        </p>
-                    </div>
-                    <div className={cx('figures-total', 'total-interact')}>
-                        <div className={cx('header-figures')}>
-                            <h5>Total Interact</h5>
-                            <InteractAdminIcon width="36px" height="36px" />
-                        </div>
-                        <p className={cx('body-figures')}>
-                            {counts.totalLikes + counts.totalComments}
-                        </p>
-                        <p className={cx('footer-figures')}>
-                            <ShrinkIcon /> 8.3% Down from yesterday
-                        </p>
-                    </div>
-                    <div className={cx('figures-total', 'total-revenue')}>
-                        <div className={cx('header-figures')}>
-                            <h5>Total Active Ads</h5>
-                            <SalesAdminIcon width="36px" height="36px" />
-                        </div>
-                        <p className={cx('body-figures')}>
-                            {counts.totalActiveAds}
-                        </p>
-                        <p className={cx('footer-figures')}>
-                            <GrowIcon /> 8.3% Up from yesterday
-                        </p>
-                    </div>
-                </div>
-
-                {/* Chart */}
-                <h3 className={cx('statistic-heading-chart')}>
-                    Monthly Performance
-                </h3>
-                <div className={cx('chart-container')}>
-                    {data.map((item, index) => (
-                        <div key={index} className={cx('bar-group')}>
-                            <div
-                                className={cx('bar', 'bar-revenue')}
-                                style={{ height: `${item.revenue}px` }}
-                            ></div>
-                            <div
-                                className={cx('bar', 'bar-profit')}
-                                style={{ height: `${item.profit}px` }}
-                            ></div>
-                            <span className={cx('month-label')}>
-                                {item.month}
-                            </span>
-                        </div>
-                    ))}
-                </div>
-                <div className={cx('legend')}>
-                    <div className={cx('legend-item')}>
-                        <div
-                            className={cx('legend-box', 'legend-revenue')}
-                        ></div>{' '}
-                        Revenue
-                    </div>
-                    <div className={cx('legend-item')}>
-                        <div
-                            className={cx('legend-box', 'legend-profit')}
-                        ></div>{' '}
-                        Profit
-                    </div>
-                </div>
-
                 {/* Top Spenders */}
                 <div className={cx('top-users')}>
                     <h3 className={cx('top-users-title')}>
-                        Top 5 Users by Ads Spending
+                        {t('top5Spending')}
                     </h3>
-                    <table className={cx('table')}>
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Total Spent</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listSpenders.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.email}</td>
-                                    <td>${item.totalSpent}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {renderTable()}
                 </div>
             </div>
         </div>

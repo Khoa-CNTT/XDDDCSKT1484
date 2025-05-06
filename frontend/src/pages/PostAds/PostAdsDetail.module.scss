@@ -38,15 +38,10 @@
 }
 
 .title {
-    font-size: 2.5rem;
+    text-align: center;
+    font-size: 2.4rem;
     font-weight: 600;
     margin-bottom: 15px;
-}
-
-.desc {
-    font-size: 1.6rem;
-    color: #333;
-    margin-bottom: 25px;
 }
 
 .grid {
@@ -56,29 +51,44 @@
     margin-bottom: 25px;
 
     div {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         color: #555;
     }
 
     strong {
+        font-size: 2rem;
         font-weight: bold;
     }
 }
 
 .invoice {
     background: #fff;
-    padding: 20px;
+    padding: 20px 120px;
     margin-top: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
     h3 {
         margin-bottom: 15px;
+        font-size: 2.2rem;
+        text-align: center;
+    }
+}
+
+.invoice-list {
+    display: flex;
+    flex-direction: column;
+    .invoice-item {
+        display: flex;
+        margin: 8px 0;
+    }
+    strong {
         font-size: 1.8rem;
     }
-
     p {
-        font-size: 1.6rem;
+        flex: 1;
+        text-align: right;
+        font-size: 1.7rem;
         color: #333;
     }
 }

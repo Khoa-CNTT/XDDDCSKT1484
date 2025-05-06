@@ -20,7 +20,6 @@ import ResetPassword from '~/pages/ResetPassword';
 import AboutFL from '~/pages/AboutFL'
 import Policy from '~/pages/Policy'
 import Help from '~/pages/Help'
-import Friends from '~/pages/Friends';
 import Dashboard from '~/pages/admin/Dashboard';
 import UsersManagement from '~/pages/admin/UsersManagement';
 import PostsManagement from '~/pages/admin/PostsManagement';
@@ -56,7 +55,6 @@ const publicRoutes = [
 const privateRoutes = [
     { path: routesConfig.upload, component: Upload, layout: HeaderOnly },
     { path: routesConfig.setting, component: Setting, layout: HeaderOnly },
-    { path: routesConfig.friends, component: Friends, layout: HeaderOnly },
     { path: routesConfig.profile, component: Profile, layout: HeaderOnly },
 ];
 

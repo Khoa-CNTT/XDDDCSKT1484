@@ -1,93 +1,109 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import styles from './PostAdsDetail.module.scss';
 import classNames from 'classnames/bind';
 import { LeftIcon } from '~/components/Icons';
 import Button from '~/components/Button';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { getTransactionByIdAdsServices } from '~/apiServices';
+import { useTranslation } from 'react-i18next';
+
 const cx = classNames.bind(styles);
 
-const data = {
-    1: {
-        title: 'How to use verb?',
-        content: 'Tạo người dùng để sài',
-        publish: '13/02/2025',
-        package: 'Basic Package',
-        price: 200,
-        views: 97462,
-        likes: 1231,
-        comments: 232,
-        invoiceId: 'INV-20250413',
-        status: 'Paid',
-    },
-    2: {
-        title: 'Learn English Fast',
-        content:
-            'Khóa học siêu tốc hóa học siêu tốc hóa học siêu tốc hóa học siêu tốc hóa học siêu tốc',
-        publish: '11/02/2025',
-        package: 'Pro Package',
-        price: 100,
-        views: 47462,
-        likes: 520,
-        comments: 89,
-        invoiceId: 'INV-20250411',
-        status: 'Pending',
-    },
-};
-
 function PostAdsDetail() {
-    const { id } = useParams();
+    const { t } = useTranslation();
+    const [transaction, setTransaction] = useState({});
+    const location = useLocation();
     const navigate = useNavigate();
-    const ad = data[id];
+    const token = localStorage.getItem('authToken');
+    const ads = location.state?.ads;
 
-    if (!ad) return <div>Ad not found!</div>;
+    const fetchTransaction = async (id) => {
+        const res = await getTransactionByIdAdsServices(id, token);
+        if (res?.data) {
+            setTransaction(res.data)
+        }
+    }
+
+    useEffect(() => {
+        fetchTransaction(ads.id);
+        // eslint-disable-next-line
+    }, [location.state])
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('back')}>
-                <Button onClick={() => navigate(-1)} leftIcon={<LeftIcon />}>Back</Button>
+                <Button onClick={() => navigate('/postAds')} leftIcon={<LeftIcon />}>{t('backBtn')}</Button>
             </div>
 
-            <h2 className={cx('title')}>{ad.title}</h2>
-            <p className={cx('desc')}>{ad.content}</p>
+            <h2 className={cx('title')}>{ads.type_post}</h2>
 
             <div className={cx('grid')}>
                 <div>
-                    <strong>Package:</strong> {ad.package}
+                    <strong>{t('package')}:</strong> {ads.namePackage}
                 </div>
                 <div>
-                    <strong>Price:</strong> ${ad.price}
+                    <strong>{t('price')}:</strong> ${ads.price}
                 </div>
                 <div>
-                    <strong>Views:</strong> {ad.views.toLocaleString()}
+                    <strong>{t('views')}:</strong> {ads.views}
                 </div>
                 <div>
-                    <strong>Likes:</strong> {ad.likes}
+                    <strong>{t('like')}:</strong> {ads.like || 0}
                 </div>
                 <div>
-                    <strong>Comments:</strong> {ad.comments}
+                    <strong>{t('comment')}:</strong> {ads.comment || 0}
                 </div>
                 <div>
-                    <strong>Published:</strong> {ad.publish}
+                    <strong>{t('published')}:</strong> {format(new Date(ads.created_at), 'dd/MM/yyyy HH:mm')}
                 </div>
                 <div>
-                    <strong>Status:</strong> {ad.status}
+                    <strong>{t('status')}:</strong> {ads.status ? 'Active' : 'Inactive'}
                 </div>
             </div>
 
             <div className={cx('invoice')}>
-                <h3 className={cx('invoice-title')}>Invoice Details</h3>
-                <div className={cx('invoice-item')}>
-                    <p>
-                        <strong>Invoice ID:</strong> <span>{ad.invoiceId}</span>
-                    </p>
-                </div>
-                <div className={cx('invoice-item')}>
-                    <p>
-                        <strong>Total:</strong> <span>${ad.price}</span>
-                    </p>
-                </div>
-                <div className={cx('invoice-item')}>
-                    <p>
-                        <strong>Status:</strong> <span>{ad.status}</span>
-                    </p>
+                <h3 className={cx('invoice-title')}>{t('invoiceDetails')}</h3>
+                <div className={cx('invoice-list')}>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('namePayment')}:</strong>
+                        <p>{transaction.name}</p>
+                    </div>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('invoiceID')}:</strong>
+                        <p>
+                            {transaction.transaction_id}
+                        </p>
+                    </div>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('total')}:</strong>
+                        <p>
+                            {transaction.amount} {transaction.currency}
+                        </p>
+                    </div>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('message')}:</strong>
+                        <p>
+                            {transaction.message}
+                        </p>
+                    </div>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('date')}:</strong>
+                        <p>
+                            {format(new Date(ads.created_at), 'dd/MM/yyyy HH:mm')}
+                        </p>
+                    </div>
+                    <div className={cx('invoice-item')}>
+                        <strong>{t('status')}:</strong>
+                        <p>
+                            {transaction.status ? (
+                                transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)
+                            ) : (
+                                t('unknown')
+                            )}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

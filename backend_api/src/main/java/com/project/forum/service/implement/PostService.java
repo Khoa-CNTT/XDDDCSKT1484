@@ -3,6 +3,7 @@ package com.project.forum.service.implement;
 import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
+import com.project.forum.dto.responses.post.TopInteractionPostResponse;
 import com.project.forum.enity.Advertisement;
 import com.project.forum.enity.Comments;
 import com.project.forum.enity.Posts;
@@ -172,5 +173,15 @@ public class PostService implements IPostService {
                 .build();
     }
 
+    @Override
+    public List<TopInteractionPostResponse> getTopInteractionPosts(LocalDateTime from, LocalDateTime to, int limit) {
+        try {
+            Pageable pageable = PageRequest.of(0, limit);
+            List<TopInteractionPostResponse> results = postsRepository.findTopInteractionPosts(from, to, pageable);
+            return results != null ? results : Collections.emptyList();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
 
 }

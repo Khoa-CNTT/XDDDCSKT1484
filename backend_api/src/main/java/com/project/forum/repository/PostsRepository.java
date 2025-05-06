@@ -2,6 +2,7 @@ package com.project.forum.repository;
 
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
+import com.project.forum.dto.responses.post.TopInteractionPostResponse;
 import com.project.forum.enity.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -133,5 +135,23 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "AND (:to IS NULL OR p.created_at <= :to)")
     PostTotalResponse getPostStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
+    @Query("SELECT NEW com.project.forum.dto.responses.post.TopInteractionPostResponse(" +
+            "p.type_post, lg.name, p.created_at, " +
+            "COUNT(DISTINCT l.id), COUNT(DISTINCT c.id), " +
+            "COUNT(DISTINCT l.id) + COUNT(DISTINCT c.id)) " +
+            "FROM Posts p " +
+            "LEFT JOIN p.users u " +
+            "LEFT JOIN p.comments c " +
+            "LEFT JOIN p.likes l " +
+            "LEFT JOIN p.language lg " +
+            "WHERE (:from IS NULL OR p.created_at >= :from) " +
+            "AND (:to IS NULL OR p.created_at <= :to) " +
+            "AND p.postShow = true " +
+            "GROUP BY p.id, p.type_post, p.created_at, lg.name " +
+            "ORDER BY COUNT(DISTINCT l.id) + COUNT(DISTINCT c.id) DESC")
+    List<TopInteractionPostResponse> findTopInteractionPosts(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            Pageable pageable);
 
 }

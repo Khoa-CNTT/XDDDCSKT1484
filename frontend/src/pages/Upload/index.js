@@ -253,7 +253,7 @@ function Upload() {
                                 setIsSelected(0);
                                 setTypePost('Content')
                             }
-                            }>Content</Button>
+                            }>{t('content')}</Button>
                         <Button
                             primary={isSelected === 1}
                             leftIcon={<PollIcon />}
@@ -262,7 +262,7 @@ function Upload() {
                                 setIsSelected(1);
                                 setTypePost('Poll')
                             }
-                            }>Poll</Button>
+                            }>{t('poll')}</Button>
                     </div>
                 }
                 <form className={cx('form')} onSubmit={handleSubmit}>
@@ -281,7 +281,7 @@ function Upload() {
                                     <option value='Japan'>{t('langJapanese')}</option>
                                 </select>
                             </div>
-                            <Button onClick={handleAdsPackage} className={cx('btn-ads')} primary>Advertisement</Button>
+                            <Button onClick={handleAdsPackage} className={cx('btn-ads')} primary>{t('advertisement')}</Button>
                         </div>
                     }
                     <div className={cx('body')}>
@@ -333,11 +333,11 @@ function Upload() {
                                         <span className={cx('type-title')}>Type Poll</span>
                                         <label htmlFor='Single'>
                                             <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Single' name='answer' />
-                                            Single Answer
+                                            {t('singleAnswer')}
                                         </label>
                                         <label htmlFor='Multiple'>
                                             <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Multiple' name='answer' />
-                                            Multiple Answer
+                                            {t('multipleAnswer')}
                                         </label>
                                     </div>
                                     <div className={cx('question')}>
@@ -345,7 +345,7 @@ function Upload() {
                                             value={pollForm.question}
                                             onChange={handleInputChange('question', 'poll')}
                                             className={cx('question-text')}
-                                            placeholder={'Question'}
+                                            placeholder={t('question')}
                                         />
                                     </div>
                                     <div className={cx('options')}>
@@ -356,14 +356,14 @@ function Upload() {
                                                     onChange={handleOptionChange(index)}
                                                     key={index}
                                                     type='text'
-                                                    placeholder={`Option ${index + 1}`}
+                                                    placeholder={`${t('option')} ${(index + 1)}`}
                                                 />
                                                 {pollForm.createOptionDtoList.length > 2 && (
                                                     <Button className={cx('remove-btn')} onClick={() => removeOption(index)} leftIcon={<ClearSearchIcon width='3.2rem' height='3.2rem' />} />
                                                 )}
                                             </div>
                                         ))}
-                                        <Button className={cx('option-btn')} leftIcon={<PlusIcon />} normal onClick={addOption}>Add Option</Button>
+                                        <Button className={cx('option-btn')} leftIcon={<PlusIcon />} normal onClick={addOption}>{t('addOption')}</Button>
                                     </div>
                                     <div className={cx('upload')}>
                                         <Button type='submit' round normal={!isButtonDisabled} disabled={isButtonDisabled} className={cx('upload-btn')}>
@@ -380,7 +380,7 @@ function Upload() {
                 <div className={cx('modal')}>
                     <div className={cx('container')}>
                         <div className={cx('modal-header')}>
-                            <h3 className={cx('modal-heading')}>Please select advertising package</h3>
+                            <h3 className={cx('modal-heading')}>{t('selectAds')}</h3>
                             <Button onClick={handleToggleModal} iconCircle className={cx('modal-close')} leftIcon={<CloseIcon />} />
                         </div>
                         <div>
@@ -401,7 +401,7 @@ function Upload() {
                                         <WalletIcon />
                                     </label>
                                 ))}
-                                <Button className={cx('btn-select')} primary>Select</Button>
+                                <Button className={cx('btn-select')} primary>{t('select')}</Button>
                             </form>
                         </div>
                     </div>

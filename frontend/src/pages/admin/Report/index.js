@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { deletedReportServices, getReportServices, patchReportServices } from "~/apiServices";
 import ModalDel from "~/components/ModalDel";
 import ModalEdit from "~/components/ModalEdit";
+import { useTranslation } from "react-i18next";
 
 const cx = classNames.bind(styles)
 
@@ -17,7 +18,7 @@ function Report() {
     const [modalEdit, setModalEdit] = useState(null);
     const [modalDel, setModalDel] = useState(null);
     const token = localStorage.getItem('authToken');
-
+    const { t } = useTranslation();
     useEffect(() => {
         fetchAllReport(pageCurrent, token);
     }, [pageCurrent, token])
@@ -64,34 +65,34 @@ function Report() {
         <div className={cx('wrapper')}>
             <div className={cx('report')}>
                 <h3 className={cx('report-heading')}>
-                    Report
+                    {t('report')}
                 </h3>
                 <div className={cx('report-filter')}>
                     <FilterIcon className={cx('filter-icon')} />
                     <h3 className={cx('filter-heading')}>
-                        Filter By
+                        {t('filterBy')}
                     </h3>
                     <select
                         value={typeReport}
                         className={cx('filter-type')}
                         onChange={handleChange}
                     >
-                        <option value='' disabled>Type</option>
-                        <option value='Post'>Post</option>
-                        <option value='Comment'>Comment</option>
-                        <option value='Account'>Account</option>
+                        <option value='' disabled>{t('type')}</option>
+                        <option value='Post'>{t('postBtn')}</option>
+                        <option value='Comment'>{t('comment')}</option>
+                        <option value='Account'>{t('account')}</option>
                     </select>
                 </div>
                 <div className={cx('report-details')}>
                     <table className={cx('table-report')}>
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Type Post</th>
-                                <th>Reason</th>
-                                <th>Date Post</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>{t('stt')}</th>
+                                <th>{t('typePost')}</th>
+                                <th>{t('reason')}</th>
+                                <th>{t('datePost')}</th>
+                                <th>{t('status')}</th>
+                                <th>{t('action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,7 +115,7 @@ function Report() {
                                 )
                                 :
                                 (
-                                    <tr><td colSpan="6">Không có report nào</td></tr>
+                                    <tr><td colSpan="6">{t('noAdsFound')}</td></tr>
                                 )
                             }
                         </tbody>
@@ -122,7 +123,7 @@ function Report() {
                 </div>
                 <div className={cx('report-footer')}>
                     <div className={cx('page-current')}>
-                        {`${pageCurrent + 1} of ${totalsPage} Page`}
+                        {`${pageCurrent + 1} ${t('of')} ${totalsPage} ${t('page')}`}
                     </div>
 
                     <div className={cx('pagination')}>

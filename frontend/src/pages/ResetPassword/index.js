@@ -109,7 +109,7 @@ function ResetPassword() {
                             value={formData.rePassword}
                             valid={errors.rePassword}
                         />
-                        <button onClick={handleSubmit} className={stylesShare.formSubmit}>Reset Password</button>
+                        <button onClick={handleSubmit} className={stylesShare.formSubmit}>{t('resetPassword')}</button>
                     </form>
                 </div>
             </div>

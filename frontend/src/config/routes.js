@@ -15,7 +15,6 @@ const routes = {
     policy: '/policy',
     help: '/help',
     postDetail: '/post/:id_post',
-    friends: '/friends',
     postAds: '/postAds',
     postAdsId: '/postAds/:id',
     paymentResult: '/paymentResult',

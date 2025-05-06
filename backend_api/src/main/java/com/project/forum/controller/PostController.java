@@ -60,6 +60,7 @@ public class PostController {
                 .data(postService.findPostByIdUser(id,page, size))
                 .build());
     }
+
     @SecurityRequirement(name = "BearerAuth")
     @DeleteMapping("/{id}")
     ResponseEntity<ApiResponse<Boolean>> delete(@PathVariable String id) {
@@ -78,6 +79,7 @@ public class PostController {
                 .data(postService.findAllPostAdmin(page, size, content, language))
                 .build());
     }
+
     @SecurityRequirement(name = "BearerAuth")
     @PatchMapping("/{id}/status")
     ResponseEntity<ApiResponse<PostResponse>> setStatus(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {

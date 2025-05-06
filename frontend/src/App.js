@@ -2,8 +2,6 @@ import { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { publicRoutes, privateRoutes, adminRoutes } from '~/routes';
 import routesConfig from '~/config/routes'
-import { ChatContext } from './context/ChatContext';
-import ChatPopup from '~/components/ChatPopup';
 import { UserContext } from '~/context/UserContext'
 
 const isAuthenticated = () => !!localStorage.getItem('authToken');
@@ -51,7 +49,6 @@ const renderRoutes = (routes, requiredRole = null) => {
 };
 
 function App() {
-    const { isOpenChat } = useContext(ChatContext);
 
     return (
         <Router>
@@ -66,7 +63,6 @@ function App() {
                     {/* Admin Routes */}
                     {renderRoutes(adminRoutes, 'ADMIN')}
                 </Routes>
-                {isOpenChat && <ChatPopup />}
             </div>
         </Router>
     );

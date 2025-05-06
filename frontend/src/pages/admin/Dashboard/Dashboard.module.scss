@@ -21,8 +21,6 @@
     text-transform: uppercase;
 }
 
-
-
 .dashboard-figures {
     display: flex;
     justify-content: space-between;
@@ -60,17 +58,6 @@
     color: var(--black);
 }
 
-.footer-figures {
-    display: flex;
-    align-items: center;
-    padding: 6px 0;
-    color: #777;
-    font-size: 1.4rem;
-    svg {
-        margin-right: 6px;
-    }
-}
-
 .dashboard-activity {
     background: #fff;
     padding: 20px;
@@ -85,34 +72,34 @@
     align-items: center;
     margin-top: 30px;
     gap: 12px;
-  
-    label {
-      font-size: 16px;
-      font-weight: 500;
-      color: black;
-    }
-  
-    .year-select {
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: var(--white);
-      font-size: 15px;
-      color: black;
-      cursor: pointer;  
-      &:hover {
-        border-color: var(--primary);
-      }
-  
-      &:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-      }
-    }
-  }
 
-  //chart
+    label {
+        font-size: 16px;
+        font-weight: 500;
+        color: black;
+    }
+
+    .year-select {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: var(--white);
+        font-size: 15px;
+        color: black;
+        cursor: pointer;
+        &:hover {
+            border-color: var(--primary);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+    }
+}
+
+//chart
 .chart-heading {
     text-align: center;
     font-size: 2rem;

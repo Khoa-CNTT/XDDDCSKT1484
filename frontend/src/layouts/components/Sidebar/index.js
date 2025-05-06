@@ -28,7 +28,7 @@ function Sidebar() {
             <div className={cx('sidebar')}>
                 <div className={cx('navbar')}>
 
-                    <span className={cx('title')}>main</span>
+                    <span className={cx('title')}>{t('main')}</span>
                     <ul className={cx('navList')}>
                         <Link to='/' className={cx('navItem', pathname === '' ? 'active' : '')}>
                             <HomeIcon />

@@ -4,9 +4,11 @@ package com.project.forum.service;
 import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
+import com.project.forum.dto.responses.post.TopInteractionPostResponse;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface IPostService {
 
@@ -25,4 +27,6 @@ public interface IPostService {
     PostTotalResponse postTotal(LocalDateTime start, LocalDateTime end);
 
     PostResponse showPostById(String id, PostShowRequest postShowRequest);
+
+    List<TopInteractionPostResponse> getTopInteractionPosts(LocalDateTime from, LocalDateTime to, int limit);
 }

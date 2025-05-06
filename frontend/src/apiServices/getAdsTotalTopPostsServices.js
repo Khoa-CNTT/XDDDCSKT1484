@@ -1,5 +1,5 @@
 import * as request from '~/utils/request';
-const getAdsTotalTopSpendersServices = async (start, end, token) => {
+const getAdsTotalTopPosts = async (start, end, token) => {
     try {
         const config = {
             params: {
@@ -11,11 +11,10 @@ const getAdsTotalTopSpendersServices = async (start, end, token) => {
                 'Authorization': `Bearer ${token}`
             }
         }
-        const res = await request.get('ads-total/top-spenders', config)
+        const res = await request.get('ads-total/top-posts', config)
         return res;
-
     } catch (error) {
         return error;
     }
 }
-export default getAdsTotalTopSpendersServices
+export default getAdsTotalTopPosts;
