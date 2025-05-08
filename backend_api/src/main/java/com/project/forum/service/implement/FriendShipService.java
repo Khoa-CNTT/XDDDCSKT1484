@@ -131,9 +131,16 @@ public class FriendShipService implements IFriendShipService {
     public boolean deleteRequestFriend(String userId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        FriendShip friendShip = friendShipRepository.findByReceiver_IdAndSender_Id(userId,users.getId())
-                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        friendShipRepository.delete(friendShip);
+        Optional<FriendShip> friendShip = friendShipRepository.findByReceiver_IdAndSender_Id(userId,users.getId());
+        if (friendShip.isEmpty()) {
+            friendShip = friendShipRepository.findByReceiver_IdAndSender_Id(users.getId(),userId);
+            friendShipRepository.delete(friendShip.get());
+            if (friendShip.isEmpty()) {
+                throw new WebException(ErrorCode.E_REQUEST_NOT_FOUND);
+            }
+        } else {
+            friendShipRepository.delete(friendShip.get());
+        }
         return true;
     }
 
