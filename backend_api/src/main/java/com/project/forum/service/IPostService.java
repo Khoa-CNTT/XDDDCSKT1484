@@ -29,4 +29,6 @@ public interface IPostService {
     PostResponse showPostById(String id, PostShowRequest postShowRequest);
 
     List<TopInteractionPostResponse> getTopInteractionPosts(LocalDateTime from, LocalDateTime to, int limit);
+
+    PostResponse changeStatusPost(String id, boolean status);
 }
