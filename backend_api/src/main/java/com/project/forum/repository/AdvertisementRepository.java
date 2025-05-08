@@ -33,11 +33,13 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
 
     @Query("SELECT a " +
             "FROM Advertisement a " +
+            "LEFT JOIN a.posts.language lg " +
             "LEFT JOIN a.adsPackage ads " +
             "WHERE a.status = true " +
             "AND a.views != ads.max_impressions " +
+            "AND (:language IS NULL OR :language = '' OR lg.name = :language) " +
             "ORDER BY FUNCTION('RAND')")
-    Page<Advertisement> findRandomAdvertisement(Pageable pageable);
+    Page<Advertisement> findRandomAdvertisement(Pageable pageable, @Param("language") String language);
 
 
 
@@ -53,7 +55,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
             "LEFT JOIN a.adsPackage ads " +
             "WHERE p.id = :postId " +
             "AND a.status = true " +
-            "AND a.views != ads.max_impressions")
+            "AND a.views != ads.max_impressions ")
     Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +
