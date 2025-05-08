@@ -253,7 +253,7 @@ function Header() {
                             >
                                 <Button onClick={handleClickNotify} className={cx('notify-btn')} iconText leftIcon={<NotifyIcon />} />
                             </History>
-                            <Menu items={menuItems} onChange={handleMenuChange}>
+                            <Menu key={i18n.language} items={menuItems} onChange={handleMenuChange}>
                                 <Image
                                     className={cx('user-avatar')}
                                     src={user?.img}

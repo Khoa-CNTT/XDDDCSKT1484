@@ -4,10 +4,7 @@ import com.project.forum.dto.requests.post.PostShowRequest;
 import com.project.forum.dto.responses.post.PostResponse;
 import com.project.forum.dto.responses.post.PostTotalResponse;
 import com.project.forum.dto.responses.post.TopInteractionPostResponse;
-import com.project.forum.enity.Advertisement;
-import com.project.forum.enity.Comments;
-import com.project.forum.enity.Posts;
-import com.project.forum.enity.Users;
+import com.project.forum.enity.*;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.enums.RolesCode;
 import com.project.forum.exception.WebException;
@@ -47,6 +44,8 @@ public class PostService implements IPostService {
 
     AdvertisementRepository advertisementRepository;
 
+    PostReportsRepository postReportsRepository;
+
     @Override
     public Page<PostResponse> findAllPost(Integer page, Integer size, String content, String language) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -77,7 +76,7 @@ public class PostService implements IPostService {
             Optional<PostResponse> adPostOpt = postsRepository.findPostById(randomAd.getPosts().getId(), userId);
             adPostOpt.ifPresent(adPost -> {
                 Advertisement advertisement = advertisementRepository.findAdsByPostId(adPost.getId()).orElseThrow(() -> new WebException(ErrorCode.E_ADS_NOT_FOUND));
-                advertisement.setViews(advertisement.getViews()+1);
+                advertisement.setViews(advertisement.getViews() + 1);
                 adPost.setAds(true);
                 resultList.add(adPost);
             });
@@ -150,14 +149,14 @@ public class PostService implements IPostService {
     @Override
     public Page<PostResponse> findAllPostAdmin(Integer page, Integer size, String content, String language) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PostResponse> posts = postsRepository.findAllPostsAdmin(content,null,language,pageable);
+        Page<PostResponse> posts = postsRepository.findAllPostsAdmin(content, null, language, pageable);
 
         return posts;
     }
 
     @Override
     public PostTotalResponse postTotal(LocalDateTime start, LocalDateTime end) {
-        return postsRepository.getPostStats(start,end);
+        return postsRepository.getPostStats(start, end);
     }
 
     @Override
@@ -182,6 +181,37 @@ public class PostService implements IPostService {
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public PostResponse changeStatusPost(String id, boolean status) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
+        Posts posts = postsRepository.findById(id)
+                .orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+
+        boolean isOwnerOrAdmin = posts.getUsers().getId().equals(users.getId()) || users.getRoles().equals(RolesCode.ADMIN);
+
+        Optional<PostReports> postReport = postReportsRepository.findPostReportsByPosts_Id(id);
+
+        if (postReport.isEmpty() || posts.isPostShow()) {
+            if (isOwnerOrAdmin) {
+                posts.setPostShow(status);
+                postsRepository.save(posts);
+                return PostResponse.builder()
+                        .isShow(posts.isPostShow())
+                        .type_post(posts.getType_post())
+                        .created_at(posts.getCreated_at())
+                        .id(posts.getId())
+                        .build();
+            } else {
+                throw new WebException(ErrorCode.E_FORBIDDEN);
+            }
+        }
+
+        throw new WebException(ErrorCode.E_FORBIDDEN);
     }
 
 }

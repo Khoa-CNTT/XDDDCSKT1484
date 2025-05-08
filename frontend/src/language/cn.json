@@ -48,6 +48,7 @@
     "uploadSuccess": "上传成功",
     "shareSuccess": "成功获取文章链接",
     "deleteSuccess": "帖子已删除",
+    "hiddenSuccess": "该帖子已被隐藏。",
     "help": "帮助",
     "faq": "常见问题",
     "registerTitle": "要注册论坛账户，用户请访问链接 https://forumlanguages-2fbac.web.app/register。",
@@ -356,5 +357,6 @@
     "totalPost": "帖子总数",
     "totalUser": "用户总数",
     "page": "页面",
-    "of": "的"
+    "of": "的",
+    "unFriend": "解除好友关系"
 }

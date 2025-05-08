@@ -12,7 +12,8 @@ import {
     updateInfoUserServices,
     acceptFriendServices,
     rejectFriendServices,
-    getRequestFriendsServices
+    getRequestFriendsServices,
+    unFriendServices
 } from "~/apiServices";
 import Post from "~/components/Post";
 import { useScroll } from "~/hooks";
@@ -183,6 +184,14 @@ function Profile() {
         }
     };
 
+    const handleUnFriend = async (id) => {
+        const res = await unFriendServices(id, token);
+        if (res?.data) {
+            setFriends(prev => prev.filter(friend => friend.id !== id));
+        }
+
+    }
+
     const handleAccept = async (id) => {
         const res = await acceptFriendServices(id, token);
         if (res?.data) {
@@ -223,7 +232,7 @@ function Profile() {
                         <h3 className={cx("name-friends")}>{friend.name}</h3>
                     </div>
                     <div className={cx("box-right")}>
-                        <Button className={cx("chat-friends")} normal>UnFriend</Button>
+                        <Button onClick={() => handleUnFriend(friend.id)} className={cx("chat-friends")} normal>{t('unFriend')}</Button>
                     </div>
                 </div>
             ));
