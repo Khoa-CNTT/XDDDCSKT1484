@@ -48,6 +48,7 @@
     "uploadSuccess": "Upload Post Success",
     "shareSuccess": "Got the article link successfully",
     "deleteSuccess": "Post Deleted",
+    "hiddenSuccess": "The post has been hidden.",
     "help": "Help",
     "faq": "Frequently asked questions",
     "registerTitle": "To register for a Forum account, users go to the link https://forumlanguages-2fbac.web.app/register.",
@@ -252,7 +253,7 @@
     "statistic": "Statistic",
     "managementAds": "Management Ads",
     "btnAdd": "Add",
-    "stt": "stt",
+    "stt": "STT",
     "filterBy": "Filter By",
     "packageName": "Package Name",
     "packageDescription": "Package Description",
@@ -356,5 +357,6 @@
     "totalPost": "Total Post",
     "totalUser": "Total User",
     "page": "Page",
-    "of": "of"
+    "of": "of",
+    "unFriend": "UnFriend"
 }

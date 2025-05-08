@@ -20,39 +20,6 @@
     text-transform: uppercase;
 }
 
-.report-filter {
-    display: flex;
-    width: fit-content;
-    border: 1.5px solid #999;
-    border-radius: 6px;
-    margin: 0 18px 24px;
-    overflow: hidden;
-}
-
-.filter-icon {
-    width: 40px;
-    height: 40px;
-    padding: 6px;
-    border-right: 1.5px solid #999;
-}
-
-.filter-heading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 12px;
-    font-size: 1.5rem;
-    font-weight: 500;
-    border-right: 1.5px solid #999;
-}
-
-.filter-type {
-    padding: 6px 12px;
-    font-size: 1.6rem;
-    cursor: pointer;
-    border: none;
-}
-
 .table-report {
     width: 100%;
     border-collapse: collapse;

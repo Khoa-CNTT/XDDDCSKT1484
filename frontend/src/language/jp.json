@@ -48,6 +48,7 @@
     "uploadSuccess": "投稿のアップロード成功",
     "shareSuccess": "記事リンクの取得に成功しました",
     "deleteSuccess": "投稿が削除されました",
+    "hiddenSuccess": "投稿は非表示になりました。",
     "help": "ヘルプ",
     "faq": "よくある質問",
     "registerTitle": "フォーラムアカウントに登録するには、リンク https://forumlanguages-2fbac.web.app/register にアクセスしてください。",
@@ -356,5 +357,6 @@
     "totalPost": "投稿数合計",
     "totalUser": "ユーザー数合計",
     "page": "ページ",
-    "of": "の"
+    "of": "の",
+    "unFriend": "友達を解除する"
 }

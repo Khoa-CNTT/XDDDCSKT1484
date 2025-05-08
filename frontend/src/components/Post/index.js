@@ -5,7 +5,7 @@ import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import styles from './Post.module.scss'
 import Image from "~/components/Image";
 import Button from "~/components/Button";
-import { deletedPostServices, getPostContentServices, getPostPollServices, likeServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
+import { deletedPostServices, getPostContentServices, getPostPollServices, hiddenPostServices, likeServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -25,7 +25,7 @@ function Post({ data, profile = false, show = true }) {
     const [originalPost, setOriginalPost] = useState(dataPost);
     const [translatedPost, setTranslatedPost] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
-    const [deleteState, setDeleteState] = useState(false)
+    const [messageShow, setMessageShow] = useState('');
     const [likesCount, setLikesCount] = useState(data.like || 0);
     const [totalVote, setTotalVote] = useState(0);
     const { t } = useTranslation();
@@ -39,7 +39,7 @@ function Post({ data, profile = false, show = true }) {
     const getMenuItems = () => {
         const commonItems = [
             { icon: <SaveIcon />, title: t('saveBtn') },
-            { icon: <HiddenIcon />, title: t('hidden') },
+            { icon: <HiddenIcon />, title: t('hidden'), onClick: handleHidden },
         ];
 
         if (data.user_post) {
@@ -62,6 +62,13 @@ function Post({ data, profile = false, show = true }) {
 
     const handleModalEdit = () => setModalDel(data.id);
 
+    const handleHidden = async () => {
+        const res = await hiddenPostServices(data.id, token);
+        if (res?.data) {
+            setMessageShow(t('hiddenSuccess'));
+        }
+    }
+
     const handleDirectEdit = () => {
         navigate(`/upload?id=${data.id}`)
     }
@@ -69,7 +76,7 @@ function Post({ data, profile = false, show = true }) {
     const handleDelete = async () => {
         const res = await deletedPostServices(modalDel, token)
         if (res?.data) {
-            setDeleteState(true)
+            setMessageShow(t('deleteSuccess'));
         }
 
         setModalDel(null)
@@ -226,155 +233,153 @@ function Post({ data, profile = false, show = true }) {
         }
     };
 
-
-    if (deleteState) {
-        return (
-            <div className={cx("wrapper", { profile })}>
-                <h3>{t('deleteSuccess')}</h3>
-            </div>
-        );
-    }
-
     return (
         <Fragment>
-
-            <div className={cx('wrapper', { profile, inactive: !show })}>
-                <div className={cx('header')}>
-                    <div className={cx('user')}>
-                        <Link to={`/user/${data.id_user}`} >
-                            <Image className={cx('avatar')} src={data.img_user} />
-                        </Link>
-                        <Link className={cx('name')} to={`/user/${data.user_id}`}>{data.user_name}</Link>
-                        <Link className={cx('date')} to={`/post/${data.id}`}>{format(new Date(data.created_at), 'dd/MM/yyyy HH:mm')}</Link>
-                        <Link className={cx('language')} to={`/post/${data.id}`}>{data.language}</Link>
-                        {data.ads &&
-                            (
-                                <div className={cx('icon-ads')}>
-                                    <StarIcon />
-                                    <span className={cx('title-ads')}>{t('advertised')}</span>
-                                </div>
-                            )
-                        }
+            {messageShow ?
+                (
+                    <div className={cx("wrapper", { profile })}>
+                        <h3>{messageShow}</h3>
                     </div>
-                    <div className={cx('more-btn')}>
-                        {data.type_post === 'CONTENT' &&
-                            (
-                                <div className={cx('icon-speaker')} onClick={() => handleSpeaker(dataPost.title, dataPost.content)}>
-                                    <SpeakerIcon />
-                                </div>
-                            )
-                        }
-                        {token ? (
-                            <Menu
-                                hideOnClick={true}
-                                post={true}
-                                items={getMenuItems()}
-                            >
-                                <Button iconText leftIcon={<MoreIcon />} />
-                            </Menu>
-                        ) : (
-                            <Button iconText leftIcon={<MoreIcon />} />
-                        )}
-                    </div>
-                </div>
-                {data.type_post === 'CONTENT' ?
-                    (
-                        <div className={cx('body', { inactive: !show })}>
-                            <div className={cx('title')}>
-                                <Link className={cx('text-title')} to={`/post/${data.id}`}>{dataPost.title}</Link>
-                            </div>
-                            <div className={cx('content')}>
-                                <Link className={cx('text-content')} to={`/post/${data.id}`}>
-                                    {renderContent()}
+                ) : (
+                    <div className={cx('wrapper', { profile, inactive: !show })}>
+                        <div className={cx('header')}>
+                            <div className={cx('user')}>
+                                <Link to={`/user/${data.id_user}`} >
+                                    <Image className={cx('avatar')} src={data.img_user} />
                                 </Link>
+                                <Link className={cx('name')} to={`/user/${data.user_id}`}>{data.user_name}</Link>
+                                <Link className={cx('date')} to={`/post/${data.id}`}>{format(new Date(data.created_at), 'dd/MM/yyyy HH:mm')}</Link>
+                                <Link className={cx('language')} to={`/post/${data.id}`}>{data.language}</Link>
+                                {data.ads &&
+                                    (
+                                        <div className={cx('icon-ads')}>
+                                            <StarIcon />
+                                            <span className={cx('title-ads')}>{t('advertised')}</span>
+                                        </div>
+                                    )
+                                }
                             </div>
-                            {
-                                token && user?.language !== data.language
-                                &&
-                                (
-                                    <p className={cx('title-translate')} onClick={handleTranslate}>{isTranslated ? 'Seen Original' : 'Translate Post'}</p>
-                                )
-                            }
+                            <div className={cx('more-btn')}>
+                                {data.type_post === 'CONTENT' &&
+                                    (
+                                        <div className={cx('icon-speaker')} onClick={() => handleSpeaker(dataPost.title, dataPost.content)}>
+                                            <SpeakerIcon />
+                                        </div>
+                                    )
+                                }
+                                {token ? (
+                                    <Menu
+                                        hideOnClick={true}
+                                        post={true}
+                                        items={getMenuItems()}
+                                    >
+                                        <Button iconText leftIcon={<MoreIcon />} />
+                                    </Menu>
+                                ) : (
+                                    <Button iconText leftIcon={<MoreIcon />} />
+                                )}
+                            </div>
+                        </div>
+                        {data.type_post === 'CONTENT' ?
+                            (
+                                <div className={cx('body', { inactive: !show })}>
+                                    <div className={cx('title')}>
+                                        <Link className={cx('text-title')} to={`/post/${data.id}`}>{dataPost.title}</Link>
+                                    </div>
+                                    <div className={cx('content')}>
+                                        <Link className={cx('text-content')} to={`/post/${data.id}`}>
+                                            {renderContent()}
+                                        </Link>
+                                    </div>
+                                    {
+                                        token && user?.language !== data.language
+                                        &&
+                                        (
+                                            <p className={cx('title-translate')} onClick={handleTranslate}>{isTranslated ? 'Seen Original' : 'Translate Post'}</p>
+                                        )
+                                    }
 
-                            {dataPost.img_url && (
-                                <div className={cx('img')}>
-                                    <Link to={`/post/${data.id}`} className={cx('img-link')}>
-                                        <Image src={dataPost.img_url} className={cx('img-src')} />
-                                    </Link>
+                                    {dataPost.img_url && (
+                                        <div className={cx('img')}>
+                                            <Link to={`/post/${data.id}`} className={cx('img-link')}>
+                                                <Image src={dataPost.img_url} className={cx('img-src')} />
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className={cx('body', { inactive: !show })}>
+                                    <div className={cx('question')}>
+                                        <Link className={cx('text-question')} to={`/post/${data.id}`}>{dataPost.question}</Link>
+                                    </div>
+                                    <form className={cx('form-vote')} onSubmit={handleVote}>
+                                        {
+                                            dataPost.pollOptions?.map((item, index) => {
+                                                const percentage = totalVote > 0 ? ((item.voteCount / totalVote) * 100).toFixed(0) : 0;
+                                                return (
+                                                    <label htmlFor={item.id} key={index} className={cx('vote-option')}>
+                                                        <div className={cx('progress-bar')}>
+                                                            <div className={cx('progress-fill')} style={{ width: `${percentage}%` }}>
+                                                            </div>
+                                                        </div>
+                                                        <div className={cx('option-text')}>
+                                                            <input
+                                                                checked={selectedOptions.includes(item.id)}
+                                                                type={dataPost.typePoll === 'Multiple' ? "checkbox" : "radio"}
+                                                                id={item.id}
+                                                                name="answer"
+                                                                onChange={() => handleSelectOption(item.id)}
+                                                            />
+                                                            {item.optionText}
+                                                        </div>
+                                                        <div className={cx('option-progress')}>
+                                                            {item.voteCount} {t('votes')} - {percentage}%
+                                                        </div>
+
+                                                    </label>
+                                                );
+                                            })
+                                        }
+                                        <div className={cx('vote')}>
+                                            <span className={cx('total-vote')}>{totalVote} {t('votes')}</span>
+                                            <Button className={cx('vote-btn')} primary>{t('vote')}</Button>
+                                        </div>
+                                    </form>
                                 </div>
                             )}
-                        </div>
-                    ) : (
-                        <div className={cx('body', { inactive: !show })}>
-                            <div className={cx('question')}>
-                                <Link className={cx('text-question')} to={`/post/${data.id}`}>{dataPost.question}</Link>
-                            </div>
-                            <form className={cx('form-vote')} onSubmit={handleVote}>
-                                {
-                                    dataPost.pollOptions?.map((item, index) => {
-                                        const percentage = totalVote > 0 ? ((item.voteCount / totalVote) * 100).toFixed(0) : 0;
-                                        return (
-                                            <label htmlFor={item.id} key={index} className={cx('vote-option')}>
-                                                <div className={cx('progress-bar')}>
-                                                    <div className={cx('progress-fill')} style={{ width: `${percentage}%` }}>
-                                                    </div>
-                                                </div>
-                                                <div className={cx('option-text')}>
-                                                    <input
-                                                        checked={selectedOptions.includes(item.id)}
-                                                        type={dataPost.typePoll === 'Multiple' ? "checkbox" : "radio"}
-                                                        id={item.id}
-                                                        name="answer"
-                                                        onChange={() => handleSelectOption(item.id)}
-                                                    />
-                                                    {item.optionText}
-                                                </div>
-                                                <div className={cx('option-progress')}>
-                                                    {item.voteCount} {t('votes')} - {percentage}%
-                                                </div>
-
-                                            </label>
-                                        );
-                                    })
-                                }
-                                <div className={cx('vote')}>
-                                    <span className={cx('total-vote')}>{totalVote} {t('votes')}</span>
-                                    <Button className={cx('vote-btn')} primary>{t('vote')}</Button>
+                        {showPost && (
+                            <div className={cx('interact')}>
+                                <div className={cx('like')}>
+                                    <Button
+                                        like={showLike}
+                                        onClick={handleToggleLikes}
+                                        className={cx('like-btn')}
+                                        round
+                                        normal
+                                        rightIcon={showLike ? <LikeActiveIcon /> : <LikeIcon />}
+                                    >
+                                        {likesCount}
+                                    </Button>
                                 </div>
-                            </form>
-                        </div>
-                    )}
-                {showPost && (
-                    <div className={cx('interact')}>
-                        <div className={cx('like')}>
-                            <Button
-                                like={showLike}
-                                onClick={handleToggleLikes}
-                                className={cx('like-btn')}
-                                round
-                                normal
-                                rightIcon={showLike ? <LikeActiveIcon /> : <LikeIcon />}
-                            >
-                                {likesCount}
-                            </Button>
-                        </div>
-                        <div className={cx('comment')}>
-                            <Button
-                                to={`/post/${data.id}`}
-                                className={cx('comment-btn')}
-                                round
-                                normal
-                                rightIcon={<CommentIcon />}
-                            >
-                                {`${data.comment || 0}`}
-                            </Button>
-                        </div>
-                        <div className={cx('share')}>
-                            <Button onClick={handleShare} className={cx('share-btn')} round normal rightIcon={<ShareIcon />} />
-                        </div>
+                                <div className={cx('comment')}>
+                                    <Button
+                                        to={`/post/${data.id}`}
+                                        className={cx('comment-btn')}
+                                        round
+                                        normal
+                                        rightIcon={<CommentIcon />}
+                                    >
+                                        {`${data.comment || 0}`}
+                                    </Button>
+                                </div>
+                                <div className={cx('share')}>
+                                    <Button onClick={handleShare} className={cx('share-btn')} round normal rightIcon={<ShareIcon />} />
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
+                )
+            }
             {
                 modalDel && (
                     <ModalDel

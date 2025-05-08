@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from './Report.module.scss'
-import { EditIcon, FilterIcon, LeftIcon, RightIcon, TrashIcon } from "~/components/Icons";
+import { EditIcon, LeftIcon, RightIcon, TrashIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { deletedReportServices, getReportServices, patchReportServices } from "~/apiServices";
@@ -14,7 +14,6 @@ function Report() {
     const [totalsPage, setTotalsPage] = useState(1)
     const [pageCurrent, setPageCurrent] = useState(0);
     const [listReport, setListReport] = useState([]);
-    const [typeReport, setTypeReport] = useState('');
     const [modalEdit, setModalEdit] = useState(null);
     const [modalDel, setModalDel] = useState(null);
     const token = localStorage.getItem('authToken');
@@ -41,10 +40,6 @@ function Report() {
         setPageCurrent(prev => Math.max(prev + 1, totalsPage - 1));
     };
 
-    const handleChange = e => {
-        setTypeReport(e.target.value)
-    }
-
     const handleDelete = async () => {
         const res = await deletedReportServices(modalDel, token);
         if (res?.data) {
@@ -67,22 +62,6 @@ function Report() {
                 <h3 className={cx('report-heading')}>
                     {t('report')}
                 </h3>
-                <div className={cx('report-filter')}>
-                    <FilterIcon className={cx('filter-icon')} />
-                    <h3 className={cx('filter-heading')}>
-                        {t('filterBy')}
-                    </h3>
-                    <select
-                        value={typeReport}
-                        className={cx('filter-type')}
-                        onChange={handleChange}
-                    >
-                        <option value='' disabled>{t('type')}</option>
-                        <option value='Post'>{t('postBtn')}</option>
-                        <option value='Comment'>{t('comment')}</option>
-                        <option value='Account'>{t('account')}</option>
-                    </select>
-                </div>
                 <div className={cx('report-details')}>
                     <table className={cx('table-report')}>
                         <thead>
@@ -107,7 +86,7 @@ function Report() {
                                             <td>{report.status.toString()}</td>
                                             <td style={{ minWidth: 80 }}>
                                                 <EditIcon onClick={() => setModalEdit(report)} />
-                                                <TrashIcon onClick={() => setModalDel(report.id)} />
+                                                <TrashIcon onClick={() => setModalDel(report.postId)} />
                                             </td>
                                         </tr>
                                     )
