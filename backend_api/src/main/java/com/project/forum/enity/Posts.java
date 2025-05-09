@@ -49,6 +49,8 @@ public class Posts {
 
     boolean postShow;
 
+    boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id")
     Language language;
