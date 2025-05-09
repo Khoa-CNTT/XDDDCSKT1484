@@ -176,7 +176,7 @@ public class AuthService implements IAuthService {
         var verify = signedJWT.verify(verifier);
         if (!(verify || expiration.before(new Date())))
             throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
-        if (iCacheService.getData("expired_token") == token) {
+        if (iCacheService.getData("expired_token").equals(token)) {
             throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
         }
 
