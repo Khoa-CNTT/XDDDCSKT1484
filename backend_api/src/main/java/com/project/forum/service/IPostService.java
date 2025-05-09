@@ -30,5 +30,5 @@ public interface IPostService {
 
     List<TopInteractionPostResponse> getTopInteractionPosts(LocalDateTime from, LocalDateTime to, int limit);
 
-    PostResponse changeStatusPost(String id, boolean status);
+    PostResponse changeStatusPost(String id, PostShowRequest postShowRequest);
 }

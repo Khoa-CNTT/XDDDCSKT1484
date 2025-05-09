@@ -19,6 +19,7 @@ public enum ErrorCode {
     E_FILE_TO_LARGE(40006,"FileToLarge",HttpStatus.BAD_REQUEST),
     E_FILE_INVALID(40007,"FileInvalid",HttpStatus.BAD_REQUEST),
     E_USER_IS_LOCKED(40008,"UserIsLocked",HttpStatus.BAD_REQUEST),
+    E_POST_IS_ADS(40009,"PostIsAds",HttpStatus.BAD_REQUEST),
 
     //401 UNAUTHORIZED
     E_UNAUTHORIZED(40101,"Authentication",HttpStatus.UNAUTHORIZED),

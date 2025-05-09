@@ -43,5 +43,7 @@ public class PostResponse {
 
     boolean isAds;
 
+    boolean isDeleted;
+
 
 }

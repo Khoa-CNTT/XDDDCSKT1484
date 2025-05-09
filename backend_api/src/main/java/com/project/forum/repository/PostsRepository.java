@@ -24,8 +24,8 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, " +
             "(CASE WHEN u.id = :userId THEN true ELSE false END) , FALSE , " +
             "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
-            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
-            ") " +
+            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
+            "p.isDeleted ) " +
             "FROM Posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
@@ -40,6 +40,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "OR pp.question LIKE %:content%) " +
             "AND (:language IS NULL OR :language = '' OR lg.name = :language) " +
             "AND p.postShow = true " +
+            "AND p.isDeleted = false " +
             "AND NOT EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE)" +
             "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, u.id " +
             "ORDER BY FUNCTION('RAND')")
@@ -52,8 +53,8 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name,  " +
             " (CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow, " +
-            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
-            ") " +
+            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
+            "p.isDeleted ) " +
             "FROM Posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
@@ -62,6 +63,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.postPoll pp " +
             "LEFT JOIN p.language lg " +
             "WHERE p.users.id = :userId " +
+            "AND p.isDeleted = false " +
             "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, p.users.id")
     Page<PostResponse> userPost(@Param("userId") String userId,
                                     Pageable pageable);
@@ -74,8 +76,8 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "COUNT(DISTINCT l.id), " +
             "COUNT(DISTINCT c.id), " +
             "p.postShow, " +
-            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
-            ") " +
+            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
+            "p.isDeleted ) " +
             "FROM Posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +
@@ -97,8 +99,8 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, " +
             "(CASE WHEN u.id = :userId THEN true ELSE false END) , FALSE , " +
             "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
-            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END)" +
-            ") " +
+            "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
+            "p.isDeleted ) " +
             "FROM Posts p " +
             "LEFT JOIN p.users u " +
             "LEFT JOIN p.comments c " +

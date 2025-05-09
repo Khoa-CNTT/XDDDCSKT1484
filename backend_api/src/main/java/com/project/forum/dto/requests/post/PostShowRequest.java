@@ -11,5 +11,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class PostShowRequest {
 
-    boolean status;
+    Boolean show;
+
+    Boolean deleted;
 }

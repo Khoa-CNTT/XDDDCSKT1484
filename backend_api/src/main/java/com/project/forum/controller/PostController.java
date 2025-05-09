@@ -92,7 +92,7 @@ public class PostController {
     @PatchMapping("/{id}/Show")
     ResponseEntity<ApiResponse<PostResponse>> setShow(@PathVariable String id, @RequestBody PostShowRequest postShowRequest) {
         return ResponseEntity.ok(ApiResponse.<PostResponse>builder()
-                .data(postService.changeStatusPost(id,postShowRequest.isStatus()))
+                .data(postService.changeStatusPost(id,postShowRequest))
                 .build());
     }
 

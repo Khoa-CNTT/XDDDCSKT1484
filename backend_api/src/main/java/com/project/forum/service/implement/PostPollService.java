@@ -92,6 +92,7 @@ public class PostPollService implements IPostPollService {
                 .type_post(TypePost.POLL.toString())
                 .language(language)
                 .postShow(true)
+                .isDeleted(false)
                 .created_at(LocalDateTime.now())
                 .build();
         posts = postsRepository.saveAndFlush(posts);
@@ -120,8 +121,10 @@ public class PostPollService implements IPostPollService {
         String aiResponse = iaiService.getAnswer(promotion);
         JSONObject jsonObject = new JSONObject(aiResponse);
         boolean result = jsonObject.getBoolean("result");
+        boolean isShow = true;
         if (!result) {
             String message = jsonObject.getString("message");
+            isShow = false;
             posts.setPostShow(false);
             PostReports postReports = PostReports.builder()
                     .reason(message)
@@ -132,6 +135,7 @@ public class PostPollService implements IPostPollService {
             postReportsRepository.save(postReports);
             noticeService.sendNotification(users, TypeNotice.POST.toString(), message, posts.getId(), null);
         } else {
+            isShow = true;
             posts.setPostShow(true);
         }
         postsRepository.save(posts);
@@ -139,6 +143,7 @@ public class PostPollService implements IPostPollService {
 
         PostResponse response = postMapper.toPostsResponse(posts);
         response.setUser_post(true);
+        response.setShow(isShow);
         return response;
 
     }

@@ -70,7 +70,7 @@ public class PostService implements IPostService {
             }
         }
 
-        Page<Advertisement> randomAdsPage = advertisementRepository.findRandomAdvertisement(PageRequest.of(0, 1));
+        Page<Advertisement> randomAdsPage = advertisementRepository.findRandomAdvertisement(PageRequest.of(0, 1), language);
         if (!randomAdsPage.isEmpty() && !postPage.isEmpty()) {
             Advertisement randomAd = randomAdsPage.getContent().get(0);
             Optional<PostResponse> adPostOpt = postsRepository.findPostById(randomAd.getPosts().getId(), userId);
@@ -162,10 +162,17 @@ public class PostService implements IPostService {
     @Override
     public PostResponse showPostById(String id, PostShowRequest postShowRequest) {
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
-        posts.setPostShow(postShowRequest.isStatus());
+        if (postShowRequest.getShow() != null) {
+            posts.setPostShow(postShowRequest.getShow());
+        }
+
+        if (postShowRequest.getDeleted() != null) {
+            posts.setDeleted(postShowRequest.getDeleted());
+        }
         postsRepository.save(posts);
         return PostResponse.builder()
                 .isShow(posts.isPostShow())
+                .isDeleted(posts.isDeleted())
                 .type_post(posts.getType_post())
                 .created_at(posts.getCreated_at())
                 .id(posts.getId())
@@ -184,7 +191,7 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public PostResponse changeStatusPost(String id, boolean status) {
+    public PostResponse changeStatusPost(String id, PostShowRequest postShowRequest) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
@@ -198,10 +205,17 @@ public class PostService implements IPostService {
 
         if (postReport.isEmpty() || posts.isPostShow()) {
             if (isOwnerOrAdmin) {
-                posts.setPostShow(status);
+                if (postShowRequest.getShow() != null) {
+                    posts.setPostShow(postShowRequest.getShow());
+                }
+
+                if (postShowRequest.getDeleted() != null || posts.isPostShow() == false) {
+                    posts.setDeleted(postShowRequest.getDeleted());
+                }
                 postsRepository.save(posts);
                 return PostResponse.builder()
                         .isShow(posts.isPostShow())
+                        .isDeleted(posts.isDeleted())
                         .type_post(posts.getType_post())
                         .created_at(posts.getCreated_at())
                         .id(posts.getId())
