@@ -21,7 +21,7 @@ import java.util.Optional;
 public interface PostsRepository extends JpaRepository<Posts, String> {
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
-            "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, " +
+            "p.id, p.type_post, p.created_at, p.updated_at, u.name, u.img, u.id, lg.name, " +
             "(CASE WHEN u.id = :userId THEN true ELSE false END) , FALSE , " +
             "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
             "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
@@ -42,7 +42,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "AND p.postShow = true " +
             "AND p.isDeleted = false " +
             "AND NOT EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE)" +
-            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, u.id " +
+            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name, u.id " +
             "ORDER BY FUNCTION('RAND')")
     Page<PostResponse> findAllPosts(@Param("content") String content,
                                     @Param("userId") String userId,
@@ -51,7 +51,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
-            "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name,  " +
+            "p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name,  " +
             " (CASE WHEN p.users.id = :userId THEN true ELSE false END) , FALSE , COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow, " +
             "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
             "p.isDeleted ) " +
@@ -64,13 +64,13 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.language lg " +
             "WHERE p.users.id = :userId " +
             "AND p.isDeleted = false " +
-            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, p.users.id")
+            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at,  u.name, p.users.id")
     Page<PostResponse> userPost(@Param("userId") String userId,
                                     Pageable pageable);
 
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse( " +
-            "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name,  " +
+            "p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name,  " +
             "(CASE WHEN p.users.id = :userId THEN true ELSE false END), " +
             "FALSE, " +
             "COUNT(DISTINCT l.id), " +
@@ -84,7 +84,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.likes l " +
             "LEFT JOIN p.language lg " +
             "WHERE p.id = :id AND (p.postShow = true OR (p.postShow = false AND p.users.id = :userId)) " +
-            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, p.users.id, p.postShow")
+            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name, p.users.id, p.postShow")
     Optional<PostResponse> findPostById(@Param("id") String id, @Param("userId") String userId);
 
 
@@ -96,7 +96,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
 
     @Query("SELECT NEW com.project.forum.dto.responses.post.PostResponse(" +
-            "p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, " +
+            "p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name, " +
             "(CASE WHEN u.id = :userId THEN true ELSE false END) , FALSE , " +
             "COUNT(DISTINCT l.id) , COUNT(DISTINCT c.id), p.postShow," +
             "(CASE WHEN EXISTS (SELECT ad FROM Advertisement ad WHERE ad.posts.id = p.id AND ad.status = TRUE) THEN true ELSE false END), " +
@@ -114,7 +114,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "OR pc.title LIKE %:content% " +
             "OR pp.question LIKE %:content%) " +
             "AND (:language IS NULL OR :language = '' OR lg.name = :language) " +
-            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at, u.username, u.img, u.id, lg.name, u.id " +
+            "GROUP BY p.id, p.type_post, p.created_at, p.updated_at,  u.name, u.img, u.id, lg.name, u.id " +
             "ORDER BY FUNCTION('RAND')")
     Page<PostResponse> findAllPostsAdmin(@Param("content") String content,
                                     @Param("userId") String userId,
