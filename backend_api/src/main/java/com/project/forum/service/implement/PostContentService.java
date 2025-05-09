@@ -114,8 +114,12 @@ public class PostContentService implements IPostContentService {
                 .build();
         postContentHistoryRepository.save(postContentHistoryFirst);
         PostContent postContent = postContentRepository.findPostContentsByPosts_Id(id).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
-        postContent.setContent(updatePostContentDto.getContent());
-        postContent.setTitle(updatePostContentDto.getTitle());
+
+        if (updatePostContentDto.getContent() != null){
+            postContent.setContent(updatePostContentDto.getContent());
+        }else if (updatePostContentDto.getTitle() != null){
+            postContent.setTitle(updatePostContentDto.getTitle());
+        }
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         String promotion = promotionService.generatePromotionPostMessage(postContent.getPosts().getLanguage().getName(),
