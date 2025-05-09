@@ -5,6 +5,7 @@ import com.project.forum.dto.responses.post.PostRepostResponse;
 import com.project.forum.enity.Posts;
 import com.project.forum.enums.ErrorCode;
 import com.project.forum.exception.WebException;
+import com.project.forum.repository.AdvertisementRepository;
 import com.project.forum.repository.PostReportsRepository;
 import com.project.forum.repository.PostsRepository;
 import com.project.forum.service.IPostReport;
@@ -25,6 +26,8 @@ public class PostReportService implements IPostReport {
 
     PostReportsRepository postReportsRepository;
 
+    AdvertisementRepository advertisementRepository;
+
 
     @Override
     public Page<PostRepostResponse> getAll(Integer page, Integer size, String postId) {
@@ -36,6 +39,9 @@ public class PostReportService implements IPostReport {
     @Override
     public PostRepostMessage delete(String postId) {
         Posts posts = postsRepository.findById(postId).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
+        if (advertisementRepository.findAdsByPostId(postId).isPresent()) {
+           throw new WebException(ErrorCode.E_POST_IS_ADS);
+        }
         postsRepository.delete(posts);
         return PostRepostMessage.builder()
                 .message("Deleted Post Successfully")
