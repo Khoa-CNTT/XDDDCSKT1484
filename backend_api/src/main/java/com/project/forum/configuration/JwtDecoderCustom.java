@@ -26,6 +26,10 @@ public class JwtDecoderCustom implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
 
+        if (!authService.introspect(token).isResult()) {
+            throw new JwtException("Token is not active");
+        }
+
         if (!authService.checkActive(token).isAuthorized()) {
             throw new JwtException("Token is not active");
         }
