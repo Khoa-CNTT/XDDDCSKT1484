@@ -21,7 +21,7 @@ public class JwtDecoderCustom implements JwtDecoder {
     @Value("${SECRET_KEY}")
     String secret_key;
     NimbusJwtDecoder nimbusJwtDecoder;
-    IAuthService authService;
+    final IAuthService authService;
 
     @Override
     public Jwt decode(String token) throws JwtException {
