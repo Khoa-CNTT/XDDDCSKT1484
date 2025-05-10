@@ -130,6 +130,11 @@ public class AuthService implements IAuthService {
                         .authorized(true)
                         .token(token)
                         .build();
+            } else if (users.getStatus().equals(StatusUser.LOCKED.toString())){
+                return AuthResponse.builder()
+                        .authorized(false)
+                        .token(token)
+                        .build();
             } else {
                 return AuthResponse.builder()
                         .authorized(false)
