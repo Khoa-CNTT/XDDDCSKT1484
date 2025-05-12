@@ -42,6 +42,8 @@ function PostAds() {
 
                 const enrichedData = await Promise.all(
                     adsList.map(async (ads) => {
+                        console.log(ads.adsPackage_id);
+
                         const post = await fetchPostByIdAds(ads.post_id);
                         const packageAds = await fetchPackageAdsById(ads.adsPackage_id);
                         return { ...ads, type_post: post.type_post, language: post.language, like: post.like, comment: post.comment, namePackage: packageAds.name, price: packageAds.price };

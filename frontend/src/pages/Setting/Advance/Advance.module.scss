@@ -1,0 +1,29 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.history,
+.down,
+.lock,
+.reset {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    margin: 6px 48px;
+    min-height: 42px;
+
+    button {
+        min-width: 100px;
+    }
+}
+
+.history-heading,
+.down-heading,
+.lock-heading,
+.reset-heading {
+    font-size: 1.8rem;
+    font-weight: 500;
+}

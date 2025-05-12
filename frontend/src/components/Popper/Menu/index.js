@@ -13,11 +13,6 @@ function Menu({ children, items = [], hideOnClick = false, post = false, onChang
 
     const [history, setHistory] = useState([{ data: items }]);
     const current = history[history.length - 1];
-    if (post) {
-        console.log(history)
-        console.log(current.data);
-
-    }
 
 
     const handleItemClick = (item) => {
