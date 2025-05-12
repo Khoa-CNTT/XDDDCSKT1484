@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import stylesGrid from '~/styles/grid.module.scss'
@@ -8,16 +8,14 @@ import images from "~/assets/images";
 import Image from "~/components/Image";
 import { useValidator } from '~/hooks';
 import FormGroup from '~/components/FormGroup';
-import { loginServices, checkActiveServices, infoUserCurrentServices, logoutServices } from '~/apiServices'
+import { loginServices, checkActiveServices, infoUserCurrentServices, inspectTokenServices } from '~/apiServices'
 import routesConfig from '~/config/routes'
 import { useTranslation } from 'react-i18next';
-import { UserContext } from '~/context/UserContext';
 
 const cx = classNames.bind(styles)
 
 function Login() {
     const { t, i18n } = useTranslation();
-    const { setUser } = useContext(UserContext);
     const navigate = useNavigate()
     const [messageError, setMessageError] = useState({});
     const [formData, setFormData] = useState({
@@ -25,21 +23,23 @@ function Login() {
         password: '',
     });
 
-    const [selected, setSelected] = useState(0);
+    useEffect(() => {
+        inspectToken();
+        // eslint-disable-next-line
+    }, []);
 
-    const handleLogout = async () => {
+    const inspectToken = async () => {
         const token = localStorage.getItem('authToken');
         if (token) {
-            await logoutServices(token);
-            setUser(null);
+            const res = await inspectTokenServices(token);
+            if (res?.data.result) {
+                navigate('/');
+            }
         }
-        localStorage.clear()
     }
 
-    useEffect(() => {
-        handleLogout();
-        // eslint-disable-next-line
-    }, [])
+    const [selected, setSelected] = useState(0);
+
 
     const { errors, validateField, clearError, validateAll } = useValidator({
         rules: [

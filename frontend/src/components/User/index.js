@@ -14,7 +14,7 @@ function User({ data }) {
     const [statusFriend, setStatusFriend] = useState('')
     const { user } = useContext(UserContext);
     const token = localStorage.getItem('authToken');
-    const  {t} = useTranslation();
+    const { t } = useTranslation();
     const fetchStatusFriend = async () => {
         if (token) {
             if (data.id === user.id) {
@@ -60,7 +60,7 @@ function User({ data }) {
     useEffect(() => {
         fetchStatusFriend();
         // eslint-disable-next-line
-    }, [data])
+    }, [data, user, token])
 
     return (
         <div className={cx('wrapper')}>
@@ -73,11 +73,12 @@ function User({ data }) {
             </Link>
             <div className={cx('friend')}>
                 <Button normal onClick={handleFriend}>{
-                    statusFriend === 'Send'
-                        ? t.statusSent
+                    statusFriend === 'Sent'
+                        ? t('statusSent')
                         : statusFriend === 'Accept invitation'
-                            ? t.statusAccept
-                            : statusFriend === 'Friend' ? t.statusFriend : t.addFriend
+                            ? t('statusAccept')
+                            : statusFriend === 'Friend' ? t('statusFriend') :
+                                statusFriend === 'Me' ? t('access') : t('addFriend')
                 }</Button>
             </div>
         </div>

@@ -80,8 +80,8 @@ function Upload() {
     }, [contentForm, pollForm, languagePost, typePost, idPost]);
 
 
-    const fetchAdsPackage = async (page, size, token) => {
-        const res = await getPackageAdsServices(page, size, token);
+    const fetchAdsPackage = async (token) => {
+        const res = await getPackageAdsServices(0, 50, token);
         if (res?.data && res.data.content.length > 0) {
             setPackageAds(res.data.content);
         }
@@ -170,7 +170,7 @@ function Upload() {
     const handleAdsPackage = e => {
         e.preventDefault();
         const token = localStorage.getItem('authToken');
-        fetchAdsPackage(0, 10, token);
+        fetchAdsPackage(token);
         setShowModal(prev => !prev);
     }
 
@@ -230,8 +230,13 @@ function Upload() {
             const data = { content: contentForm.content, title: contentForm.title };
             const res = await editPostServices(idPost, data, token);
             if (res?.data) {
-                alert('Edit Post Success');
-                navigate(`/post/${res.data.id}`);
+                if (res.data.show) {
+                    alert(t('editPostUpload'));
+                    navigate(`/post/${res.data.id}`);
+                } else {
+                    alert(t('editPostUnUpload'));
+                    navigate(`/user/${user.id}`);
+                }
             }
         }
     };
@@ -269,7 +274,7 @@ function Upload() {
                     {!idPost &&
                         <div className={cx('kind')}>
                             <div className={cx('kind-lang')}>
-                                <span className={cx('kind-title')}>{t('lang')}:</span>
+                                <span className={cx('kind-title')}>{t('language')}:</span>
                                 <select
                                     value={languagePost}
                                     onChange={(e) => setLanguagePost(e.target.value)}
@@ -330,7 +335,7 @@ function Upload() {
                             (
                                 <>
                                     <div className={cx('typePoll')}>
-                                        <span className={cx('type-title')}>Type Poll</span>
+                                        <span className={cx('type-title')}>{t('typePoll')}</span>
                                         <label htmlFor='Single'>
                                             <input value={pollForm.typePoll} onChange={handleTypePoll} type='radio' id='Single' name='answer' />
                                             {t('singleAnswer')}
@@ -383,7 +388,7 @@ function Upload() {
                             <h3 className={cx('modal-heading')}>{t('selectAds')}</h3>
                             <Button onClick={handleToggleModal} iconCircle className={cx('modal-close')} leftIcon={<CloseIcon />} />
                         </div>
-                        <div>
+                        <div className={cx('ads-list')}>
                             <form onSubmit={handleSelectAds}>
                                 {packageAds.map(item => (
                                     <label key={item.id} className={cx('ads-option')}>

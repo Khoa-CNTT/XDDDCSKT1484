@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import classNames from "classnames/bind";
+import { useState, useEffect } from 'react';
 
 import styles from './ActiveAccount.module.scss'
 import stylesGrid from '~/styles/grid.module.scss'
@@ -15,7 +16,10 @@ const cx = classNames.bind(styles)
 
 function ActiveAccount() {
     const { t } = useTranslation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    const [disabled, setDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(0);
 
     const handleSendEmail = async () => {
         const token = localStorage.getItem('authToken');
@@ -24,6 +28,9 @@ function ActiveAccount() {
             return;
         }
 
+        setDisabled(true);
+        setCountdown(30); // bắt đầu đếm ngược 30 giây
+
         const res = await sendEmailServices(token);
         if (res?.data) {
             navigate(routesConfig.sendEmail, { state: { fromPage: 'activeAccount' } });
@@ -31,6 +38,23 @@ function ActiveAccount() {
             console.error("Failed to send email. Response:", res);
         }
     };
+
+    useEffect(() => {
+        let timer;
+        if (disabled && countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        setDisabled(false);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [disabled, countdown]);
 
     return (
         <div className={`${cx('wrapper')} ${stylesGrid.grid}`}>
@@ -46,7 +70,15 @@ function ActiveAccount() {
                     <p className={cx('title')}>{t('activeTitle')}</p>
                 </div>
                 <div className={cx('body')}>
-                    <Button onClick={handleSendEmail} className={cx('btn-send')} round primary >{t('sendBtn')}</Button>
+                    <Button
+                        onClick={handleSendEmail}
+                        className={cx('btn-send')}
+                        round
+                        primary
+                        disable={disabled}
+                    >
+                        {disabled ? `${t('sendBtn')} (${countdown}s)` : t('sendBtn')}
+                    </Button>
                     <Link className={cx('link')} to={routesConfig.login}>{t('anotherAccount')}</Link>
                 </div>
             </div>

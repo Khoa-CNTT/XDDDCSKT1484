@@ -62,11 +62,12 @@
 
 .friend-nav {
     display: flex;
+    justify-content: center;
     margin-bottom: 14px;
 }
 
 .friend-res {
-    display: none;
+    display: flex;
     margin-bottom: 14px;
 }
 

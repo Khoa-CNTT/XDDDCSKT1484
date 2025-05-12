@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, useEffect, useContext, useCallback } from 'r
 import classNames from 'classnames/bind';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './Header.module.scss';
 import images from '~/assets/images';
@@ -11,7 +11,7 @@ import Image from '~/components/Image';
 import Menu from '~/components/Popper/Menu';
 import History from '~/components/Popper/History';
 import routesConfig from '~/config/routes';
-import { infoUserCurrentServices, notifyServices, putNotifyServices } from '~/apiServices';
+import { infoUserCurrentServices, logoutServices, notifyServices, putNotifyServices } from '~/apiServices';
 import Notifications from '~/components/Notifications';
 import { UserContext } from '~/context/UserContext';
 import { NavBarsContext } from '~/context/NavBarsContext';
@@ -34,7 +34,13 @@ function Header() {
     const { setShowNav } = useContext(NavBarsContext);
     const { notification } = useWebSocket();
     const token = localStorage.getItem('authToken');
-
+    const location = useLocation();
+    const handleLogout = async () => {
+        await logoutServices(token);
+        setUser(null);
+        localStorage.clear();
+        navigate('/login');
+    }
     const menuItems = useMemo(() => {
         const items = [
             {
@@ -87,11 +93,13 @@ function Header() {
         items.push({
             icon: <LogoutIcon />,
             title: t('logout'),
-            to: routesConfig.login,
+            onClick: handleLogout
         });
 
         return items;
+        // eslint-disable-next-line
     }, [t, user]);
+
 
     useEffect(() => {
         if (notification.length > 0) {
@@ -204,7 +212,15 @@ function Header() {
                 </div>
                 {/* Logo */}
                 <div className={cx('logo')}>
-                    <Link to={routesConfig.home}>
+                    <Link
+                        to={routesConfig.home}
+                        onClick={(e) => {
+                            if (location.pathname === routesConfig.home) {
+                                e.preventDefault();
+                                navigate(0);
+                            }
+                        }}
+                    >
                         <img src={images.logo} alt="Forum" />
                         <h4 className={cx('logo-title')}>ForumLanguages</h4>
                     </Link>

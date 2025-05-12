@@ -277,11 +277,12 @@ function Profile() {
                         <div className={cx('friend')}>
                             <div className={cx('friend-nav')}>
                                 <Button onClick={handleAddFriend} primary>{
-                                    statusFriend === 'Send'
-                                        ? t.statusSent
+                                    statusFriend === 'Sent'
+                                        ? t('statusSent')
                                         : statusFriend === 'Accept invitation'
-                                            ? t.statusAccept
-                                            : statusFriend === 'Friend' ? t.statusFriend : t.addFriend
+                                            ? t('statusAccept')
+                                            : statusFriend === 'Friend' ? t('statusFriend') :
+                                                statusFriend === 'Respond' ? t('respond') : t('addFriend')
                                 }</Button>
                             </div>
                             {showRespond && (

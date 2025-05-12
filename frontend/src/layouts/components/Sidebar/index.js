@@ -20,7 +20,9 @@ function Sidebar() {
         searchParams.set("language", lang);
         const newSearch = searchParams.toString();
 
-        navigate(`/search?${newSearch}`);
+        navigate(`/search?${newSearch}`, {
+            state: { from: 'sidebar' }
+        });
     };
 
     return (
@@ -68,7 +70,7 @@ function Sidebar() {
                             <AboutIcon />
                             <span>{t('aboutFL')}</span>
                         </Link>
-                        <Link to='' className={cx('otherItem')}>
+                        <Link to={routesConfig.postAds} className={cx('otherItem')}>
                             <AdvertiseIcon />
                             <span>{t('advertise')}</span>
                         </Link>

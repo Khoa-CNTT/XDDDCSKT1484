@@ -18,8 +18,8 @@ function AdsManagement() {
     const [packageAds, setPackageAds] = useState([]);
     const token = localStorage.getItem('authToken');
     const { t } = useTranslation();
-    const fetchAdsPackage = async () => {
-        const res = await getPackageAdsServices(pageCurrent, 5, token);
+    const fetchAdsPackage = async (page) => {
+        const res = await getPackageAdsServices(page, 5, token);
         if (res?.data && res.data?.content.length > 0) {
             setPackageAds(res.data.content);
             setTotalsPage(res.data?.totalPages);
@@ -27,9 +27,9 @@ function AdsManagement() {
     }
 
     useEffect(() => {
-        fetchAdsPackage();
+        fetchAdsPackage(pageCurrent);
         // eslint-disable-next-line
-    }, [])
+    }, [pageCurrent])
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -76,7 +76,7 @@ function AdsManagement() {
     };
 
     const handleIncreasePage = () => {
-        setPageCurrent(prev => Math.max(prev + 1, totalsPage - 1));
+        setPageCurrent(prev => Math.min(prev + 1, totalsPage - 1));
     };
 
     return (
