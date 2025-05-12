@@ -21,12 +21,12 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
 
 
     @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse( " +
-            "a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
+            "a.id, a.views, a.maxViews, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
             "FROM Advertisement a")
     Page<AdsResponse> findAllAds(Pageable pageable);
 
     @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse( " +
-            "a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
+            "a.id, a.views, a.maxViews, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
             "FROM Advertisement a " +
             "WHERE a.posts.users.id = :id")
     Page<AdsResponse> findAllAdsByUser(@Param("id") String id, Pageable pageable);
@@ -34,16 +34,15 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
     @Query("SELECT a " +
             "FROM Advertisement a " +
             "LEFT JOIN a.posts.language lg " +
-            "LEFT JOIN a.adsPackage ads " +
             "WHERE a.status = true " +
-            "AND a.views != ads.max_impressions " +
+            "AND a.views != a.maxViews " +
             "AND (:language IS NULL OR :language = '' OR lg.name = :language) " +
             "ORDER BY FUNCTION('RAND')")
     Page<Advertisement> findRandomAdvertisement(Pageable pageable, @Param("language") String language);
 
 
 
-    @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse(a.id, a.views, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
+    @Query("SELECT NEW com.project.forum.dto.responses.ads.AdsResponse(a.id, a.views, a.maxViews, a.status, a.created_at, a.posts.id, a.adsPackage.id ) " +
             "FROM Advertisement a " +
             "WHERE a.id = :id" )
     Optional<AdsResponse> findAds(@Param("id") String id);
@@ -52,10 +51,9 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
     @Query("SELECT a " +
             "FROM Advertisement a " +
             "LEFT JOIN a.posts p " +
-            "LEFT JOIN a.adsPackage ads " +
             "WHERE p.id = :postId " +
             "AND a.status = true " +
-            "AND a.views != ads.max_impressions ")
+            "AND a.views != a.maxViews ")
     Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +

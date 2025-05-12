@@ -34,6 +34,8 @@ public class Advertisement {
 
     int views;
 
+    int maxViews;
+
     boolean status;
 
     @CreatedDate

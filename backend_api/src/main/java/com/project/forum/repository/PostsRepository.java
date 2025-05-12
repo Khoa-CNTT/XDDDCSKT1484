@@ -33,7 +33,6 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.postContent pc  " +
             "LEFT JOIN p.postPoll pp " +
             "LEFT JOIN p.language lg " +
-            "LEFT JOIN p.advertisements ads " +
             "WHERE (:content IS NULL OR :content = '' " +
             "OR pc.content LIKE %:content% " +
             "OR pc.title LIKE %:content% " +
@@ -88,6 +87,18 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
     Optional<PostResponse> findPostById(@Param("id") String id, @Param("userId") String userId);
 
 
+    @Query("""
+    SELECT CASE 
+        WHEN COUNT(a) > 0 THEN false 
+        ELSE true 
+    END
+    FROM Advertisement a
+    WHERE a.posts.id = :postId
+    AND a.views < a.maxViews
+    """)
+    boolean isPostAvailableForAds(@Param("postId") String postId);
+
+
 
     @Modifying
     @Query("DELETE FROM Posts p WHERE p.id = :id")
@@ -108,7 +119,6 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN p.postContent pc  " +
             "LEFT JOIN p.postPoll pp " +
             "LEFT JOIN p.language lg " +
-            "LEFT JOIN p.advertisements ads " +
             "WHERE (:content IS NULL OR :content = '' " +
             "OR pc.content LIKE %:content% " +
             "OR pc.title LIKE %:content% " +
