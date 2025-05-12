@@ -38,8 +38,8 @@
     "male": "男",
     "female": "女",
     "other": "其他",
-    "displayLanguage": "显示语言",
-    "displayLangDescription": "选择您希望体验论坛界面的语言",
+    "postLanguage": "发布语言",
+    "postLangDescription": "选择您希望帖子在论坛中显示的语言",
     "commentPlaceholder": "添加评论",
     "cancel": "取消",
     "comment": "评论",
@@ -358,5 +358,12 @@
     "totalUser": "用户总数",
     "page": "页面",
     "of": "的",
-    "unFriend": "解除好友关系"
+    "unFriend": "解除好友关系",
+    "access": "访问",
+    "respond": "回应",
+    "editPostUpload": "帖子编辑成功并已通过审核",
+    "editPostUnUpload": "帖子编辑成功，但因违反政策未通过审核",
+    "fillInfo": "请输入完整且有效的信息",
+    "requiredLogin": "点赞帖子需要先登录",
+    "typePoll": "投票类型"
 }

@@ -37,8 +37,9 @@ function Search() {
     };
 
     useEffect(() => {
+        const isFromSidebar = location?.state?.from === 'sidebar';
         initializePosts(0);
-        setTypeSearch('All');
+        setTypeSearch(isFromSidebar ? 'Post' : 'All');
         // eslint-disable-next-line
     }, [location.search]);
 

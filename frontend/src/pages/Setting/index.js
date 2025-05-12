@@ -118,10 +118,10 @@ function Setting() {
             <div className={cx('language')}>
                 <div className={cx('language-title')}>
                     <span className={cx('language-heading')}>
-                        {t('displayLanguage')}
+                        {t('postLanguage')}
                     </span>
                     <span className={cx('language-content')}>
-                        {t('displayLangDescription')}
+                        {t('postLangDescription')}
                     </span>
                 </div>
                 <select

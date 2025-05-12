@@ -38,8 +38,8 @@
     "male": "Male",
     "female": "Female",
     "other": "Other",
-    "displayLanguage": "Display Language",
-    "displayLangDescription": "Select the language you'd like to experience the Forum interface in",
+    "postLanguage": "Post Language",
+    "postLangDescription": "Select the language in which you want your posts to appear on the Forum",
     "commentPlaceholder": "Add Comment",
     "cancel": "Cancel",
     "comment": "Comment",
@@ -358,5 +358,12 @@
     "totalUser": "Total User",
     "page": "Page",
     "of": "of",
-    "unFriend": "UnFriend"
+    "unFriend": "UnFriend",
+    "access": "Access",
+    "respond": "Respond",
+    "editPostUpload": "Edited post successfully and approved",
+    "editPostUnUpload": "Edited article successfully but not approved due to policy violation",
+    "fillInfo": "Please enter complete and valid information",
+    "requiredLogin": "Login is required to like posts",
+    "typePoll": "Type Poll"
 }

@@ -37,7 +37,7 @@ function Report() {
     const handleIncreasePage = () => {
         console.log('tang');
 
-        setPageCurrent(prev => Math.max(prev + 1, totalsPage - 1));
+        setPageCurrent(prev => Math.min(prev + 1, totalsPage - 1));
     };
 
     const handleDelete = async () => {

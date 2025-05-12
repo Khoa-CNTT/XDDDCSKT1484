@@ -27,7 +27,7 @@ function ModalEdit({ text, type = 'input', options = [], defaultValue = '', name
     const onEdit = () => {
         const hasEmpty = Object.values(form).some(value => value.toString().trim() === '');
         if (hasEmpty) {
-            alert("Vui lòng nhập đầy đủ và hợp lệ thông tin.");
+            alert(t('fillInfo'));
             return;
         }
 

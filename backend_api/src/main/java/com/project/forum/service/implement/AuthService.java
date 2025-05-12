@@ -130,6 +130,11 @@ public class AuthService implements IAuthService {
                         .authorized(true)
                         .token(token)
                         .build();
+            } else if (users.getStatus().equals(StatusUser.LOCKED.toString())){
+                return AuthResponse.builder()
+                        .authorized(false)
+                        .token(token)
+                        .build();
             } else {
                 return AuthResponse.builder()
                         .authorized(false)
@@ -176,10 +181,11 @@ public class AuthService implements IAuthService {
         var verify = signedJWT.verify(verifier);
         if (!(verify || expiration.before(new Date())))
             throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
-        if (iCacheService.getData("expired_token").equals(token)) {
-            throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
-        }
-
+       if (iCacheService.getData("expired_token") != null) {
+           if (iCacheService.getData("expired_token").equals(token)) {
+               throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
+           }
+       }
         return signedJWT;
     }
 

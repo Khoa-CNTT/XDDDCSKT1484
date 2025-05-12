@@ -28,7 +28,7 @@ function PostAds() {
     };
 
     const handleIncreasePage = () => {
-        setPageCurrent((prev) => Math.max(prev + 1, totalsPage - 1));
+        setPageCurrent((prev) => Math.min(prev + 1, totalsPage - 1));
     };
 
     useEffect(() => {

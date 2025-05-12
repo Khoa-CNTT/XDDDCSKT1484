@@ -23,7 +23,7 @@ public class PostResponse {
 
     LocalDateTime updated_at;
 
-    String user_name;
+    String full_name;
 
     String user_avatar;
 

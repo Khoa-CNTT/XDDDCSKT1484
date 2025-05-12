@@ -1,26 +1,51 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 
-import { searchPostsServices } from '~/apiServices';
+import { inspectTokenServices, searchPostsServices } from '~/apiServices';
 import Post from '~/components/Post';
 import styles from './Home.module.scss';
 import { useScroll } from '~/hooks';
 import { useTranslation } from 'react-i18next';
+import { UserContext } from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 function Home() {
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const isInitialized = useRef(false); 
+    const { user } = useContext(UserContext);
+    const isInitialized = useRef(false);
     const { t } = useTranslation();
 
     useEffect(() => {
-        initializePosts();
+        if (user) {
+            initializePosts(user.language);
+        } else {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                initializePosts(currentUser.language);
+            } else {
+                initializePosts('');
+            }
+        }
         // eslint-disable-next-line
-    }, []);
+    }, [user]);
 
-    const fetchPosts = async ({ page, size, token }) => {
-        const res = await searchPostsServices(page, size, '', '', token);
+    useEffect(() => {
+        inspectToken();
+    }, [])
+
+    const inspectToken = async () => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            const res = await inspectTokenServices(token);
+            if (!res?.data.result) {
+                localStorage.clear();
+            }
+        }
+    }
+
+    const fetchPosts = async ({ page, size, language, token }) => {
+        const res = await searchPostsServices(page, size, '', language, token);
         if (res?.data) {
             if (res.data?.content.length > 0) {
                 setPosts((prev) => (page === 0 ? res.data.content : [...prev, ...res.data.content]));
@@ -32,19 +57,20 @@ function Home() {
         }
     };
 
-    const initializePosts = async () => {
+    const initializePosts = async (language) => {
         const token = localStorage.getItem('authToken');
         setPosts([]);
         await fetchPosts({
             page: 0,
             size: 5,
             token,
+            language,
         });
-        isInitialized.current = true; 
+        isInitialized.current = true;
     };
 
     useScroll(() => {
-        if (!isInitialized.current) return; 
+        if (!isInitialized.current) return;
 
         const token = localStorage.getItem('authToken');
         const nextPage = currentPage + 1;
@@ -54,8 +80,8 @@ function Home() {
 
     return (
         <div className={cx('wrapper')}>
-            {posts.map((post) => (
-                <Post key={post.id} data={post} show={post.show} />
+            {posts.map((post, index) => (
+                <Post key={index} data={post} show={post.show} />
             ))}
         </div>
     );

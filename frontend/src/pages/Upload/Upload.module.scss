@@ -234,7 +234,7 @@
 // Modal
 .modal {
     display: none;
-    z-index: 1;
+    z-index: 2;
     top: 0;
     right: 0;
     left: 0;
@@ -247,6 +247,7 @@
 }
 
 .container {
+    height: 600px;
     width: 650px;
     display: flex;
     flex-direction: column;
@@ -255,6 +256,10 @@
     border-radius: 12px;
     padding: 12px;
     font-size: 1.6rem;
+}
+
+.ads-list {
+    overflow-y: scroll;
 }
 
 .modal-header {
@@ -304,8 +309,8 @@
 
 .btn-select {
     float: right;
-    margin: 12px 24px 12px 0;
-    padding: 8px 18px;
+    margin: 12px 24px 0;
+    padding: 8px 58px;
 }
 
 // Mobile

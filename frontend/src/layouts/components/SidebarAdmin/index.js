@@ -16,11 +16,11 @@ function SidebarAdmin() {
     const { t } = useTranslation();
     const item = [
         { to: routes.dashboard, icon: <DashboardIcon />, title: t('dashboard') },
+        { to: routes.report, icon: <ReportAdminIcon />, title: t('report') },
         { to: routes.usersManagement, icon: <UserManagementIcon />, title: t('users') },
         { to: routes.postsManagement, icon: <PostManagementIcon />, title: t('posts') },
         { to: routes.advManagement, icon: <AdvertiseIcon />, title: t('advertisement') },
         { to: routes.statistic, icon: <StatisticIcon />, title: t('statistic') },
-        { to: routes.report, icon: <ReportAdminIcon />, title: t('report') },
     ]
     useEffect(() => {
         const currentPath = location.pathname.split('/').pop();

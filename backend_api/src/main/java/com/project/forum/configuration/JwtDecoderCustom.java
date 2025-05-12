@@ -1,5 +1,6 @@
 package com.project.forum.configuration;
 
+import com.project.forum.service.IAuthService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +21,18 @@ public class JwtDecoderCustom implements JwtDecoder {
     @Value("${SECRET_KEY}")
     String secret_key;
     NimbusJwtDecoder nimbusJwtDecoder;
+    final IAuthService authService;
 
     @Override
     public Jwt decode(String token) throws JwtException {
 
+        if (!authService.introspect(token).isResult()) {
+            throw new JwtException("Token is not active");
+        }
 
-
+        if (!authService.checkActive(token).isAuthorized()) {
+            throw new JwtException("Token is not active");
+        }
 
         if (Objects.isNull(nimbusJwtDecoder)) {
             SecretKey secretKey = new SecretKeySpec(secret_key.getBytes(), "HS256");
