@@ -22,6 +22,8 @@ public class AdsResponse {
 
     int views;
 
+    int maxViews;
+
     boolean status;
 
     LocalDateTime created_at;
