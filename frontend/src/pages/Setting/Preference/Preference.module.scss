@@ -1,0 +1,41 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.theme,
+.time,
+.post,
+.font {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    margin: 6px 48px;
+    min-height: 42px;
+}
+
+.theme-heading,
+.time-heading,
+.post-heading,
+.font-heading {
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.select {
+    padding: 6px 12px;
+    border: 1px solid #999;
+    border-radius: 12px;
+    font-size: 1.6rem;
+}
+
+.radio {
+    input {
+        margin: 0 4px 0 14px;
+    }
+    label {
+        font-size: 1.6rem;
+    }
+}

@@ -44,7 +44,7 @@ function PostAdsDetail() {
                     <strong>{t('package')}:</strong> {ads.namePackage}
                 </div>
                 <div>
-                    <strong>{t('price')}:</strong> ${ads.price}
+                    <strong>{t('price')}:</strong>{ads.price} $
                 </div>
                 <div>
                     <strong>{t('views')}:</strong> {ads.views}

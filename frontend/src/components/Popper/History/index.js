@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function History({ children, items = [], title, avatar, handleLoadMore, showLoadMore }) {
+
     const { t } = useTranslation();
     const renderItems = useMemo(
         () =>

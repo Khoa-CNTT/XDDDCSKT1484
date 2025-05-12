@@ -16,7 +16,6 @@ import ModalDel from "../ModalDel";
 const cx = classNames.bind(styles)
 
 function Post({ data, profile = false, show = true }) {
-    console.log(data)
     const [showLike, setShowLike] = useState(data.user_like);
     // eslint-disable-next-line
     const [showPost, setShowPost] = useState(data.show);

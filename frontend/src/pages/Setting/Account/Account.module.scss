@@ -1,0 +1,120 @@
+.wrapper {
+    padding: 16px;
+}
+
+.account-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 12px 18px;
+}
+
+.email,
+.fullname {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+}
+
+.gender-title,
+.language-title,
+.delete-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.fullname-heading,
+.email-heading,
+.gender-heading,
+.language-heading,
+.delete-heading {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.fullname-body {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fullname-input {
+    width: 400px;
+    font-size: 1.8rem;
+    background-color: transparent;
+    margin-top: 8px;
+    padding: 6px;
+    border: 2px solid transparent;
+    border-radius: 14px;
+}
+
+.btn-change {
+    margin-right: 40px;
+    border-radius: 16px;
+}
+
+.email-content,
+.gender-content,
+.language-content {
+    font-size: 1.8rem;
+    color: #a1a1a1;
+    font-weight: 500;
+    padding: 6px 0;
+}
+
+.gender,
+.language {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gender-btn,
+.language-btn {
+    min-width: 50px;
+    width: 100px;
+    border-radius: 20px;
+    padding: 10px 2px;
+    margin-right: 32px;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+.save {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+
+    .save-btn {
+        padding: 12px 24px;
+        font-weight: 600;
+    }
+}
+
+// Mobile
+@media (max-width: 767px) {
+    .email-heading,
+    .gender-heading,
+    .language-heading {
+        font-size: 1.5rem;
+    }
+
+    .email-content,
+    .gender-content,
+    .language-content {
+        font-size: 1.4rem;
+    }
+
+    .gender-btn,
+    .language-btn {
+        width: 150px;
+        font-size: 1.4rem;
+        margin-left: 12px;
+        margin-right: 0;
+    }
+
+    .save {
+        .save-btn {
+            padding: 12px 20px;
+        }
+    }
+}

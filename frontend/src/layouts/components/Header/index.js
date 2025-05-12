@@ -27,7 +27,7 @@ function Header() {
     const [notifications, setNotifications] = useState([]);
     const [notify, setNotify] = useState({});
     const [currentPage, setCurrentPage] = useState(0);
-    const [totalsPage, setTotalsPage] = useState(1);
+    const [totalsPage, setTotalsPage] = useState(0);
     const navigate = useNavigate();
     const inputRef = useRef();
     const { user, setUser } = useContext(UserContext);
@@ -149,7 +149,7 @@ function Header() {
         const res = await notifyServices(page, 5, token);
         if (res?.data) {
             setNotifications(prev => [...prev, ...res.data.content]);
-            setTotalsPage(res.data.totalsPage);
+            setTotalsPage(res.data.totalPages);
         }
     };
 
@@ -200,6 +200,7 @@ function Header() {
         const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
         fetchNotifications(nextPage);
+
     };
 
 
@@ -290,7 +291,7 @@ function Header() {
                 </div>
             </div>
             {notify.display && <Notifications message={notify.message} onClose={() => setNotify({})} />}
-        </header>
+        </header >
     );
 }
 
