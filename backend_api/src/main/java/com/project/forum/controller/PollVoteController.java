@@ -28,10 +28,10 @@ public class PollVoteController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @PostMapping("/vote/multiple")
-    ResponseEntity<ApiResponse<PollVoteResponse>> voteMultiple(@RequestBody CreateVoteMultipleDto createVoteMultipleDto) {
+    @PostMapping("/vote/multiple/{postId}")
+    ResponseEntity<ApiResponse<PollVoteResponse>> voteMultiple(@PathVariable String postId,@RequestBody CreateVoteMultipleDto createVoteMultipleDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PollVoteResponse>builder()
-                .data(voteService.voteOptionMultiple(createVoteMultipleDto))
+                .data(voteService.voteOptionMultiple(createVoteMultipleDto,postId))
                 .build());
     }
 
