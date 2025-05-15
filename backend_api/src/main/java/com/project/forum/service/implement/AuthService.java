@@ -211,6 +211,9 @@ public class AuthService implements IAuthService {
         return jwsObject.serialize().toString();
     }
 
+
+
+
     public String buildScope(Users users) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(users.getRoles())) {
