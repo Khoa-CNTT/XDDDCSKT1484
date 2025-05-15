@@ -5,7 +5,7 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 
 import styles from './Post.module.scss'
 import Image from "~/components/Image";
 import Button from "~/components/Button";
-import { deletedPostServices, getPackageAdsServices, getPostContentServices, getPostPollServices, hiddenPostServices, likeServices, submitVNPayServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
+import { getPackageAdsServices, getPostContentServices, getPostPollServices, hiddenPostServices, likeServices, submitVNPayServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -64,7 +64,7 @@ function Post({ data, profile = false, show = true }) {
     }
 
     const handleHidden = async () => {
-        const res = await hiddenPostServices(data.id, token);
+        const res = await hiddenPostServices(data.id, { show: false, deleted: false }, token);
         if (res?.data) {
             setMessageShow(t('hiddenSuccess'));
         }
@@ -75,7 +75,7 @@ function Post({ data, profile = false, show = true }) {
     }
 
     const handleDelete = async () => {
-        const res = await deletedPostServices(modalDel, token)
+        const res = await hiddenPostServices(modalDel, { show: true, deleted: true }, token)
         if (res?.data) {
             setMessageShow(t('deleteSuccess'));
         }
@@ -147,7 +147,7 @@ function Post({ data, profile = false, show = true }) {
             const votedOptions = res?.data?.pollOptions
                 ?.filter(option => option.isSelected)
                 .map(option => option.id);
-            setSelectedOptions(votedOptions || []);
+            setSelectedOptions(votedOptions);
         }
         if (res?.data) {
             setDataPost(res.data);

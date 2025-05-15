@@ -1,10 +1,8 @@
 import * as request from '~/utils/request';
 
-const hiddenPost = async (id, token) => {
+const hiddenPost = async (id, data, token) => {
     try {
-        const res = await request.patch(`posts/${id}/Show`, {
-            status: false,
-        }, {
+        const res = await request.patch(`posts/${id}/Show`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`,
             }
