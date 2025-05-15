@@ -48,13 +48,14 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
     Optional<AdsResponse> findAds(@Param("id") String id);
 
 
-    @Query("SELECT a " +
+    @Query("SELECT COUNT(a) > 0 " +
             "FROM Advertisement a " +
             "LEFT JOIN a.posts p " +
             "WHERE p.id = :postId " +
             "AND a.status = true " +
-            "AND a.views != a.maxViews ")
+            "AND a.views != a.maxViews")
     boolean existsByPostsId(@Param("postId") String id);
+
 
     @Query("SELECT a " +
             "FROM Advertisement a " +
