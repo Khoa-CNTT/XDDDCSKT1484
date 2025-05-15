@@ -30,9 +30,7 @@ public class JwtDecoderCustom implements JwtDecoder {
             throw new JwtException("Token is not active");
         }
 
-        if (!authService.checkActive(token).isAuthorized()) {
-            throw new JwtException("Token is not active");
-        }
+
 
         if (Objects.isNull(nimbusJwtDecoder)) {
             SecretKey secretKey = new SecretKeySpec(secret_key.getBytes(), "HS256");
