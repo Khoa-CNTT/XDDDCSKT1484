@@ -50,7 +50,9 @@ public class SecurityConfig {
 
     // Admin endpoints
     private static final String[] ADMIN_GET = {
-            "/ads", "/posts/find", "/reports", "/transaction"
+            "/ads", "/posts/find", "/reports", "/transaction",
+            "/total/count", "/total/revenue", "/total/revenue/monthly", "/total/top-interactions", "/total/top-posts",
+            "/ads-total/count", "/ads-total/count/user", "/ads-total/top-spenders", "/ads-total/top-posts", "/ads-total/recent-posts"
     };
     private static final String[] ADMIN_POST = {
             "/ads-package"

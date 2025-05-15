@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdsTotalResponse {
-    Long totalAds;           // Tổng số quảng cáo
-    Long totalViews;         // Tổng số lượt xem
-    Long totalActiveAds;     // Số quảng cáo đang hoạt động
-    Long totalLikes;         // Tổng số lượt like
-    Long totalComments;      // Tổng số lượt comment
-    LocalDateTime startDate; // Ngày bắt đầu
-    LocalDateTime endDate;   // Ngày kết thúc
+    Long totalAds;           
+    Long totalViews;         
+    Long totalActiveAds;     
+    Long totalLikes;         
+    Long totalComments;      
+    LocalDateTime startDate;
+    LocalDateTime endDate;  
 }

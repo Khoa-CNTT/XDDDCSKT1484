@@ -66,26 +66,26 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
     Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +
-            "COUNT(DISTINCT a.id), " +                    // Tổng số quảng cáo
-            "CASE WHEN SUM(a.views) IS NULL THEN 0 ELSE SUM(a.views) END, " +               // Tổng số lượt xem
-            "COUNT(DISTINCT CASE WHEN a.status = true THEN a.id END), " +  // Số quảng cáo đang hoạt động
-            "CASE WHEN SUM(SIZE(a.posts.likes)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.likes)) END, " +   // Tổng số lượt like
-            "CASE WHEN SUM(SIZE(a.posts.comments)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.comments)) END, " + // Tổng số lượt comment
-            "CASE WHEN :from IS NULL THEN MIN(a.created_at) ELSE :from END, " +                        // Ngày bắt đầu
-            "CASE WHEN :to IS NULL THEN CAST(CURRENT_TIMESTAMP as java.time.LocalDateTime) ELSE :to END) " +                        // Ngày kết thúc
+            "COUNT(DISTINCT a.id), " +                   
+            "CASE WHEN SUM(a.views) IS NULL THEN 0 ELSE SUM(a.views) END, " +               
+            "COUNT(DISTINCT CASE WHEN a.status = true THEN a.id END), " +  
+            "CASE WHEN SUM(SIZE(a.posts.likes)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.likes)) END, " +   
+            "CASE WHEN SUM(SIZE(a.posts.comments)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.comments)) END, " + 
+            "CASE WHEN :from IS NULL THEN MIN(a.created_at) ELSE :from END, " +                        
+            "CASE WHEN :to IS NULL THEN CAST(CURRENT_TIMESTAMP as java.time.LocalDateTime) ELSE :to END) " +                       
             "FROM Advertisement a " +
             "WHERE (:from IS NULL OR a.created_at >= :from) " +
             "AND (:to IS NULL OR a.created_at <= :to)")
     AdsTotalResponse getAdsStats(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +
-            "COUNT(DISTINCT a.id), " +                    // Tổng số quảng cáo
-            "CASE WHEN SUM(a.views) IS NULL THEN 0 ELSE SUM(a.views) END, " +               // Tổng số lượt xem
-            "COUNT(DISTINCT CASE WHEN a.status = true THEN a.id END), " +  // Số quảng cáo đang hoạt động
-            "CASE WHEN SUM(SIZE(a.posts.likes)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.likes)) END, " +   // Tổng số lượt like
-            "CASE WHEN SUM(SIZE(a.posts.comments)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.comments)) END, " + // Tổng số lượt comment
-            "CASE WHEN :from IS NULL THEN MIN(a.created_at) ELSE :from END, " +                        // Ngày bắt đầu
-            "CASE WHEN :to IS NULL THEN CAST(CURRENT_TIMESTAMP as java.time.LocalDateTime) ELSE :to END) " +                        // Ngày kết thúc
+            "COUNT(DISTINCT a.id), " +                   
+            "CASE WHEN SUM(a.views) IS NULL THEN 0 ELSE SUM(a.views) END, " +               
+            "COUNT(DISTINCT CASE WHEN a.status = true THEN a.id END), " +  
+            "CASE WHEN SUM(SIZE(a.posts.likes)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.likes)) END, " +   
+            "CASE WHEN SUM(SIZE(a.posts.comments)) IS NULL THEN 0 ELSE SUM(SIZE(a.posts.comments)) END, " + 
+            "CASE WHEN :from IS NULL THEN MIN(a.created_at) ELSE :from END, " +                      
+            "CASE WHEN :to IS NULL THEN CAST(CURRENT_TIMESTAMP as java.time.LocalDateTime) ELSE :to END) " +                      
             "FROM Advertisement a " +
             "WHERE a.posts.users.id = :userId " +
             "AND (:from IS NULL OR a.created_at >= :from) " +
