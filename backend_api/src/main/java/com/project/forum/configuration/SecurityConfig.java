@@ -26,7 +26,7 @@ public class SecurityConfig {
     // Public endpoints
    private static final String[] PUBLIC_GET = {
             "/ads-package", "/ads-package/*", "/comment-reply", "/comments", "/mail/active", "/mail/send-mail/active", "/post-content/*","/posts","/posts/*",
-            "/posts/user/*","/post-poll/*" ,"/users", "/users/*", "/users/find",
+            "/posts/user/*","/post-poll/*" ,"/users", "/users/*", "/users/find","/vn-pay/submitOrder", "/vn-pay/orderReturn",
     };
     private static final String[] PUBLIC_POST = {
             "/ai", "/ai/translate", "/auth/**", "/mail/send-mail/change-password","/users"
@@ -35,7 +35,7 @@ public class SecurityConfig {
     // User endpoints
     private static final String[] USER_GET = {
             "/ads/user", "/ads/*", "/friend-ship/*","/friend-ship/friendship" ,"friend-ship/friendship-request", "/notices", "/notices/read", "/post-content-history/*",
-            "/posts/user", "/transaction/user", "/transaction/*","/transaction/*/ads", "/users/my-info","/vn-pay/submitOrder", "/vn-pay/orderReturn",
+            "/posts/user", "/transaction/user", "/transaction/*","/transaction/*/ads", "/users/my-info"
     };
     private static final String[] USER_POST = {
             "/comments", "/comment-reply", "/friend-ship" , "/friend-ship/accept/*","friend-ship/reject/*", "/friend-ship/un-accept/*","/poll-vote/vote/*"
