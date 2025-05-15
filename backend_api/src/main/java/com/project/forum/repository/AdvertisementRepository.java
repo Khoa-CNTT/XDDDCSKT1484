@@ -54,6 +54,14 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, St
             "WHERE p.id = :postId " +
             "AND a.status = true " +
             "AND a.views != a.maxViews ")
+    boolean existsByPostsId(@Param("postId") String id);
+
+    @Query("SELECT a " +
+            "FROM Advertisement a " +
+            "LEFT JOIN a.posts p " +
+            "WHERE p.id = :postId " +
+            "AND a.status = true " +
+            "AND a.views != a.maxViews ")
     Optional<Advertisement> findAdsByPostId(@Param("postId") String postId);
 
     @Query("SELECT new com.project.forum.dto.responses.ads.AdsTotalResponse(" +
