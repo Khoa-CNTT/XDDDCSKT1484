@@ -213,8 +213,9 @@ function Profile() {
                 setStatusFriend('Add Friend');
                 setShowRespond(false);
             } else {
+                setRequests([])
                 setCurrentPage(0)
-                fetchRequests(currentPage)
+                fetchRequests(0)
             }
         }
     }

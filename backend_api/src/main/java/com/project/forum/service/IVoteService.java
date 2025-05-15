@@ -7,5 +7,5 @@ public interface IVoteService {
 
     PollVoteResponse voteOption(String pollOptionId);
 
-    PollVoteResponse voteOptionMultiple(CreateVoteMultipleDto createVoteMultipleDto);
+    PollVoteResponse voteOptionMultiple(CreateVoteMultipleDto createVoteMultipleDto,String postId);
 }

@@ -52,5 +52,10 @@ public interface PollVoteRepository extends JpaRepository<PollVote, String> {
     List<PollVote> findByUserAndPollOptions(@Param("userId") String userId,
                                             @Param("pollOptionIds") List<String> pollOptionIds);
 
+    @Query("SELECT v FROM PollVote v WHERE v.users.id = :userId AND v.poll_options.postPoll.posts.id = :postId")
+    List<PollVote> findByUserAndPostId(@Param("userId") String userId, @Param("postId") String postId);
 
+    @Modifying
+    @Query("DELETE FROM PollVote pv WHERE pv.users.id = :userId AND pv.poll_options.postPoll.id = :postPollId")
+    void deleteAllByUserIdAndPostPollId(@Param("userId") String userId, @Param("postPollId") String postPollId);
 }

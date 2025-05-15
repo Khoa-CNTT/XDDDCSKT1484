@@ -38,56 +38,50 @@ public class VoteService implements IVoteService {
     @Override
     @Transactional
     public PollVoteResponse voteOption(String pollOptionId) {
-        PollOptions pollOptions = pollOptionsRepository.findById(pollOptionId).orElseThrow(() -> new WebException(ErrorCode.E_POLL_OPTION_NOT_FOUND));
-        PostPoll postPoll = postPollRepository.findById(pollOptions.getPostPoll().getId()).orElseThrow(() -> new WebException(ErrorCode.E_POST_POLL_NOT_FOUND));
-//        Posts posts = postsRepository.findById(postPoll.getPosts().getId()).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
-        if (pollVoteRepository.existsVote(users.getId(), pollOptions.getId())){
-            pollVoteRepository.deleteVote(users.getId(), pollOptions.getId());
-            return PollVoteResponse.builder()
-                    .voted(false)
-                    .message("UnVote successful")
-                    .build();
-        }
-        if (postPoll.getTypePoll().equals(TypePoll.Single)){
-            if (pollVoteRepository.existsByUserIdAndPollOptionIdAndPostPollId(users.getId(),pollOptions.getId(), postPoll.getId())){
-                pollVoteRepository.deleteVoteByUserIdAndPollOptionIdAndPostPollId(users.getId(),pollOptions.getId(), postPoll.getId());
-            }
-            PollVote newPollOptions = PollVote.builder()
-                    .poll_options(pollOptions)
-                    .users(users)
-                    .created_at(LocalDateTime.now())
-                    .build();
-            pollVoteRepository.save(newPollOptions);
+        PollOptions pollOptions = pollOptionsRepository.findById(pollOptionId)
+                .orElseThrow(() -> new WebException(ErrorCode.E_POLL_OPTION_NOT_FOUND));
 
-            return PollVoteResponse.builder()
-                    .voted(true)
-                    .message("Vote successful")
-                    .build();
-        } else {
-            PollVote newPollOptions = PollVote.builder()
-                    .poll_options(pollOptions)
-                    .created_at(LocalDateTime.now())
-                    .users(users)
-                    .build();
-            pollVoteRepository.save(newPollOptions);
+        PostPoll postPoll = postPollRepository.findById(pollOptions.getPostPoll().getId())
+                .orElseThrow(() -> new WebException(ErrorCode.E_POST_POLL_NOT_FOUND));
 
-            return PollVoteResponse.builder()
-                    .voted(true)
-                    .message("Vote successful")
-                    .build();
-        }
-
-
-    }
-
-    @Override
-    @Transactional
-    public PollVoteResponse voteOptionMultiple(CreateVoteMultipleDto createVoteMultipleDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
+        if (postPoll.getTypePoll().equals(TypePoll.Single.toString())) {
+
+            pollVoteRepository.deleteAllByUserIdAndPostPollId(users.getId(), postPoll.getId());
+        }
+        PollVote newPollVote = PollVote.builder()
+                .poll_options(pollOptions)
+                .users(users)
+                .created_at(LocalDateTime.now())
+                .build();
+        pollVoteRepository.save(newPollVote);
+
+        return PollVoteResponse.builder()
+                .voted(true)
+                .message("Vote successful")
+                .build();
+    }
+
+
+    @Override
+    @Transactional
+    public PollVoteResponse voteOptionMultiple(CreateVoteMultipleDto createVoteMultipleDto, String postId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
+        if (createVoteMultipleDto.getPollOptionId() == null || createVoteMultipleDto.getPollOptionId().isEmpty()) {
+            List<PollVote> allVotesForPost = pollVoteRepository.findByUserAndPostId(users.getId(), postId);
+            allVotesForPost.forEach(pollVoteRepository::delete);
+
+            return PollVoteResponse.builder()
+                    .voted(true)
+                    .message("All votes removed")
+                    .build();
+        }
 
         List<PollVote> existingVotes = pollVoteRepository.findByUserAndPollOptions(users.getId(), createVoteMultipleDto.getPollOptionId());
         Set<String> existingVoteIds = existingVotes.stream()
