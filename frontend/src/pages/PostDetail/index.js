@@ -50,7 +50,7 @@ function PostDetail() {
             if (!token) return;
 
             const res = await getPostByIdPostServices(id, token)
-            if (res?.data) {
+            if (res?.data && !res.data?.deleted) {
                 setShowPost(res.data.show);
                 setPost(res.data);
             } else {
