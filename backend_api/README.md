@@ -31,7 +31,7 @@ Dự án được phát triển bởi nhóm sinh viên Khoa Công nghệ Thông 
 - Maven (hoặc sử dụng Maven Wrapper đi kèm)
 
 ### 2. Cài đặt 
-- Tải key Api AI:
+- Tải key Api AI:https://www.mediafire.com/file/vxazgorhjuifbqu/key.txt/file
 - Truy cập file XDDDCSKT1484\backend_api\src\main\resources\application.yaml
 - Thêm key vào
 ```bash
