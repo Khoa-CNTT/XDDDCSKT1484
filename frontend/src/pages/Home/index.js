@@ -52,7 +52,7 @@ function Home() {
             } else {
                 alert(t('notFoundPost'));
             }
-        } else if (res.response?.data?.code === 40405) {
+        } else if (res.response?.data?.code) {
             alert(res.response.data.message);
         }
     };

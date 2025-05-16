@@ -54,9 +54,9 @@ function Register() {
             navigate(routesConfig.login);
         } else {
             const { code, message } = res.response.data
-            if (code === 40001) {
+            if (code === 40002) {
                 setMessageError({ 'username': message })
-            } else if (code === 40002) {
+            } else if (code === 40003) {
                 setMessageError({ 'email': message })
             }
 
