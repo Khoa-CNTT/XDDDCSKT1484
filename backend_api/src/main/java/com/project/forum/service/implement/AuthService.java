@@ -73,6 +73,9 @@ public class AuthService implements IAuthService {
         boolean valid = true;
         try {
             verify(token);
+            if (!checkActive(token).isAuthorized()) {
+                valid = false;
+            }
         } catch (Exception e) {
             valid = false;
         }
