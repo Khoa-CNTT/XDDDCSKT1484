@@ -74,7 +74,7 @@ function Search() {
                 setPosts(prev => (page === 0 ? res.data.content : [...prev, ...res.data.content]));
                 setTotalPost(res.data.totalElements);
             }
-        } else if (res.response?.data?.code === 40405) {
+        } else if (res.response?.data?.code) {
             alert(res.response.data.message);
         }
     };
