@@ -98,25 +98,24 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public MonthlyRevenueResponse getMonthlyRevenue(Integer year) {
-        // Nếu không có năm được cung cấp, sử dụng năm hiện tại
+       
         if (year == null) {
             year = Year.now().getValue();
         }
 
-        // Lấy dữ liệu từ repository
+     
         List<MonthlyData> monthlyData = transactionRepository.getMonthlyRevenue(year);
-
-        // Tạo danh sách đầy đủ 12 tháng
+  
         List<MonthlyData> fullYearData = new ArrayList<>();
         IntStream.rangeClosed(1, 12).forEach(month -> {
-            // Tìm dữ liệu cho tháng hiện tại
+      
             MonthlyData existingData = monthlyData.stream()
                     .filter(data -> data.getMonth() == month)
                     .findFirst()
                     .orElse(MonthlyData.builder()
                             .month(month)
                             .amount(BigDecimal.ZERO)
-                            .currency("VND") // Mặc định là VND nếu không có dữ liệu
+                            .currency("VND") 
                             .build());
             fullYearData.add(existingData);
         });

@@ -30,8 +30,8 @@ public class PostPollController {
     }
 
     @SecurityRequirement(name = "BearerAuth")
-    @PostMapping("/{postId}")
-    ResponseEntity<ApiResponse<PostResponse>> create(@PathVariable String postId,@RequestBody CreatePostPollDto createPostPollDto) throws IOException {
+    @PostMapping
+    ResponseEntity<ApiResponse<PostResponse>> create(@RequestBody CreatePostPollDto createPostPollDto) throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PostResponse>builder()
                 .data(postPollService.create(createPostPollDto))
                 .build());

@@ -53,7 +53,7 @@ public class VNPayService  implements IVNPayService {
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
         AdsPackage adsPackage = adsPackageRepository.findById(ads_package).orElseThrow(() -> new WebException(ErrorCode.E_ADS_PACKAGE_NOT_FOUND));
         Posts posts = postsRepository.findById(idHandler).orElseThrow(() -> new WebException(ErrorCode.E_POST_NOT_FOUND));
-        if (postsRepository.isPostAvailableForAds(posts.getId())) {
+        if (advertisementRepository.existsByPostsId(posts.getId())) {
             throw new WebException(ErrorCode.E_POST_IS_ADS);
         }
         Advertisement advertisement = Advertisement.builder()

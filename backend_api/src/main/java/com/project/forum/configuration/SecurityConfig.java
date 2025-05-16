@@ -26,10 +26,10 @@ public class SecurityConfig {
     // Public endpoints
    private static final String[] PUBLIC_GET = {
             "/ads-package", "/ads-package/*", "/comment-reply", "/comments", "/mail/active", "/mail/send-mail/active", "/post-content/*","/posts","/posts/*",
-            "/posts/user/*","/post-poll/*" ,"/users", "/users/*", "/users/find", "/vn-pay/submitOrder", "/vn-pay/orderReturn",
+            "/posts/user/*","/post-poll/*" ,"/users", "/users/*", "/users/find","/vn-pay/submitOrder", "/vn-pay/orderReturn",
     };
     private static final String[] PUBLIC_POST = {
-            "/ai", "/ai/translate", "/auth/**", "/mail/send-mail/change-password",
+            "/ai", "/ai/translate", "/auth/**", "/mail/send-mail/change-password","/users"
     };
 
     // User endpoints
@@ -50,7 +50,9 @@ public class SecurityConfig {
 
     // Admin endpoints
     private static final String[] ADMIN_GET = {
-            "/ads", "/posts/find", "/reports", "/transaction"
+            "/ads", "/posts/find", "/reports", "/transaction",
+            "/total/count", "/total/revenue", "/total/revenue/monthly", "/total/top-interactions", "/total/top-posts",
+            "/ads-total/count", "/ads-total/count/user", "/ads-total/top-spenders", "/ads-total/top-posts", "/ads-total/recent-posts"
     };
     private static final String[] ADMIN_POST = {
             "/ads-package"

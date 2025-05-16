@@ -1,6 +1,7 @@
 package com.project.forum.configuration;
 
 import com.project.forum.service.IAuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,13 +28,16 @@ public class JwtDecoderCustom implements JwtDecoder {
 
     @Override
     public Jwt decode(String token) throws JwtException {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String path = request.getRequestURI();
 
-        if (!authService.introspect(token).isResult()) {
-            throw new JwtException("Token is not active");
-        }
-
-        if (!authService.checkActive(token).isAuthorized()) {
-            throw new JwtException("Token is not active");
+        if (!path.equals("/mail/send-mail/active")) {
+            if (!authService.introspect(token).isResult()) {
+                throw new JwtException("Token is not active");
+            }
+            if (!authService.checkActive(token).isAuthorized()) {
+                throw new JwtException("Token is not active");
+            }
         }
 
         if (Objects.isNull(nimbusJwtDecoder)) {

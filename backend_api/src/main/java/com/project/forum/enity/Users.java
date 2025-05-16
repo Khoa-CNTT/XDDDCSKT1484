@@ -78,12 +78,6 @@ public class Users {
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Transaction> transactions;
 
-    @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Conversations> conversations;
-
-    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    List<Messages> messages;
-
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     List<FriendShip> sentFriendShips;
 
