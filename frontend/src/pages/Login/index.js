@@ -72,8 +72,6 @@ function Login() {
                     navigate(routesConfig.home);
                 }
             } else {
-                console.log('fi')
-
                 navigate(routesConfig.activeAccount);
             }
         }

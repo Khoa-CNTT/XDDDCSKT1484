@@ -29,10 +29,11 @@ function ActiveAccount() {
         }
 
         setDisabled(true);
-        setCountdown(30); // bắt đầu đếm ngược 30 giây
+        setCountdown(30);
 
         const res = await sendEmailServices(token);
         if (res?.data) {
+            localStorage.removeItem('authToken');
             navigate(routesConfig.sendEmail, { state: { fromPage: 'activeAccount' } });
         } else {
             console.error("Failed to send email. Response:", res);
