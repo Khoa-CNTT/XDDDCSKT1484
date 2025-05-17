@@ -1,8 +1,8 @@
 import * as request from '~/utils/request'
 
-const voteSingle = async (postPollId, token) => {
+const voteSingle = async (pollOptionId, token) => {
     try {
-        const res = await request.post(`poll-vote/vote/${postPollId}`, {}, {
+        const res = await request.post(`poll-vote/vote/${pollOptionId}`, {}, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

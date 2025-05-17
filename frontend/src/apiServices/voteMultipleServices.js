@@ -1,10 +1,9 @@
 import * as request from '~/utils/request'
 
-const voteMultiple = async (pollOptionId, token) => {
-    console.log(pollOptionId);
+const voteMultiple = async (postId, pollOptionId, token) => {
 
     try {
-        const res = await request.post('poll-vote/vote/multiple', { pollOptionId }, {
+        const res = await request.post(`poll-vote/vote/multiple/${postId}`, { pollOptionId }, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
