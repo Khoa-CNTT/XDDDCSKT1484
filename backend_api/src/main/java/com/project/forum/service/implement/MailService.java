@@ -2,6 +2,7 @@ package com.project.forum.service.implement;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.project.forum.dto.requests.user.UpdatePasswordDto;
@@ -85,7 +86,7 @@ public class MailService implements IMailService {
 
     @Override
     public MailResponse checkMailActive(String token) {
-        IntrospectResponse check = iAuthService.introspect(token);
+        IntrospectResponse check = introspect(token);
         if (check.isResult()) {
             try {
                 SignedJWT signedJWT = SignedJWT.parse(token);
@@ -145,7 +146,7 @@ public class MailService implements IMailService {
 
     @Override
     public MailResponse checkMailChangePassword(String token, UpdatePasswordDto updatePasswordDto) {
-        IntrospectResponse check = iAuthService.introspect(token);
+        IntrospectResponse check = introspect(token);
         if (check.isResult()) {
             try {
                 SignedJWT signedJWT = SignedJWT.parse(token);
@@ -215,4 +216,34 @@ public class MailService implements IMailService {
         }
         return jwsObject.serialize().toString();
     }
+
+
+    public IntrospectResponse introspect(String token) {
+        boolean valid = true;
+        try {
+            verify(token);
+
+        } catch (Exception e) {
+            valid = false;
+        }
+        return IntrospectResponse.builder()
+                .result(valid)
+                .build();
+    }
+
+    SignedJWT verify(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(secret_key.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
+        var verify = signedJWT.verify(verifier);
+        if (!(verify || expiration.before(new Date())))
+            throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
+        if (iCacheService.getData("expired_token") != null) {
+            if (iCacheService.getData("expired_token").equals(token)) {
+                throw new WebException(ErrorCode.E_TOKEN_EXPIRED);
+            }
+        }
+        return signedJWT;
+    }
+
 }
