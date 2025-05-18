@@ -34,5 +34,13 @@ public class PollVoteController {
                 .data(voteService.voteOptionMultiple(createVoteMultipleDto,postId))
                 .build());
     }
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping("/vote/{pollOptionId}/un-vote")
+    ResponseEntity<ApiResponse<PollVoteResponse>> unvote(@PathVariable String pollOptionId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PollVoteResponse>builder()
+                .data(voteService.unvote(pollOptionId))
+                .build());
+    }
+
 
 }

@@ -39,7 +39,7 @@ public class SecurityConfig {
     };
     private static final String[] USER_POST = {
             "/comments", "/comment-reply", "/friend-ship" , "/friend-ship/accept/*","friend-ship/reject/*", "/friend-ship/un-accept/*","/poll-vote/vote/*"
-            ,"/poll-vote/vote/multiple", "/likes/action", "/post-content", "/post-poll", "/upload/image"
+            ,"/poll-vote/vote/multiple", "/likes/action", "/post-content", "/post-poll", "/upload/image","/poll-vote/vote/*/un-vote"
 
     };
     private static final String[] USER_PUT = {"/notices/read"};
