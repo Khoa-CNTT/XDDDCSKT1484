@@ -195,7 +195,7 @@ function Post({ data, profile = false, show = true }) {
             let res;
 
             if (dataPost.typePoll === 'Multiple') {
-                res = await voteMultipleServices(selectedOptions, token);
+                res = await voteMultipleServices(data.id, selectedOptions, token);
             } else {
                 res = await voteSingleServices(selectedOptions[0], token);
             }
