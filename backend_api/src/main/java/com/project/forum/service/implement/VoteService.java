@@ -49,7 +49,6 @@ public class VoteService implements IVoteService {
                 .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
 
         if (postPoll.getTypePoll().equals(TypePoll.Single.toString())) {
-
             pollVoteRepository.deleteAllByUserIdAndPostPollId(users.getId(), postPoll.getId());
         }
         PollVote newPollVote = PollVote.builder()
@@ -62,6 +61,29 @@ public class VoteService implements IVoteService {
         return PollVoteResponse.builder()
                 .voted(true)
                 .message("Vote successful")
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public PollVoteResponse unvote(String pollOptionId) {
+        PollOptions pollOptions = pollOptionsRepository.findById(pollOptionId)
+                .orElseThrow(() -> new WebException(ErrorCode.E_POLL_OPTION_NOT_FOUND));
+
+        PostPoll postPoll = postPollRepository.findById(pollOptions.getPostPoll().getId())
+                .orElseThrow(() -> new WebException(ErrorCode.E_POST_POLL_NOT_FOUND));
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new WebException(ErrorCode.E_USER_NOT_FOUND));
+
+        if (postPoll.getTypePoll().equals(TypePoll.Single.toString())) {
+            pollVoteRepository.deleteAllByUserIdAndPostPollId(users.getId(), postPoll.getId());
+        }
+
+        return PollVoteResponse.builder()
+                .voted(true)
+                .message("Unvote successful")
                 .build();
     }
 
