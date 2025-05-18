@@ -207,12 +207,22 @@
     align-items: center;
 }
 
-.vote-btn {
+.vote-action {
+    display: flex;
+}
+
+.vote-btn,
+.unVote-btn {
     width: 100px;
     padding: 8px 0;
     display: flex;
     border-radius: 40px;
     justify-content: center;
+
+    &.disable {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 
     &:hover {
         opacity: 0.7;
