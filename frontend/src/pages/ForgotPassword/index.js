@@ -37,15 +37,12 @@ function ForgotPassword() {
         const res = await forgotPasswordServices(email);
 
         if (res?.data) {
-            const token = res.data.token
-            localStorage.setItem('authToken', token)
-            if (localStorage.getItem('authToken')) {
-                navigate(routesConfig.sendEmail, { state: { fromPage: 'forgotPassword' } })
-            }
+            navigate(routesConfig.sendEmail, { state: { fromPage: 'forgotPassword' } })
         } else {
-            const { message } = res.response.data
-            setError(message)
-
+            const { code } = res.response.data
+            if (code === 40401) {
+                setError('Email is not registered')
+            }
         }
     }
 
