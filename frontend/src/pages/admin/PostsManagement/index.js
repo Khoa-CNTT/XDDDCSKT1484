@@ -1,6 +1,6 @@
 import classNames from "classnames/bind";
 import styles from './PostsManagement.module.scss'
-import { LeftIcon, RightIcon, SearchIcon } from "~/components/Icons";
+import { LeftIcon, RightIcon } from "~/components/Icons";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { searchPostsAdminServices } from "~/apiServices";
@@ -41,10 +41,6 @@ function PostsManagement() {
                     <div className={cx('post-heading')}>
                         {t('managementPost')}
                     </div>
-                    <div className={cx('post-search')}>
-                        <SearchIcon className={cx('search-icon')} />
-                        <input className={cx('search-input')} type="text" placeholder={t('searchPostName')} />
-                    </div>
                 </div>
                 <div className={cx('post-details')}>
                     <table className={cx('table-post')}>
@@ -65,7 +61,7 @@ function PostsManagement() {
                                     listPost.map((post, index) => (
                                         <tr key={post.id}>
                                             <th>{index + 1}</th>
-                                            <td>{post.user_name}</td>
+                                            <td>{post.full_name}</td>
                                             <td>{post.type_post}</td>
                                             <td>{format(new Date(post.created_at), 'dd/MM/yyyy HH:mm')}</td>
                                             <td>{post.language}</td>
