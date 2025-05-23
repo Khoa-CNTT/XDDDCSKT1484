@@ -9,7 +9,7 @@ function ReplyComment({ data }) {
         <div className={cx('wrapper')}>
             <div className={cx('reply')}>
                 <div className={cx('body')}>
-                    <h4 className={cx('username')}>{data.user_name}</h4>
+                    <h4 className={cx('username')}>{data.full_name}</h4>
                     <span className={cx('createAt')}>{data.created_at} </span>
                 </div>
                 <div className={cx('content')}>{data.content}</div>

@@ -114,8 +114,8 @@ function Comment({ data, onDeleteSuccess }) {
             <div className={cx('wrapper')}>
                 <div className={cx('header')}>
                     <div className={cx('user')}>
-                        <Image src={data.user_img} alt={data.user_name} className={cx('img')} />
-                        <h3 className={cx('username')}>{data.user_name}</h3>
+                        <Image src={data.user_img} alt={data.full_name} className={cx('img')} />
+                        <h3 className={cx('username')}>{data.full_name}</h3>
                         <span className={cx('datetime')}>{format(new Date(data.created_at), "dd/MM/yyyy HH:mm")}</span>
                     </div>
                     <div className={cx('more-btn')}>
