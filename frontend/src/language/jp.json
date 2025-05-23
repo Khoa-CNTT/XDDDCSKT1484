@@ -398,5 +398,6 @@
     "makeFriend": "誰が友達になれるか？",
     "friendOfFriend": "友達の友達",
     "findUsername": "ユーザー名で検索を許可",
-    "sendMessage": "誰がメッセージを送れるか？"
+    "sendMessage": "誰がメッセージを送れるか？",
+    "unVote": "投票を取り消す"
 }

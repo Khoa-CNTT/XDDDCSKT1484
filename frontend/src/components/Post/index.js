@@ -5,7 +5,7 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useState } from 
 import styles from './Post.module.scss'
 import Image from "~/components/Image";
 import Button from "~/components/Button";
-import { getPackageAdsServices, getPostContentServices, getPostPollServices, hiddenPostServices, likeServices, submitVNPayServices, translateServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
+import { getPackageAdsServices, getPostContentServices, getPostPollServices, hiddenPostServices, likeServices, submitVNPayServices, translateServices, unVoteSingleServices, voteMultipleServices, voteSingleServices } from "~/apiServices";
 import Menu from "~/components/Popper/Menu";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -189,8 +189,23 @@ function Post({ data, profile = false, show = true }) {
         ));
     };
 
-    const handleVote = async (e) => {
-        e.preventDefault();
+    const handleUnVote = async () => {
+        let res;
+
+        if (dataPost.typePoll === 'Multiple') {
+            res = await voteMultipleServices(data.id, [], token);
+        } else {
+            if (selectedOptions.length > 0) {
+                res = await unVoteSingleServices(selectedOptions[0], token);
+            }
+        }
+
+        if (res?.data) {
+            await fetchApiTypePost();
+        }
+    }
+
+    const handleVote = async () => {
         if (selectedOptions.length > 0) {
             let res;
 
@@ -365,7 +380,7 @@ function Post({ data, profile = false, show = true }) {
                                     <div className={cx('question')}>
                                         <Link className={cx('text-question')} to={`/post/${data.id}`}>{dataPost.question}</Link>
                                     </div>
-                                    <form className={cx('form-vote')} onSubmit={handleVote}>
+                                    <div className={cx('form-vote')} >
                                         {
                                             dataPost.pollOptions?.map((item, index) => {
                                                 const percentage = totalVote > 0 ? ((item.voteCount / totalVote) * 100).toFixed(0) : 0;
@@ -395,9 +410,12 @@ function Post({ data, profile = false, show = true }) {
                                         }
                                         <div className={cx('vote')}>
                                             <span className={cx('total-vote')}>{totalVote} {t('votes')}</span>
-                                            <Button className={cx('vote-btn')} primary>{t('vote')}</Button>
+                                            <div className={cx('vote-action')}>
+                                                <Button className={cx('unVote-btn', { disable: selectedOptions.length === 0 })} onClick={handleUnVote} normal>{t('unVote')}</Button>
+                                                <Button className={cx('vote-btn')} onClick={handleVote} primary>{t('vote')}</Button>
+                                            </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             )}
                         {showPost && (

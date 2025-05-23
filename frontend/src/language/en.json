@@ -398,5 +398,6 @@
     "makeFriend": "Who can be my friend?",
     "friendOfFriend": "Friend of friend",
     "findUsername": "Allow searching by username",
-    "sendMessage": "Who can message me?"
+    "sendMessage": "Who can message me?",
+    "unVote": "UnVote"
 }

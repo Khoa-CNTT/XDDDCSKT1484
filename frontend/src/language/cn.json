@@ -398,5 +398,6 @@
     "makeFriend": "谁可以加我为好友？",
     "friendOfFriend": "朋友的朋友",
     "findUsername": "允许通过用户名搜索",
-    "sendMessage": "谁可以发消息给我？"
+    "sendMessage": "谁可以发消息给我？",
+    "unVote": "取消投票"
 }
