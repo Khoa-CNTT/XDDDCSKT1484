@@ -29,7 +29,7 @@ public class SecurityConfig {
             "/posts/user/*","/post-poll/*" ,"/users", "/users/*", "/users/find","/vn-pay/submitOrder", "/vn-pay/orderReturn",
     };
     private static final String[] PUBLIC_POST = {
-            "/ai", "/ai/translate", "/auth/**", "/mail/send-mail/change-password","/users","/mail/change-password",
+            "/ai", "/ai/translate", "/auth/**", "/mail/send-mail/change-password","/users","/mail/change-password", "/upload/image"
     };
 
     // User endpoints
